@@ -1,77 +1,44 @@
 @extends('layouts/index')
 
 @section('content')
+<div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="form-inline mr-auto">
+          <ul class="navbar-nav">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg
+									collapse-btn text-dark mr-3"> <i data-feather="align-justify"></i></a></li>
+          </ul>
+          <ul class="navbar-nav font-weight-bold h6">
+            Riwayat Cuti
+          </ul>
+          
+        </div>
+      </nav>
 <div class="main-content">
     <section class="section">
-        <div class="row ">
-        <div class="col-xl-4 col-lg-6">
-            <div class="card l-bg-cyan-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Sisa Cuti</h4>
-                <span>{{$sisa_cuti}} hari</span>
-                <div class="progress mt-1 mb-1" data-height="8">
-                    <div class="progress-bar l-bg-orange" role="progressbar" data-width="25%" aria-valuenow="25"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mb-0 text-sm">
-                    <span class="mr-1"></span>
-                         
-                </p>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-xl-4 col-lg-6">
-            <div class="card l-bg-purple-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Permohonan Disetujui</h4>
-                <span>{{$jmlPermohonanDisetujui}} disetujui</span>
-                <div class="progress mt-1 mb-1" data-height="8">
-                    <div class="progress-bar l-bg-cyan" role="progressbar" data-width="25%" aria-valuenow="25"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mb-0 text-sm">
-                    <span class="mr-1"><i class="fas fa-eye"></i></span>
-                        <a href="{{route('karyawan.permohonan.disetujui')}}" class="text-white">View Detail</a> 
-                </p>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-xl-4 col-lg-6">
-            <div class="card l-bg-orange-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Permohonan Ditolak</h4>
-                <span>{{$jmlPermohonanDitolak}} ditolak</span>
-                <div class="progress mt-1 mb-1" data-height="8">
-                    <div class="progress-bar l-bg-green" role="progressbar" data-width="25%" aria-valuenow="25"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mb-0 text-sm">
-                    <span class="mr-1"><i class="fas fa-eye"></i></span>
-                        <a href="{{route('karyawan.permohonan.ditolak')}}" class="text-white">View Detail</a> 
-                </p>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
         <div class="row">
         <div class="col-12 col-sm-12 col-lg-12">
         <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
-            <div class="card">
-            <div class="card-header">
-                <h4>Permohonan Cuti Terbaru</h4>
-                <div class="card-header-action">
-                    <a href="{{route('karyawan.permohonan')}}" class="btn btn-info"> <i class="fa fa-eye"></i> View All</a>
-                </div>
+        @if(session()->has('message'))
+            <div class="alert alert-dismissable alert-danger">
+                {{ session()->get('message') }}
             </div>
+        @endif
+            <div class="card">
+                <div class="card-header ml-4">
+                    <h4>Data Pengajuan Cuti</h4>
+                </div>
+                <table class="table table-striped">
+                <tr>
+                  <th class="ml-4 mt-3 text-left  ">
+                    {{-- <div class="ml-4">Sisa Cuti: {{$permohonan->jumlah_cuti}}</div> --}}
+                </th>
+                  <th class="ml-4 mt-3 text-right  ">
+                    <button class="btn btn-warning mr-4" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah</button>
+                </th>
+                </tr>
+                </table>
+                
             <div class="card-body">
                 <div class="table-responsive table-invoice">
                 <table class="table table-striped">
@@ -81,7 +48,9 @@
                         <th>Alasan Cuti</th>
                         <th>Mulai Cuti</th>
                         <th>Berakhir Cuti</th>
-                        <th>Status</th>
+                        <th class="text-center">Status</th>
+                        <th>Ket. Tolak</th>
+                        <th class="text-center">#</th>
                     </tr>
                     @foreach($permohonan as $i => $p)
                     <tr>
@@ -90,15 +59,39 @@
                         <td class="text-truncate">{{$p->alasan_cuti}}</td>
                         <td class="align-middle">{{$p->tgl_mulai}}</td>
                         <td class="align-middle">{{$p->tgl_akhir}}</td>
-                        <td class="align-middle">
-                            @if($p->status === "disetujui")
-                                <span class="badge badge-success">{{$p->status}}</span>
-                            @elseif($p->status === "pending")
-                                <span class="badge badge-warning">{{$p->status}}</span>
-                            @elseif($p->status === "ditolak")
-                                <span class="badge badge-danger">{{$p->status}}</span>
+                        <td class="align-middle text-center">
+                            @if($p->status === "Baru")
+                                <span class="badge baru">{{$p->status}}</span>
+                            @elseif($p->status === "Diterima")
+                                <span class="badge diterima">{{$p->status}}</span>
+                            @elseif($p->status === "Diatasan")
+                                <span class="badge diatasan">{{$p->status}}</span>
+                            @elseif($p->status === "Dibatalkan")
+                                <span class="badge batal">{{$p->status}}</span>
+                            @elseif($p->status === "Ditolak")
+                                <span class="badge ditolak">{{$p->status}}</span>
                             @endif
-                            
+                        </td>
+                        <td>
+                            @if($p->status === "Ditolak")
+                            <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
+                              
+                            @else
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            {{-- @if($p->status === "Diterima")
+                            <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
+                            @if($p->status === "Baru")
+                            <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
+                            @elseif($p->status === "Diatasan")
+                            <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
+                            {{-- <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" >Setuju</a>  --}}
+                            @elseif($p->status === "Batal")
+                            <div></div>
+                            @else
+                            <div></div>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
@@ -109,115 +102,58 @@
         </div>
         </div>
     </section>
-    <div class="settingSidebar">
-        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
-        </a>
-        <div class="settingSidebar-body ps-container ps-theme-default">
-        <div class=" fade show active">
-            <div class="setting-panel-header">Setting Panel
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Select Layout</h6>
-            <div class="selectgroup layout-color w-50">
-                <label class="selectgroup-item">
-                <input type="radio" name="value" value="1" class="selectgroup-input select-layout" checked>
-                <span class="selectgroup-button">Light</span>
-                </label>
-                <label class="selectgroup-item">
-                <input type="radio" name="value" value="2" class="selectgroup-input select-layout">
-                <span class="selectgroup-button">Dark</span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Sidebar Color</h6>
-            <div class="selectgroup selectgroup-pills sidebar-color">
-                <label class="selectgroup-item">
-                <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
-                <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
-                </label>
-                <label class="selectgroup-item">
-                <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
-                <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Color Theme</h6>
-            <div class="theme-setting-options">
-                <ul class="choose-theme list-unstyled mb-0">
-                <li title="white" class="active">
-                    <div class="white"></div>
-                </li>
-                <li title="cyan">
-                    <div class="cyan"></div>
-                </li>
-                <li title="black">
-                    <div class="black"></div>
-                </li>
-                <li title="purple">
-                    <div class="purple"></div>
-                </li>
-                <li title="orange">
-                    <div class="orange"></div>
-                </li>
-                <li title="green">
-                    <div class="green"></div>
-                </li>
-                <li title="red">
-                    <div class="red"></div>
-                </li>
-                </ul>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <div class="theme-setting-options">
-                <label>
-                <span class="control-label p-r-20">Mini Sidebar</span>
-                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
-                    id="mini_sidebar_setting">
-                <span class="custom-switch-indicator"></span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <div class="theme-setting-options">
-                <div class="disk-server-setting m-b-20">
-                <p>Disk Space</p>
-                <div class="sidebar-progress">
-                    <div class="progress" data-height="5">
-                    <div class="progress-bar l-bg-green" role="progressbar" data-width="80%" aria-valuenow="80"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="progress-description">
-                    <small>26% remaining</small>
-                    </span>
-                </div>
-                </div>
-                <div class="disk-server-setting">
-                <p>Server Load</p>
-                <div class="sidebar-progress">
-                    <div class="progress" data-height="5">
-                    <div class="progress-bar l-bg-orange" role="progressbar" data-width="58%" aria-valuenow="25"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="progress-description">
-                    <small>Highly Loaded</small>
-                    </span>
-                </div>
-                </div>
-            </div>
-            </div>
-            <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
-            <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
-                <i class="fas fa-undo"></i> Restore Default
-            </a>
-            </div>
+    <!-- modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formModal">Form Tambah Data Karyawan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <form class="" action="{{ route('permohonan.insert')}}" method="post" >
+          @csrf
+            <div class="form-group">
+              <label>Alasan Cuti</label>
+              <textarea class="form-control" name="alasan_cuti" required ></textarea>
+            </div>
+            <div class="form-group">
+              <label>tanggal Mulai Cuti</label>
+              <input type="text" name="tgl_mulai" required class="form-control datepicker">
+            </div>
+            <div class="form-group">
+              <label>tanggal Berahir Cuti</label>
+              <input type="text" name="tgl_akhir" required class="form-control datepicker">
+            </div> 
+            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
+
+  <div class="modal fade" id="ketTolakAdmin" tabindex="-1" role="dialog" aria-labelledby="formModal"
+                            aria-hidden="true">
+                            <div class=" modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="formModal">Alasan Ditolak</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-floating mb-3">
+                                    <input type="texDaftar Riwayat Cutit" readonly class="form-control-plaintext" id="ketTolakAdminUser">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+
+  
 </div>
-      
 @endsection

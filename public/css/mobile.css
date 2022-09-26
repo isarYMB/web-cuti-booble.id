@@ -1,0 +1,50 @@
+@media (min-height : 440px) {
+    .mobileSidebar {bottom: 0; width: 100%; position: absolute;}
+}
+
+.baru {
+    color : white;
+    background-color: #929090;
+}
+
+.diatasan {
+    color : white;
+    background-color: #6900C7;
+}
+
+.batal {
+    color : white;
+    background-color: #334D6E;
+}
+
+.ditolak {
+    color : white;
+    background-color: #E81500;
+}
+
+.diterima {
+    color : white;
+    background-color: #00AC69;
+}
+
+.cetakSurat {
+    color : black;
+    background-color: #E0E5EC;
+}
+
+.detail {
+    color : white;
+    background-color: #818E9B;
+}
+
+.cetakSurat:hover {
+    color: black !important;
+}
+
+.detail:hover {
+    color: white !important; 
+}
+
+.batal:hover {
+    color: white !important; 
+}

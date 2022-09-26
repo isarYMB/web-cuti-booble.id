@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,9 +19,17 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'no_telpon',
         'email',
         'password',
+        'nik',
+        'role',
     ];
+
+    public function karyawan()
+    {
+        return $this->hasOne(Karyawan::class);
+    }
 
     /**
      * The attributes that should be hidden for arrays.

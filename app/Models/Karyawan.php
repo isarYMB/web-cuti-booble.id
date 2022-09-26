@@ -11,9 +11,13 @@ class Karyawan extends Model
     protected $table = 'karyawan';
 
     protected $fillable = [
-        'user_id',
-        'alamat',
-        'no_telpon',
-        'jumlah_cuti'
+        'jumlah_cuti',
+        'divisi',
+        'jabatan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -1,6 +1,30 @@
 @extends('layouts/index')
 
 @section('content')
+<div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="form-inline mr-auto">
+          <ul class="navbar-nav">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg
+									collapse-btn text-dark mr-3"> <i data-feather="align-justify"></i></a></li>
+            {{-- <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
+                <i data-feather="maximize"></i>
+            </a></li> --}}
+            
+            
+        </ul>
+
+        <ul class="navbar-nav font-weight-bold h6">
+            Dashboard
+        </ul>
+        
+        </div>
+        {{-- <ul class="navbar-nav navbar-right">
+        <a href="{{route('logout')}}" class="dropdown-item text-danger"> <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </a>
+        </ul> --}}
+    </nav>
 <div class="main-content">
     <section class="section">
         <div class="row">
@@ -8,7 +32,7 @@
             <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
             <div class="card">
             <div class="card-header">
-                <h4>Riwayat Permohonan Cuti Ditolak</h4>
+                <h4>Riwayat Pengajuan Cuti Ditolak</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive table-invoice">
@@ -39,7 +63,7 @@
         </div>
     </section>
     
-    <div class="settingSidebar">
+    {{-- <div class="settingSidebar">
         <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
         </a>
         <div class="settingSidebar-body ps-container ps-theme-default">
@@ -147,7 +171,7 @@
             </div>
         </div>
         </div>
-    </div>
+    </div> --}}
 </div>
       
 @endsection

@@ -18,76 +18,105 @@ class UserSeeder extends Seeder
     {
         // Karyawan
         $user = User::create([
-            'name' => 'Fahrul Ihsan',
-            'email' => 'fahrul@example.com',
-            'password' => Hash::make("fahrul123"),
+            'name' => 'Yishcard',
+            'email' => 'yischard@example.com',
+            'password' => Hash::make("yischardweb"),
             'role' => 'karyawan',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
         
         $user = User::create([
-            'name' => 'Ferdian Samsudin',
-            'email' => 'ferdian@example.com',
-            'password' => Hash::make("ferdian123"),
+            'name' => 'Maghfira',
+            'email' => 'maghfira@example.com',
+            'password' => Hash::make("maghfiraweb"),
             'role' => 'karyawan',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
         
         $user = User::create([
-            'name' => 'Yuda Gunara',
-            'email' => 'yuda@example.com',
-            'password' => Hash::make("yuda123"),
+            'name' => 'Alwali',
+            'email' => 'alwali@example.com',
+            'password' => Hash::make("alwaliweb"),
             'role' => 'karyawan',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
-        
+
         $user = User::create([
-            'name' => 'Prayoga',
-            'email' => 'prayoga@example.com',
-            'password' => Hash::make("prayoga123"),
+            'name' => 'Affiq',
+            'email' => 'affiq@example.com',
+            'password' => Hash::make("affiqweb"),
             'role' => 'karyawan',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
+
+        $user = User::create([
+            'name' => 'Annas',
+            'email' => 'annas@example.com',
+            'password' => Hash::make("annasweb"),
+            'role' => 'karyawan',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
+        ]);
+
         $user = Karyawan::create([
             'user_id' => '1',
-            'alamat' => 'jl babenget no 6',
-            'no_telpon' => 628967567543,
             'jumlah_cuti' => 23,
+            'divisi' => 'Akuntan',
+            'jabatan' => 'Akuntan',
         ]);
         
         $user = Karyawan::create([
             'user_id' => '2',
-            'alamat' => 'jl padjajaran no 94',
-            'no_telpon' => 628967852321,
             'jumlah_cuti' => 15,
+            'divisi' => 'Akuntan',
+            'jabatan' => 'Akuntan',
         ]);
         
         $user = Karyawan::create([
             'user_id' => '3',
-            'alamat' => 'jl pahlawan no 23',
-            'no_telpon' => 6289678567464,
             'jumlah_cuti' => 35,
+            'divisi' => 'Akuntan',
+            'jabatan' => 'Akuntan',
         ]);
 
         $user = Karyawan::create([
             'user_id' => '4',
-            'alamat' => 'jl pahlawan no 76',
-            'no_telpon' => 6289856534534,
-            'jumlah_cuti' => 40,
+            'jumlah_cuti' => 35,
+            'divisi' => 'Akuntan',
+            'jabatan' => 'Akuntan',
+        ]);
+
+        $user = Karyawan::create([
+            'user_id' => '5',
+            'jumlah_cuti' => 35,
+            'divisi' => 'Akuntan',
+            'jabatan' => 'Akuntan',
         ]);
 
         // Super Admin
 
         $user = User::create([
-            'name' => 'Galih Purna',
-            'email' => 'galih@example.com',
-            'password' => Hash::make("galih123"),
-            'role' => 'Super Admin',
+            'name' => 'Rudhy',
+            'email' => 'rudhy@example.com',
+            'password' => Hash::make("rudhyweb"),
+            'role' => 'Leader',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
         
         // staf Hr
 
         $user = User::create([
-            'name' => 'Iksan Darmawangsa',
-            'email' => 'iksan@example.com',
-            'password' => Hash::make("iksan123"),
+            'name' => 'Citra ',
+            'email' => 'citra@example.com',
+            'password' => Hash::make("citraweb"),
             'role' => 'Staf HR',
+            'nik' => 1231234,
+            'no_telpon' => 628967567543,
         ]);
     }
 }

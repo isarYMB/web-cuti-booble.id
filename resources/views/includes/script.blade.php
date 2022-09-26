@@ -26,6 +26,94 @@
   <script src="{{asset('bundles/izitoast/js/iziToast.min.js')}}"></script>
 
   <script>
+    $('#tolakModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+
+    var recipient = button.data('id') // Target data-id
+    console.log(recipient); // Here you can see the data-id value from a element
+    var modal = $(this)
+    // modal.find('.modal-title').text('New message to ' + recipient)
+    // modal.find('.modal-body input').val(recipient)
+    modal.find('#userTolak').val(recipient); // set input value
+})
+</script>
+
+<script>
+  $('#tolakModalAdmin').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+
+  var recipient = button.data('id') // Target data-id
+  console.log(recipient); // Here you can see the data-id value from a element
+  var modal = $(this)
+  // modal.find('.modal-title').text('New message to ' + recipient)
+  // modal.find('.modal-body input').val(recipient)
+  modal.find('#userTolakAdmin').val(recipient); // set input value
+})
+</script>
+
+<script>
+  $('#ketTolakAdmin').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+
+  var recipient = button.data('id') // Target data-id
+  console.log(recipient); // Here you can see the data-id value from a element
+  var modal = $(this)
+  // modal.find('.modal-title').text('New message to ' + recipient)
+  // modal.find('.modal-body input').val(recipient)
+  modal.find('#ketTolakAdminUser').val(recipient); // set input value
+})
+</script>
+
+<script>
+  $('#tolakModalLeader').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+
+  var recipient = button.data('id') // Target data-id
+  console.log(recipient); // Here you can see the data-id value from a element
+  var modal = $(this)
+  // modal.find('.modal-title').text('New message to ' + recipient)
+  // modal.find('.modal-body input').val(recipient)
+  modal.find('#tolakModalLeaderUser').val(recipient); // set input value
+})
+</script>
+
+<script type="text/javascript">
+  // Daterangepicker
+  jQuery(function($) {
+  var someDate = new Date();
+  someDate.setDate(someDate.getDate() + 14); //number  of days to add, e.x. 15 days
+  var dateFormated = someDate.toISOString().substr(0,10);  
+
+  if (jQuery().daterangepicker) {
+    if ($(".datepicker").length) {
+      $(".datepicker").daterangepicker({
+        locale: { format: "YYYY-MM-DD" },
+        singleDatePicker: true,
+        minDate: dateFormated,
+        // isInvalidDate: function(date) {
+        //     var dateRanges = [
+        //         // { 'start': moment('2022-10-10'), 'end': moment('2022-10-15') },
+        //         // { 'start': moment('2022-10-25'), 'end': moment('2022-10-30') },
+        //     ];
+        //     return dateRanges.reduce(function(bool, range) {
+        //         return bool || (date >= range.start && date <= range.end) || date.day() == 0;
+        //     }, false);
+        // }
+        isInvalidDate: function(date) {
+          if (date.day() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+        }
+      });
+    }
+  }
+});
+</script>
+
+
+  <script>
   
   $(document).ready(function() {
     const flashData = $("#flash-data").data('flashdata');
@@ -47,4 +135,5 @@
         });
     }
   });
+  
   </script>

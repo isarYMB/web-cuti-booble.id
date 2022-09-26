@@ -1,35 +1,81 @@
 @extends('layouts/index')
 
 @section('content')
+<div class="navbar-bg"></div>
+      <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="form-inline mr-auto">
+          <ul class="navbar-nav">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg
+									collapse-btn text-dark mr-3"> <i data-feather="align-justify"></i></a></li>
+            {{-- <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
+                <i data-feather="maximize"></i>
+              </a></li> --}}
+              
+            
+          </ul>
+
+          <ul class="navbar-nav font-weight-bold h6">
+            Master Pegawai
+          </ul>
+          
+        </div>
+        {{-- <ul class="navbar-nav navbar-right">
+          <a href="{{route('logout')}}" class="dropdown-item text-danger"> <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </a>
+        </ul> --}}
+      </nav>
 <div class="main-content">
     <section class="section">
         <div class="row">
         <div class="col-12 col-sm-12 col-lg-12">
             <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
             <div class="card">
-            <div class="card-header">
-                <h4>Data Karyawan</h4>
+            {{-- <div class="card-header">
+                <div class="card-header">
+                    <h4>Master Pegawai</h4>
+                </div>
+                
+            </div> --}}
+            <div class="d-flex justify-content-end">
+                <div class="card-footer text-right">
+                    <a  class="btn btn-warning mr-1" href="{{route('karyawan.create')}}">
+                        <i class="fa fa-plus"></i> Tambah
+                    </a>
+                </div>           
             </div>
             <div class="card-body">
                 <div class="table-responsive table-invoice">
                 <table class="table table-striped" id="table-1">
                     <tr>
                         <th class="text-center">No</th>
-                        <th>nama Lengkap</th>
-                        <th>Alamat</th>
+                        {{-- <th>Email</th> --}}
+                        <th>Nama Pegawai</th>
+                        <th>NIK</th>
+                        <th>Divisi</th>
+                        <th>Jabatan</th>
+                        <th>Role</th>
                         <th>No Telpon</th>
-                        <th>Jumlah Cuti</th>
-                        <th>Opsi</th>
+                        <th>Sisa Cuti</th>
+                        <th class="align-middle">#</th>
                     </tr>
                     @foreach($karyawan as $i => $k)
                         <tr>
                             <td class="p-0 text-center">{{$i+1}}</td>
                             <td class="font-weight-600">{{$k->name}}</td>
-                            <td class="text-truncate">{{$k->alamat}}</td>
+                            <td class="align-middle">{{$k->nik}}</td>
+                            <td class="font-weight-600">{{$k->divisi}}</td>
+                            <td class="font-weight-600">{{$k->jabatan}}</td>
+                            <td class="font-weight-600">{{$k->role}}</td>
                             <td class="align-middle">{{$k->no_telpon}}</td>
                             <td class="align-middle">{{$k->jumlah_cuti}} Hari</td>
                             <td> 
-                                <a class="btn btn-action bg-purple mr-1" href="{{route('karyawan.edit',['id' => $k->id])}}" >Edit</a> 
+                                <a style="color: #69707A" href="{{route('karyawan.edit',['id' => $k->id])}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </a> 
+                                <a style="color: #69707A" href="{{route('karyawan.destroy',['id' => $k->user_id])}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                </a>    
                             </td>
                         </tr>
                     @endforeach
@@ -66,17 +112,6 @@
                 </div>
                 </div>
                 <div class="form-group">
-                <label>Alamat</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    </div>
-                    <input type="text" class="form-control"  name="alamat">
-                </div>
-                </div>
-                <div class="form-group">
                 <label>No Telpon</label>
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -98,121 +133,8 @@
                     <input type="text" class="form-control"  name="jumlah_cuti">
                 </div>
                 </div>
-                
-                
-                
                 <button type="button" class="btn btn-primary m-t-15 waves-effect">LOGIN</button>
             </form>
-            </div>
-        </div>
-        </div>
-    </div>
-    
-    <div class="settingSidebar">
-        <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
-        </a>
-        <div class="settingSidebar-body ps-container ps-theme-default">
-        <div class=" fade show active">
-            <div class="setting-panel-header">Setting Panel
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Select Layout</h6>
-            <div class="selectgroup layout-color w-50">
-                <label class="selectgroup-item">
-                <input type="radio" name="value" value="1" class="selectgroup-input select-layout" checked>
-                <span class="selectgroup-button">Light</span>
-                </label>
-                <label class="selectgroup-item">
-                <input type="radio" name="value" value="2" class="selectgroup-input select-layout">
-                <span class="selectgroup-button">Dark</span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Sidebar Color</h6>
-            <div class="selectgroup selectgroup-pills sidebar-color">
-                <label class="selectgroup-item">
-                <input type="radio" name="icon-input" value="1" class="selectgroup-input select-sidebar">
-                <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Light Sidebar"><i class="fas fa-sun"></i></span>
-                </label>
-                <label class="selectgroup-item">
-                <input type="radio" name="icon-input" value="2" class="selectgroup-input select-sidebar" checked>
-                <span class="selectgroup-button selectgroup-button-icon" data-toggle="tooltip"
-                    data-original-title="Dark Sidebar"><i class="fas fa-moon"></i></span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <h6 class="font-medium m-b-10">Color Theme</h6>
-            <div class="theme-setting-options">
-                <ul class="choose-theme list-unstyled mb-0">
-                <li title="white" class="active">
-                    <div class="white"></div>
-                </li>
-                <li title="cyan">
-                    <div class="cyan"></div>
-                </li>
-                <li title="black">
-                    <div class="black"></div>
-                </li>
-                <li title="purple">
-                    <div class="purple"></div>
-                </li>
-                <li title="orange">
-                    <div class="orange"></div>
-                </li>
-                <li title="green">
-                    <div class="green"></div>
-                </li>
-                <li title="red">
-                    <div class="red"></div>
-                </li>
-                </ul>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <div class="theme-setting-options">
-                <label>
-                <span class="control-label p-r-20">Mini Sidebar</span>
-                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input"
-                    id="mini_sidebar_setting">
-                <span class="custom-switch-indicator"></span>
-                </label>
-            </div>
-            </div>
-            <div class="p-15 border-bottom">
-            <div class="theme-setting-options">
-                <div class="disk-server-setting m-b-20">
-                <p>Disk Space</p>
-                <div class="sidebar-progress">
-                    <div class="progress" data-height="5">
-                    <div class="progress-bar l-bg-green" role="progressbar" data-width="80%" aria-valuenow="80"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="progress-description">
-                    <small>26% remaining</small>
-                    </span>
-                </div>
-                </div>
-                <div class="disk-server-setting">
-                <p>Server Load</p>
-                <div class="sidebar-progress">
-                    <div class="progress" data-height="5">
-                    <div class="progress-bar l-bg-orange" role="progressbar" data-width="58%" aria-valuenow="25"
-                        aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="progress-description">
-                    <small>Highly Loaded</small>
-                    </span>
-                </div>
-                </div>
-            </div>
-            </div>
-            <div class="mt-4 mb-4 p-3 align-center rt-sidebar-last-ele">
-            <a href="#" class="btn btn-icon icon-left btn-primary btn-restore-theme">
-                <i class="fas fa-undo"></i> Restore Default
-            </a>
             </div>
         </div>
         </div>

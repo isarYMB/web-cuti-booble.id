@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Permohonan_Cuti extends Model
 {
@@ -13,7 +14,13 @@ class Permohonan_Cuti extends Model
     protected $fillable = [
         'user_id',
         'alasan_cuti',
-        'tgl_mulai',
-        'tgl_akhir'
+        'ket_tolak'
     ];
+
+    protected $dates = [
+        'tgl_mulai',
+        'tgl_akhir',
+    ];
+
+
 }

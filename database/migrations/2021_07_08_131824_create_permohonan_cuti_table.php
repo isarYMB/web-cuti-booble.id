@@ -16,6 +16,9 @@ class CreatePermohonanCutiTable extends Migration
         Schema::create('permohonan_cuti', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
+            $table->date('tgl_memohon')->useCurrent();
+            $table->integer('durasi_cuti');
+            $table->string('ket_tolak')->nullable();
             $table->string('alasan_cuti');
             $table->date('tgl_mulai');
             $table->date('tgl_akhir');
