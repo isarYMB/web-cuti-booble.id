@@ -21,6 +21,7 @@ class DivisiController extends Controller
         $divisi = DB::table('divisi')
         ->join('jabatan','divisi.id','=','jabatan.id_divisi')
         ->select('jabatan.nama_jabatan','jabatan.id','jabatan.id_divisi','divisi.nama_divisi')
+        ->orderBy('divisi.nama_divisi')
         ->get();
 
         $divisiAll = DB::table('divisi')

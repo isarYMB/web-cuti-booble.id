@@ -50,7 +50,8 @@
                 title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
                 start: "{{ $c->tgl_mulai }}", // a property!
                 end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
-                color: '#334D6E'
+                color: '#334D6E',
+                allDay:true,
             },
             
             @endforeach

@@ -264,7 +264,7 @@
                         <th>Mulai Cuti</th>
                         <th>Berakhir Cuti</th>
                         <th class="text-center">Status</th>
-                        {{-- <th>Ket. Tolak</th> --}}
+                        <th class="text-center">Durasi</th>
                         <th class="text-center">#</th>
                     </tr>
                     @foreach($permohonan as $i => $p)
@@ -287,13 +287,7 @@
                                 <span class="badge ditolak">{{$p->status}}</span>
                             @endif
                         </td>
-                        {{-- <td>
-                            @if($p->status === "Ditolak")
-                            <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
-                              
-                            @else
-                            @endif
-                        </td> --}}
+                        <td class="align-middle text-center">{{$p->durasi_cuti}}</td>
                         <td class="text-center">
                             {{-- @if($p->status === "Diterima")
                             <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}

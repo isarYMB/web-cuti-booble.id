@@ -14,12 +14,23 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $city = 'Sales';
         $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
-            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
-            // ->where('permohonan_cuti.status','pending')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','karyawan.divisi')
+            ->where('permohonan_cuti.status','pending')
             // ->limit(5)
+            // ->orderBy('permohonan_cuti.created_at')
+            ->whereHas(
+                'karyawan',
+                function ($query) use ($city) {
+                    $query->where('divisi', 'LIKE', "%{$city}%");
+                }
+            )
             ->get();
+
+            
         $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
@@ -42,7 +53,8 @@ class DashboardController extends Controller
         $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
-            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon');
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->orderBy('permohonan_cuti.created_at');
             // ->where('permohonan_cuti.status','pending')
             // ->limit(5)
             // ->get();
@@ -67,7 +79,6 @@ class DashboardController extends Controller
 
         $calendarDivisi = $permohonanTerima->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
         
-        
         return view('pages.Dashboard.DashboardKaDivisi',["permohonan" => $permohonan,"permohonanDivisi"=>$permohonanDivisi,"permohonanTerima" => $calendarAdmin, "calendarDivisi" => $calendarDivisi, "jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
     }
 
@@ -79,6 +90,7 @@ class DashboardController extends Controller
         ->join('karyawan','users.id','=','karyawan.user_id')
         ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','karyawan.jumlah_cuti')
         ->where('users.id',$id)
+        ->orderBy('permohonan_cuti.created_at')
         // ->limit(5)
         ->get();
 

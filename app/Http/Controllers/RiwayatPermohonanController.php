@@ -20,12 +20,14 @@ class RiwayatPermohonanController extends Controller
             ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status')
             ->where('permohonan_cuti.status','disetujui')
             ->where('users.id',$id)
+            ->orderBy('permohonan_cuti.created_at')
             ->get();
         }else{
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
                 ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status')
                 ->where('permohonan_cuti.status','disetujui')
+                ->orderBy('permohonan_cuti.created_at')
                 ->get();
         }
 

@@ -25,6 +25,7 @@ class KaryawanController extends Controller
         $karyawan = DB::table('users')
         ->join('karyawan','users.id','=','karyawan.user_id')
         ->select('users.name','users.role','users.email','users.nik','karyawan.user_id','karyawan.id','users.password','users.no_telpon','karyawan.jumlah_cuti','karyawan.jabatan','karyawan.divisi')
+        ->orderBy('users.name')
         ->get();
         
         return view('pages.karyawan.index',['karyawan' =>$karyawan]);

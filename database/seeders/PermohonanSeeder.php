@@ -23,7 +23,9 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-03',
             'tgl_memohon' => '2022-09-03',
             'durasi_cuti' => '3',
-            'status' => 'Baru'
+            'status' => 'Baru',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         
         $permohonan = Permohonan_Cuti::create([
@@ -33,7 +35,9 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-25',
             'tgl_memohon' => '2022-09-10',
             'durasi_cuti' => '5',
-            'status' => 'Diterima'
+            'status' => 'Diterima',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
         
         $permohonan = Permohonan_Cuti::create([
@@ -43,7 +47,9 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-15',
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '3',
-            'status' => 'Diatasan'
+            'status' => 'Diatasan',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         $permohonan = Permohonan_Cuti::create([
@@ -53,7 +59,9 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-15',
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '3',
-            'status' => 'Batal'
+            'status' => 'Batal',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         $permohonan = Permohonan_Cuti::create([
@@ -64,7 +72,9 @@ class PermohonanSeeder extends Seeder
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '3',
             'ket_tolak' => 'Tidak dapat disetujui karena di tanggal itu ada pekerjaan urgent',
-            'status' => 'Ditolak'
+            'status' => 'Ditolak',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
     }
 }

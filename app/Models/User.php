@@ -31,6 +31,12 @@ class User extends Authenticatable
         return $this->hasOne(Karyawan::class);
     }
 
+    // scope
+    public function scopeSearch($query, $name)
+    {
+        return $query->where('name', 'LIKE', "%{$name}%");
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *
