@@ -133,17 +133,7 @@
         <div class="modal-body">
             <form class="" action="{{route('jabatan.store')}}" method="get" >
             @csrf
-                <div class="form-group">
-                <label>Nama Jabatan</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <i class="fas fa-id-badge"></i>
-                    </div>
-                    </div>
-                    <input type="text" class="form-control"  name="nama_jabatan">
-                </div>
-                </div>
+                
                 <div class="form-group">
                     <label>Divisi Jabatan</label>
                     <select name="id_divisi" class="custom-select">
@@ -152,6 +142,18 @@
                     @endforeach
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label>Nama Jabatan</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="fas fa-id-badge"></i>
+                        </div>
+                        </div>
+                        <input type="text" class="form-control"  name="nama_jabatan">
+                    </div>
+                    </div>
                 <button type="submit" class="btn btn-warning m-t-15 waves-effect">Tambahkan</button>
         </form>
         

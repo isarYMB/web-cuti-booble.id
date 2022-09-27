@@ -41,15 +41,39 @@
                         <div class="form-group">
                         <label>No Whatsapp</label>
                         <input type="hidden" class="form-control" name="id" value="{{Auth::user()->id}}">
-                        <input type="number" class="form-control" name="no_telpon" value="{{Auth::user()->no_telpon}}">
+                        <input type="number" class="form-control @error('no_telpon') is-invalid @enderror" name="no_telpon" value="{{Auth::user()->no_telpon}}">
+                        @error('no_telpon')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>Inputan nomor telepon minimal 12 sampai 13 angka</strong>
+                            </span>
+                          @enderror
                         </div>
                         <div class="form-group">
                           <label>Email</label>
-                          <input type="email" class="form-control" name="email" value="{{Auth::user()->email}}">
+                          <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{Auth::user()->email}}">
+                          @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>Input email dengan benar</strong>
+                            </span>
+                          @enderror
                           </div>
                         <div class="form-group">
                           <label>Password</label>
-                          <input type="password" class="form-control" name="password">
+                          <input type="password" class="form-control @error('password') is-invalid @enderror" name="password">
+                          @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>Inputan password minimal 6 karakter</strong>
+                            </span>
+                          @enderror
+                        </div>
+                        <div class="form-group">
+                          <label>Konfirmasi Password</label>
+                          <input class="form-control @error('password') is-invalid @enderror" type="password" class="form-control" name="password_confirmation">
+                          @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>Password yang dimasukkan tidak sama</strong>
+                            </span>
+                          @enderror
                         </div>
                         {{-- <div class="form-group">
                           <label>Konfirmasi Password</label>

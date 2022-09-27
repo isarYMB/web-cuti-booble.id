@@ -40,7 +40,7 @@
                     <div class="card-body">
                         <div class="form-group">
                         <label>Nama Pegawai</label>
-                        <input type="text" class="@error('name') is-invalid @enderror form-control" name="name">
+                        <input type="text" class="@error('name') is-invalid @enderror form-control" name="name" value="{{ old('name') }}">
                         @error('name')
                         <span class="invalid-feedback" role="alert">
                           <strong>Masukan Inputan Nama dengan Benar</strong>
@@ -49,10 +49,10 @@
                         </div>
                         <div class="form-group">
                         <label>NIK</label>
-                        <input type="number" class="@error('nik') is-invalid @enderror form-control" name="nik">
+                        <input type="number" class="@error('nik') is-invalid @enderror form-control" name="nik" value="{{ old('nik') }}">
                         @error('nik')
                           <span class="invalid-feedback" role="alert">
-                            <strong>Masukan Inputan NIK dengan Benar</strong>
+                            <strong>Inputkan NIK dengan 16 angka</strong>
                           </span>
                         @enderror
                         </div>
@@ -60,7 +60,7 @@
                           <label>Divisi</label>
                           <select name="divisi" class="custom-select">
                             @foreach($divisi as $row)
-                              <option value="{{$row->nama_divisi}}">{{$row->nama_divisi}}</option>
+                              <option value="{{old('divisi'),$row->nama_divisi}}">{{$row->nama_divisi}}</option>
                             @endforeach
                           </select>
                         </div>
@@ -68,25 +68,25 @@
                           <label>Jabatan</label>
                           <select name="jabatan" class="custom-select">
                             @foreach($jabatan as $row)
-                              <option value="{{$row->nama_jabatan}}">{{$row->nama_jabatan}}</option>
+                              <option value="{{old('jabatan'),$row->nama_jabatan}}">{{$row->nama_jabatan}}</option>
                             @endforeach
                           </select>
                         </div>
                         <div class="form-group">
                         <label>No Whatsapp</label>
-                        <input type="number" class="@error('no_telpon') is-invalid @enderror form-control" name="no_telpon">
+                        <input type="number" value="{{ old('no_telpon') }}" class="@error('no_telpon') is-invalid @enderror form-control" name="no_telpon">
                         @error('no_telpon')
                           <span class="invalid-feedback" role="alert">
-                            <strong>Masukan Inputan Nomor Whatsapp dengan Benar</strong>
+                            <strong>Inputan nomor Whatsapp minimal 12 sampai 13 angka</strong>
                           </span>
                         @enderror
                         </div>
                         <div class="form-group">
                           <label>Jumlah Cuti</label>
-                          <input type="text" class="@error('jumlah_cuti') is-invalid @enderror  form-control" name="jumlah_cuti">
+                          <input type="text" class="@error('jumlah_cuti') is-invalid @enderror  form-control" name="jumlah_cuti" value="{{ old('jumlah_cuti') }}">
                           @error('jumlah_cuti')
                           <span class="invalid-feedback" role="alert">
-                            <strong>Masukan Inputan Jumlah Cuti dengan Benar</strong>
+                            <strong>Inputan cuti minimal 1 sampai 2 angka</strong>
                           </span>
                           @enderror
                         </div>
@@ -94,13 +94,13 @@
                             <label>Role</label>
                             <select name="role" class="custom-select">
                               @foreach($role as $row)
-                                <option value="{{$row->nama_role}}">{{$row->nama_role}}</option>
+                                <option value="{{old('role'),$row->nama_role}}">{{$row->nama_role}}</option>
                               @endforeach
                             </select>
                           </div>
                         <div class="form-group">
                           <label>Email</label>
-                          <input type="email" class="@error('email') is-invalid @enderror form-control" name="email">
+                          <input type="email" class="@error('email') is-invalid @enderror form-control" name="email" value="{{ old('email') }}">
                           @error('email')
                           <span class="invalid-feedback" role="alert">
                             <strong>Masukan Inputan Email dengan Benar</strong>
@@ -112,7 +112,7 @@
                           <input class="form-control @error('password') is-invalid @enderror" type="password" class="form-control" name="password">
                           @error('password')
                             <span class="invalid-feedback" role="alert">
-                                <strong>Masukan Inputan Password dengan Benar</strong>
+                                <strong>Inputan password nimimal 6 karakter</strong>
                             </span>
                           @enderror
                         </div>

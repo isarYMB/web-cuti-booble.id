@@ -90,22 +90,22 @@
         locale: { format: "YYYY-MM-DD" },
         singleDatePicker: true,
         minDate: dateFormated,
-        // isInvalidDate: function(date) {
-        //     var dateRanges = [
-        //         // { 'start': moment('2022-10-10'), 'end': moment('2022-10-15') },
-        //         // { 'start': moment('2022-10-25'), 'end': moment('2022-10-30') },
-        //     ];
-        //     return dateRanges.reduce(function(bool, range) {
-        //         return bool || (date >= range.start && date <= range.end) || date.day() == 0;
-        //     }, false);
-        // }
         isInvalidDate: function(date) {
-          if (date.day() == 0) {
-            return true;
-        } else {
-            return false;
+            var dateRanges = [
+                { 'start': moment('2022-10-10'), 'end': moment('2022-10-10') },
+                // { 'start': moment('2022-10-25'), 'end': moment('2022-10-30') },
+            ];
+            return dateRanges.reduce(function(bool, range) {
+                return bool || (date >= range.start && date <= range.end || date.day() == 0);
+            }, false);
         }
-        }
+        // isInvalidDate: function(date) {
+        //   if (date.day() == 0) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+        // }
       });
     }
   }

@@ -11,7 +11,6 @@
           <ul class="navbar-nav font-weight-bold h6">
             Riwayat Cuti
           </ul>
-          
         </div>
       </nav>
 <div class="main-content">

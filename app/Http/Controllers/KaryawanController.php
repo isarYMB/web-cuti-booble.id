@@ -59,6 +59,15 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
 
+        $name = $request->old('name');
+        $nik = $request->old('nik');
+        $email = $request->old('email');
+        $no_telpon = $request->old('no_telpon');
+        $role = $request->old('role');
+        $divisi = $request->old('divisi');
+        $jabatan = $request->old('jabatan');
+        $jumlah_cuti = $request->old('jumlah_cuti');
+
         $validasiUser = $request->validate([
             'name' => ['required', 'max:255'],
             'nik' => ['required', 'max:16', 'min:16'],
@@ -83,7 +92,7 @@ class KaryawanController extends Controller
         $user = User::create($validasiUser);
         $user->karyawan()->create($validasiKaryawan);
 
-        return redirect()->route('karyawan.index')->with(['success' => 'Data Karyawan Berhasil Ditambahkan!']);
+        return redirect()->route('karyawan.index')->with(['success' => 'Data Karyawan Berhasil Ditambahkan!'])->withInput();
     }
 
     /**
@@ -107,15 +116,15 @@ class KaryawanController extends Controller
     {
         $karyawan = DB::table('users')
         ->join('karyawan','users.id','=','karyawan.user_id')
-        ->select('users.name','users.nik','users.email','karyawan.id','users.no_telpon','users.password','users.email','karyawan.jumlah_cuti')
+        ->select('users.name','users.role','karyawan.jabatan','karyawan.divisi','users.nik','users.email','karyawan.id','users.no_telpon','users.password','users.email','karyawan.jumlah_cuti')
         ->where('karyawan.id',$id)
         ->get();
 
-        $divisi = Divisi::all();
-        $jabatan = Jabatan::all();
-        $role = Role::all();
+        $listDivisi = Divisi::all();
+        $listJabatan = Jabatan::all();
+        $listRole = Role::all();
 
-        return view('pages.karyawan.FormEdit',['karyawan' => $karyawan,'divisi'=>$divisi, 'jabatan'=>$jabatan, 'role'=>$role]);
+        return view('pages.karyawan.FormEdit',['karyawan' => $karyawan,'listDivisi'=>$listDivisi, 'listJabatan'=>$listJabatan, 'listRole'=>$listRole]);
     }
 
     public function editUser()
@@ -135,15 +144,38 @@ class KaryawanController extends Controller
      */
     public function updateUser(Request $request)
     {
-        $dataPassword = Hash::make(($request->password));
+
+        if ($request->password != ''){
+
+        $validasiUser = $request->validate([
+            'no_telpon' => ['required', 'max:13', 'min:12'],
+            'password' => ['required', 'confirmed', 'min:6'],
+            'email' => ['email'],
+        ]);
+
+        $validasiUser['password'] = Hash::make($validasiUser['password']);
 
         DB::table('users')
             ->where('id', $request->id)
             ->update([
-                'email' => $request->email,
-                'password' => $dataPassword,
-                'no_telpon' => $request->no_telpon,
+                'email' => $validasiUser['email'],
+                'password' => $validasiUser['password'],
+                'no_telpon' => $validasiUser['no_telpon']
             ]);
+        }else{
+            $validasiUser = $request->validate([
+                'no_telpon' => ['required', 'max:13', 'min:12'],
+                'email' => ['email'],
+            ]);
+    
+            DB::table('users')
+                ->where('id', $request->id)
+                ->update([
+                    'email' => $validasiUser['email'],
+                    'no_telpon' => $validasiUser['no_telpon']
+                ]);
+        }
+        
             
             // return view('karyawan.editUser')->with(['success' => 'Data Karyawan Berhasil Diupdate!']);
 
@@ -159,44 +191,119 @@ class KaryawanController extends Controller
      */
     public function update(Request $request)
     {
-        DB::table('users')
-            ->where('id', $request->id)
-            ->update([
-                'name' => $request->name, 
-                'nik' => $request->nik,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'no_telpon' => $request->no_telpon,
-                'role' => $request->nama_role,
+        if ($request->password != ''){
+            $validasiUser = $request->validate([
+                'name' => ['required', 'max:255'],
+                'nik' => ['required', 'max:16', 'min:16'],
+                'email' => ['email'],
+                'password' => ['required', 'confirmed', 'min:6'],
+                'no_telpon' => ['required', 'max:13', 'min:12'],
+                'role' => ['required'],
             ]);
-        
-        DB::table('karyawan')
+
+            $validasiKaryawan = $request->validate([
+                'divisi' => ['required'],
+                'jabatan' => ['required'],
+                'jumlah_cuti' => ['required', 'max:2', 'min:1'],
+            ]);
+
+            $validasiUser['password'] = Hash::make($validasiUser['password']);
+            
+            DB::table('users')
+                ->where('id', $request->id)
+                ->update([
+                    'name' => $validasiUser['name'],
+                    'nik' => $validasiUser['nik'],
+                    'email' => $validasiUser['email'],
+                    'password' => $validasiUser['password'],
+                    'no_telpon' => $validasiUser['no_telpon'],
+                    'role' => $validasiUser['role'],
+                ]);
+            
+            DB::table('karyawan')
+                ->where('id',$request->id)
+                ->update([
+                    'user_id' => $request->id,
+                    
+            ]);
+
+            DB::table('karyawan')
             ->where('id',$request->id)
             ->update([
                 'user_id' => $request->id,
-                
-        ]);
+                'divisi' => $validasiKaryawan['divisi'],
+            ]);
 
-        DB::table('karyawan')
-        ->where('id',$request->id)
-        ->update([
-            'user_id' => $request->id,
-            'divisi' => $request->divisi,
-        ]);
+            DB::table('karyawan')
+                ->where('id',$request->id)
+                ->update([
+                    'user_id' => $request->id,
+                    'jabatan' => $validasiKaryawan['jabatan'],
+            ]);
 
-        DB::table('karyawan')
+            DB::table('karyawan')
             ->where('id',$request->id)
             ->update([
                 'user_id' => $request->id,
-                'jabatan' => $request->jabatan,
-        ]);
+                'jumlah_cuti' => $validasiKaryawan['jumlah_cuti'],
+            ]);
+        }else{
+            $validasiUser = $request->validate([
+                'name' => ['required', 'max:255'],
+                'nik' => ['required', 'max:16', 'min:16'],
+                'email' => ['email'],
+                // 'password' => ['required', 'confirmed', 'min:6'],
+                'no_telpon' => ['required', 'max:13', 'min:12'],
+                'role' => ['required'],
+            ]);
 
-        DB::table('karyawan')
-        ->where('id',$request->id)
-        ->update([
-            'user_id' => $request->id,
-            'jumlah_cuti' => $request->jumlah_cuti,
-        ]);
+            $validasiKaryawan = $request->validate([
+                'divisi' => ['required'],
+                'jabatan' => ['required'],
+                'jumlah_cuti' => ['required', 'max:2', 'min:1'],
+            ]);
+
+            // $validasiUser['password'] = Hash::make($validasiUser['password']);
+            
+            DB::table('users')
+                ->where('id', $request->id)
+                ->update([
+                    'name' => $validasiUser['name'],
+                    'nik' => $validasiUser['nik'],
+                    'email' => $validasiUser['email'],
+                    // 'password' => $validasiUser['password'],
+                    'no_telpon' => $validasiUser['no_telpon'],
+                    'role' => $validasiUser['role'],
+                ]);
+            
+            DB::table('karyawan')
+                ->where('id',$request->id)
+                ->update([
+                    'user_id' => $request->id,
+                    
+            ]);
+
+            DB::table('karyawan')
+            ->where('id',$request->id)
+            ->update([
+                'user_id' => $request->id,
+                'divisi' => $validasiKaryawan['divisi'],
+            ]);
+
+            DB::table('karyawan')
+                ->where('id',$request->id)
+                ->update([
+                    'user_id' => $request->id,
+                    'jabatan' => $validasiKaryawan['jabatan'],
+            ]);
+
+            DB::table('karyawan')
+            ->where('id',$request->id)
+            ->update([
+                'user_id' => $request->id,
+                'jumlah_cuti' => $validasiKaryawan['jumlah_cuti'],
+            ]);
+        }
 
         return redirect()->route('karyawan.index')->with(['success' => 'Data Karyawan Berhasil Diupdate!']);
     }
