@@ -19,8 +19,11 @@ class AuthController extends Controller
             }elseif(Auth::user()->role === 'Staf HR'){
                 return redirect()->route('admin.dashboard');
             }elseif(Auth::user()->role === 'Leader'){
-                return redirect()->route('pages.permohonanCuti.index');
+                return redirect()->route('permohonan.index'); 
+            }elseif(Auth::user()->role === 'Kepala Divisi'){
+                return redirect()->route('kadivisi.dashboard');
             }
+            
         }
         return view('pages.auth.login');
     }
@@ -60,7 +63,9 @@ class AuthController extends Controller
             }elseif(Auth::user()->role === 'Staf HR'){
                 return redirect()->route('admin.dashboard');
             }elseif(Auth::user()->role === 'Leader'){
-                return redirect()->route('permohonan.index');
+                return redirect()->route('permohonan.index'); 
+            }elseif(Auth::user()->role === 'Kepala Divisi'){
+                return redirect()->route('kadivisi.dashboard');
             }
         } else { // false
 

@@ -32,6 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
     
     // Admin
     Route::get('admin/dashboard',[DashboardController::class, 'index'])->name('admin.dashboard');
+    
+    Route::get('kadivisi/dashboard',[DashboardController::class, 'indexKadivisi'])->name('kadivisi.dashboard');
     Route::get('admin/permohonan',[PermohonanCutiController::class, 'index'])->name('permohonan.index');
     Route::get('admin/permohonan/disetujui',[RiwayatPermohonanController::class, 'disetujui'])->name('permohonan.disetujui');
     Route::get('admin/permohonan/{id}',[PermohonanCutiController::class, 'dikirim'])->name('permohonan.dikirim');
@@ -43,6 +45,8 @@ Route::group(['middleware' => 'auth'], function () {
     
 
     Route::get('admin/divisi',[DivisiController::class, 'index'])->name('divisi.index');
+
+    //harus diubah jadi post
     Route::get('karyawan/dashboard/{id}',[PermohonanCutiController::class, 'dibatalkan'])->name('permohonan.dibatalkan');
 
     Route::get('admin/karyawan/edit/{id}',[KaryawanController::class, 'edit'])->name('karyawan.edit');
@@ -68,15 +72,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('suratPermohonanCuti/',[PermohonanCutiController::class, 'isiSurat'])->name('dataSurat.cuti');
     
     // Karyawan
+    //harus diubah jadi post
     Route::get('karyawan/dashboard',[DashboardController::class, 'show'])->name('karyawan.dashboard');
     Route::get('karyawan/permohonan/disetujui',[RiwayatPermohonanController::class, 'disetujui'])->name('karyawan.permohonan.disetujui');
     Route::get('karyawan/permohonan/ditolak',[RiwayatPermohonanController::class, 'ditolak'])->name('karyawan.permohonan.ditolak');
     Route::post('karyawan',[PermohonanCutiController::class, 'store'])->name('permohonan.insert');
 
     // Route::post('/setNamaAtasan',[PermohonanCutiController::class, 'isiSurat'])->name('namaAtasan.isiSurat');
-
+    
     Route::post('admin/permohonan/',[PermohonanCutiController::class, 'alasanTolak'])->name('permohonan.alasanTolak');
 
+    
     Route::get('karyawan/permohonan',[PermohonanCutiController::class, 'show'])->name('karyawan.permohonan');
 
     Route::get('/calendar', [JabatanController::class, 'index'])->name('welcome');

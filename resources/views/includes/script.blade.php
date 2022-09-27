@@ -83,6 +83,10 @@
   var someDate = new Date();
   someDate.setDate(someDate.getDate() + 14); //number  of days to add, e.x. 15 days
   var dateFormated = someDate.toISOString().substr(0,10);  
+  
+
+  var today = new Date();  //Get today's date
+  var lastDate = new Date(today.getFullYear() +1, 11, 31);  //To get the 31st Dec of next year
 
   if (jQuery().daterangepicker) {
     if ($(".datepicker").length) {
@@ -90,13 +94,14 @@
         locale: { format: "YYYY-MM-DD" },
         singleDatePicker: true,
         minDate: dateFormated,
+        maxDate: lastDate, //set the lastDate as maxDate
         isInvalidDate: function(date) {
             var dateRanges = [
-                { 'start': moment('2022-10-10'), 'end': moment('2022-10-10') },
+                { 'start': moment().startOf('year').format('YYYY-MM-DD'), 'end': moment().endtOf('year').format('YYYY-MM-DD') },
                 // { 'start': moment('2022-10-25'), 'end': moment('2022-10-30') },
             ];
             return dateRanges.reduce(function(bool, range) {
-                return bool || (date >= range.start && date <= range.end || date.day() == 0);
+                return bool || (date >= range.start && date <= range.end || date.day() == 0 );
             }, false);
         }
         // isInvalidDate: function(date) {

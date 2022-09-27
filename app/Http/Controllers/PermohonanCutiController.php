@@ -23,26 +23,48 @@ class PermohonanCutiController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role === "Staf HR") {
-            $permohonan = DB::table('users')
+        if (Auth::user()->role === "Kepala Divisi") {
+            $permohonanDivisi = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
             ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_memohon','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak')
             ->where(
                 function($query) {
                     return $query
                         ->where('permohonan_cuti.status', '=', 'Baru')
                         ->orWhere('permohonan_cuti.status', '=', 'Diatasan');
-                })
+                });
+            // ->get();
+
+            $permohonan = $permohonanDivisi->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
+
+            $permohonanTerima = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('permohonan_cuti.status','Diterima')
+            // ->limit(5)
             ->get();
+
         } elseif (Auth::user()->role === "Leader"){
             $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_memohon','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_akhir','permohonan_cuti.status')
             ->where('permohonan_cuti.status','Diatasan')
             ->get();
+
+            $permohonanTerima = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('permohonan_cuti.status','Diterima')
+            // ->limit(5)
+            ->get();
+
+            
         }
         
-        return view('pages.permohonanCuti.index',['permohonan' => $permohonan]);
+        return view('pages.permohonanCuti.index',['permohonan' => $permohonan,'permohonanTerima' => $permohonanTerima]);
         
     }
 
@@ -148,11 +170,11 @@ class PermohonanCutiController extends Controller
         if($jumlahCuti < 0){
             return redirect()->route('karyawan.dashboard')->with(['message' => 'Maaf anda tidak bisa mengajukan cuti karena sisa cuti anda sudah habis']);
         }
-        elseif($durasi->format('%d') > 5){
-            return redirect()->route('karyawan.dashboard')->with(['message' => 'Maaf anda tidak bisa mengajukan cuti karena durasi cuti maksimal 5 hari sekali pangajuan']);
+        elseif($durasi->format('%d') > 4){
+            return redirect()->route('karyawan.dashboard')->with(['message' => 'Maaf anda tidak bisa mengajukan cuti karena durasi cuti maksimal 4 hari sekali pangajuan']);
         }
         elseif($is_weekend == 1){
-            $totalCuti = $durasi->days - 1;
+            $totalCuti = $durasi->days - 0;
             DB::table('permohonan_cuti')->insert([
                 'user_id' => Auth::id(),
                 'alasan_cuti' => $request->alasan_cuti,
@@ -235,12 +257,15 @@ class PermohonanCutiController extends Controller
             return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti (Ada minggu)']);
         }
         else{
+
+            $totalCuti = $durasi->days + 1;
+
             DB::table('permohonan_cuti')->insert([
                 'user_id' => Auth::id(),
                 'alasan_cuti' => $request->alasan_cuti,
                 'tgl_mulai' => $request->tgl_mulai,
                 'tgl_akhir' => $request->tgl_akhir,
-                'durasi_cuti' => $durasi->format('%d'),
+                'durasi_cuti' => $totalCuti,
                 'tgl_memohon' => Carbon::now(),
                 'status' => 'Baru'
             ]);

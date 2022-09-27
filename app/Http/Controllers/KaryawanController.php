@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use Illuminate\Support\Carbon;
 
 
 class KaryawanController extends Controller
@@ -191,6 +192,10 @@ class KaryawanController extends Controller
      */
     public function update(Request $request)
     {
+        $firstJanuary = Carbon::parse('first day of January');
+        $currentTime = Carbon::now();
+        $resetCuti = 12;
+
         if ($request->password != ''){
             $validasiUser = $request->validate([
                 'name' => ['required', 'max:255'],
@@ -247,7 +252,13 @@ class KaryawanController extends Controller
                 'user_id' => $request->id,
                 'jumlah_cuti' => $validasiKaryawan['jumlah_cuti'],
             ]);
-        }else{
+        } elseif ($firstJanuary == $currentTime){
+            DB::table('karyawan')
+            ->update([
+                'jumlah_cuti' => $resetCuti,
+            ]);
+        }
+        elseif ($request->password == ''){
             $validasiUser = $request->validate([
                 'name' => ['required', 'max:255'],
                 'nik' => ['required', 'max:16', 'min:16'],
