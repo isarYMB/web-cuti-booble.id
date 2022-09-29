@@ -342,7 +342,8 @@
                             </td>
                             <td>
                                 @if($p->status === "Diterima")
-                                <a data-id="{{$p->id}}" class="badge cetakSurat" href="#" data-toggle="modal" data-target="#exampleModal" data-backdrop="true" >Cetak Surat</a>
+                                {{-- <a data-id="{{$p->id}}" class="badge cetakSurat" href="#" data-toggle="modal" data-target="#exampleModal" data-backdrop="true" >Cetak Surat</a> --}}
+                                <div></div>
                                 @elseif($p->status === "Ditolak")
                                 <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
                                 @else

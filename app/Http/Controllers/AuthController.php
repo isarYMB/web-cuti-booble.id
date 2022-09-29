@@ -22,6 +22,8 @@ class AuthController extends Controller
                 return redirect()->route('permohonan.index'); 
             }elseif(Auth::user()->role === 'Kepala Divisi'){
                 return redirect()->route('kadivisi.dashboard');
+            }elseif(Auth::user()->role === 'Finance'){
+                return redirect()->route('karyawan.dashboard');
             }
             
         }
@@ -66,6 +68,8 @@ class AuthController extends Controller
                 return redirect()->route('permohonan.index'); 
             }elseif(Auth::user()->role === 'Kepala Divisi'){
                 return redirect()->route('kadivisi.dashboard');
+            }elseif(Auth::user()->role === 'Finance'){
+                return redirect()->route('karyawan.dashboard');
             }
         } else { // false
 

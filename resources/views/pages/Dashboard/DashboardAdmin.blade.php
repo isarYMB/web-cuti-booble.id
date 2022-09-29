@@ -323,9 +323,15 @@
                                     <span class="badge ditolak">{{$p->status}}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="text-center">
                                 @if($p->status === "Diterima")
-                                <a data-id="{{$p->id}}" class="badge cetakSurat" href="#" data-toggle="modal" data-target="#exampleModal" data-backdrop="true" >Cetak Surat</a>
+                                <form class="" action="{{route('dataSurat.cuti')}}" method="post" >
+                                @csrf
+                                <input type="hidden" class="form-control" name="custId" value="{{$p->id}}">
+                                <input type="hidden" class="form-control" name="divisiKaryawan" value="{{$p->divisi}}">
+                                <input type="hidden" class="form-control" name="roleKaryawan" value="{{$p->role}}">
+                                <button formtarget="_blank" type="submit" class="badge cetakSurat">Cetak Surat</button>
+                                </form>
                                 @elseif($p->status === "Ditolak")
                                 <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
                                 @else
@@ -373,7 +379,7 @@
     </section>
 
     <!-- modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
+    {{-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
     aria-hidden="true">
     <div class="modal-dialog-centered modal-dialog" role="document">
     <div class="modal-content">
@@ -400,14 +406,14 @@
                     <input type="hidden" id="input-customer-id" name="custId">
                 </div>
 
-                <button type="submit" class="btn btn-warning m-t-15 waves-effect" formtarget="_blank">Cetak Surat</button>
+                <button type="submit" class="btn btn-warning m-t-15 waves-effect" formtarget="_blank">Cetak Surat</button> --}}
             {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
             
-        </form>
+        {{-- </form>
         </div>
     </div>
     </div>
-</div>
+</div> --}}
 
 
                         <div class="modal fade" id="ketTolakAdmin" tabindex="-1" role="dialog" aria-labelledby="formModal"

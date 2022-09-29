@@ -104,10 +104,10 @@
                     <p style="margin-top:-10px;">{{$p->jabatan}}</p>
                 </td>
                 <td class="border" style="width: 32%;text-align: center; padding-top: 100px;">
-                    <p style="text-decoration: underline;font-weight: bold;">{{$namaAtasan}}</p>
+                    <p style="text-decoration: underline;font-weight: bold;">{{ $getAtasan }}</p>
                     <p style="margin-top:-10px;">Atasan Langsung</p>
                 </td>
-                <td class="border" style="width: 32%;text-align: center; padding-top: 100px;"><p style="text-decoration: underline;font-weight: bold;">{{$mengetahuiOleh}}</p>
+                <td class="border" style="width: 32%;text-align: center; padding-top: 100px;"><p style="text-decoration: underline;font-weight: bold;">{{ $getHRD }}</p>
                     <p style="margin-top:-10px;">HRD</p></td>
             </tr>
         </table>

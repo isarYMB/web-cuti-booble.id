@@ -33,8 +33,8 @@ class PermohonanCutiController extends Controller
                     return $query
                         ->where('permohonan_cuti.status', '=', 'Baru')
                         ->orWhere('permohonan_cuti.status', '=', 'Diatasan');
-                });
-            // ->orderBy('permohonan_cuti.created_at');
+                })
+            ->orderBy('permohonan_cuti.created_at', "desc");
             // ->get();
 
             $permohonan = $permohonanDivisi->where('karyawan.divisi', Auth::user()->karyawan->divisi)->paginate(10);
@@ -51,6 +51,7 @@ class PermohonanCutiController extends Controller
             $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_memohon','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_akhir','permohonan_cuti.status')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->where('permohonan_cuti.status','Diatasan')
             ->paginate(10);
 
@@ -78,6 +79,22 @@ class PermohonanCutiController extends Controller
         ->where('permohonan_cuti.id',$request->custId)
         ->get();
 
+        $getHRD = DB::table('users')
+        ->where('role','HRD')
+        ->value('name');
+
+        if ($request->roleKaryawan == 'karyawan'){
+            $getAtasan = DB::table('users')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->where('users.role','Kepala Divisi')
+            ->where('karyawan.divisi', $request->divisiKaryawan)
+            ->value('users.name');
+        }else{
+            $getAtasan = DB::table('users')
+            ->where('users.role','Leader')
+            ->value('users.name');
+        }
+        
         // $tglMulai = DB::table('permohonan_cuti')
         // ->where('id',$id)
         // ->value('tgl_mulai');
@@ -86,8 +103,8 @@ class PermohonanCutiController extends Controller
         // $dateNewTime = $date->format('Y-m-d H:i:s');
 
         // $registeredAt = $dateNewTime->isoFormat('dddd, D MMMM Y');
-        $mengetahuiOleh = $request->mengetahuiOleh;
-        $namaAtasan = $request->namaAtasan;
+        // $mengetahuiOleh = $request->mengetahuiOleh;
+        // $namaAtasan = $request->namaAtasan;
 
         $tanggalCuti = Permohonan_Cuti::find($request->custId);
         $hariMulai = $tanggalCuti->tgl_mulai->isoFormat('dddd');
@@ -98,7 +115,7 @@ class PermohonanCutiController extends Controller
 
         $hariIni = Carbon::now()->isoFormat('D MMMM Y');
         
-        $pdf = PDF ::loadview('pages.permohonanCuti.surat',['dataSurat' => $dataSurat, 'hariIni' => $hariIni, 'hariMulai' => $hariMulai, 'hariAkhir'=>$hariAkhir, 'tglMulai'=>$tglMulai, 'tglAkhir'=>$tglAkhir, 'namaAtasan'=>$namaAtasan, 'mengetahuiOleh'=>$mengetahuiOleh])->setpaper('A4','potrait');
+        $pdf = PDF ::loadview('pages.permohonanCuti.surat',['dataSurat' => $dataSurat,'getHRD' => $getHRD, 'hariIni' => $hariIni, 'hariMulai' => $hariMulai, 'hariAkhir'=>$hariAkhir, 'tglMulai'=>$tglMulai, 'tglAkhir'=>$tglAkhir,'getAtasan' => $getAtasan])->setpaper('A4','potrait');
         return $pdf -> stream('Surat_Cuti_Booble.id.pdf');
 
     }
@@ -175,6 +192,8 @@ class PermohonanCutiController extends Controller
             return redirect()->route('karyawan.dashboard')->with(['message' => 'Maaf anda tidak bisa mengajukan cuti karena durasi cuti maksimal 4 hari sekali pangajuan']);
         }
         elseif($is_weekend == 1){
+            
+            if (Auth::user()->role === "karyawan"){
             $totalCuti = $durasi->days - 0;
             DB::table('permohonan_cuti')->insert([
                 'user_id' => Auth::id(),
@@ -183,7 +202,8 @@ class PermohonanCutiController extends Controller
                 'tgl_akhir' => $request->tgl_akhir,
                 'durasi_cuti' => $totalCuti,
                 'tgl_memohon' => Carbon::now(),
-                'status' => 'Baru'
+                'status' => 'Baru',
+                'created_at' => Carbon::now()->toDateTimeString()
             ]);
 
             $getNama = auth()->user()->value('name');
@@ -191,8 +211,10 @@ class PermohonanCutiController extends Controller
             $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
 
             $getTelp = DB::table('users')
-            ->where('role','HRD')
-            ->value('no_telpon');
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->where('users.role','Kepala Divisi')
+            ->where('karyawan.divisi', Auth::user()->karyawan->divisi)
+            ->value('users.no_telpon');
 
             function send_wa($telp, $pesan)
             {
@@ -256,9 +278,93 @@ class PermohonanCutiController extends Controller
 
 
             return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti (Ada minggu)']);
+            }else{
+                $totalCuti = $durasi->days - 0;
+                DB::table('permohonan_cuti')->insert([
+                    'user_id' => Auth::id(),
+                    'alasan_cuti' => $request->alasan_cuti,
+                    'tgl_mulai' => $request->tgl_mulai,
+                    'tgl_akhir' => $request->tgl_akhir,
+                    'durasi_cuti' => $totalCuti,
+                    'tgl_memohon' => Carbon::now(),
+                    'status' => 'Diatasan',
+                    'created_at' => Carbon::now()->toDateTimeString()
+                ]);
+    
+                $getNama = auth()->user()->value('name');
+    
+                $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+    
+                $getTelp = DB::table('users')
+                ->where('role','Leader')
+                ->value('no_telpon');
+    
+                function send_wa($telp, $pesan)
+                {
+                // METHOD POST
+                // Pastikan phone menggunakan kode negara 62 di depannya
+                $phone = str_replace('08','628',$telp);
+                $message = $pesan;
+                
+                $apikey = '51Uy5loPoLC2FAuiAYhypAhv4IqU6xOy';
+                $url = 'https://api.wanotif.id/v1/send';
+            
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_HEADER, 0);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($curl, CURLOPT_TIMEOUT,30);
+                curl_setopt($curl, CURLOPT_POST, 1);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+                'Apikey'    => $apikey,
+                'Phone'     => $phone,
+                'Message'   => $message,
+                ));
+                $response = curl_exec($curl);
+                curl_close($curl); 
+            
+                $res = json_decode($response, TRUE);
+            
+                if($res['wanotif']['status'] != 'sent'){
+                $userkey = '3efc3303a58c';
+                $passkey = 'kp6iswm84z';
+                $telepon = $telp;
+                $message = $pesan;
+            
+                $url = 'https://console.zenziva.net/wareguler/api/sendWA/';
+                $curlHandle = curl_init();
+                curl_setopt($curlHandle, CURLOPT_URL, $url);
+                curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+                curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
+                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
+                curl_setopt($curlHandle, CURLOPT_POST, 1);
+                curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
+                'userkey' => $userkey,
+                'passkey' => $passkey,
+                'to' => $telepon,
+                'message' => $message
+                ));
+                $response = json_decode(curl_exec($curlHandle), true);
+                curl_close($curlHandle);
+                }
+    
+                $resulte = $res['wanotif']['status'];
+            
+                return $resulte;
+                }
+    
+                send_wa($getTelp, $getPesan);
+    
+    
+                return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti (Ada minggu)']);
+                }
         }
         else{
-
+            if (Auth::user()->role === "karyawan"){
             $totalCuti = $durasi->days + 1;
 
             DB::table('permohonan_cuti')->insert([
@@ -268,7 +374,8 @@ class PermohonanCutiController extends Controller
                 'tgl_akhir' => $request->tgl_akhir,
                 'durasi_cuti' => $totalCuti,
                 'tgl_memohon' => Carbon::now(),
-                'status' => 'Baru'
+                'status' => 'Baru',
+                'created_at' => Carbon::now()->toDateTimeString()
             ]);
 
             $getNama = auth()->user()->value('name');
@@ -276,8 +383,10 @@ class PermohonanCutiController extends Controller
             $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
 
             $getTelp = DB::table('users')
-            ->where('role','HRD')
-            ->value('no_telpon');
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->where('users.role','Kepala Divisi')
+            ->where('karyawan.divisi', Auth::user()->karyawan->divisi)
+            ->value('users.no_telpon');
 
             function send_wa($telp, $pesan)
             {
@@ -340,6 +449,90 @@ class PermohonanCutiController extends Controller
             send_wa($getTelp, $getPesan);
 
             return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti']);
+        }else{
+            $totalCuti = $durasi->days + 1;
+
+            DB::table('permohonan_cuti')->insert([
+                'user_id' => Auth::id(),
+                'alasan_cuti' => $request->alasan_cuti,
+                'tgl_mulai' => $request->tgl_mulai,
+                'tgl_akhir' => $request->tgl_akhir,
+                'durasi_cuti' => $totalCuti,
+                'tgl_memohon' => Carbon::now(),
+                'status' => 'Diatasan',
+                'created_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+            $getNama = auth()->user()->value('name');
+
+            $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+
+            $getTelp = DB::table('users')
+                ->where('role','Leader')
+                ->value('no_telpon');
+
+            function send_wa($telp, $pesan)
+            {
+            // METHOD POST
+            // Pastikan phone menggunakan kode negara 62 di depannya
+            $phone = str_replace('08','628',$telp);
+            $message = $pesan;
+            
+            $apikey = '51Uy5loPoLC2FAuiAYhypAhv4IqU6xOy';
+            $url = 'https://api.wanotif.id/v1/send';
+        
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($curl, CURLOPT_TIMEOUT,30);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+            'Apikey'    => $apikey,
+            'Phone'     => $phone,
+            'Message'   => $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl); 
+        
+            $res = json_decode($response, TRUE);
+        
+            if($res['wanotif']['status'] != 'sent'){
+            $userkey = '3efc3303a58c';
+            $passkey = 'kp6iswm84z';
+            $telepon = $telp;
+            $message = $pesan;
+        
+            $url = 'https://console.zenziva.net/wareguler/api/sendWA/';
+            $curlHandle = curl_init();
+            curl_setopt($curlHandle, CURLOPT_URL, $url);
+            curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+            curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
+            curl_setopt($curlHandle, CURLOPT_POST, 1);
+            curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
+            'userkey' => $userkey,
+            'passkey' => $passkey,
+            'to' => $telepon,
+            'message' => $message
+            ));
+            $response = json_decode(curl_exec($curlHandle), true);
+            curl_close($curlHandle);
+            }
+
+            $resulte = $res['wanotif']['status'];
+        
+            return $resulte;
+            }
+
+            send_wa($getTelp, $getPesan);
+
+            return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti']);
+        }
         }
     }
     

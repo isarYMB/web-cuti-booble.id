@@ -17,9 +17,10 @@ class DashboardController extends Controller
 
             $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
-            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','users.role','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
             // ->where('permohonan_cuti.status','Baru')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             // ->limit(5)
             ->paginate(10);
             
@@ -51,7 +52,7 @@ class DashboardController extends Controller
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
             ->where('users.name','LIKE','%'.$request->searchName.'%')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             // ->limit(5)
             ->paginate(10);
             
@@ -82,34 +83,34 @@ class DashboardController extends Controller
         if ($request->namaStatus == "Baru"){
             $permohonan = $permohonanGet
             ->where('permohonan_cuti.status','Baru')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->paginate(10);
         } elseif ($request->namaStatus == "Diterima"){
             $permohonan = $permohonanGet
             ->where('permohonan_cuti.status','Diterima')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->paginate(10);
         }elseif ($request->namaStatus == "Diatasan"){
             $permohonan = $permohonanGet
             ->where('permohonan_cuti.status','Diatasan')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->paginate(10);
         }elseif ($request->namaStatus == "Dibatalkan"){
             $permohonan = $permohonanGet
             ->where('permohonan_cuti.status','Dibatalkan')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->paginate(10);
         }elseif ($request->namaStatus == "Ditolak"){
             $permohonan = $permohonanGet
             ->where('permohonan_cuti.status','Ditolak')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->paginate(10);
         }elseif ($request->namaStatus == "Semua"){
             $permohonan = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
             // ->where('permohonan_cuti.status','Baru')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             // ->limit(5)
             ->paginate(10);
         }
@@ -138,7 +139,7 @@ class DashboardController extends Controller
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
             ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
-            ->orderBy('permohonan_cuti.created_at');
+            ->orderBy('permohonan_cuti.created_at', "desc");
             // ->where('permohonan_cuti.status','pending')
             // ->limit(5)
             // ->get();
@@ -175,7 +176,7 @@ class DashboardController extends Controller
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
             ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
-            // ->orderBy('permohonan_cuti.created_at')
+            ->orderBy('permohonan_cuti.created_at', "desc")
             ->where('users.name','LIKE','%'.$request->searchName.'%');
             // ->where('permohonan_cuti.status','pending')
             // ->limit(5)
@@ -211,33 +212,33 @@ class DashboardController extends Controller
         $permohonanGet = DB::table('users')
         ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
         ->join('karyawan','users.id','=','karyawan.user_id')
-        ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon');
-        // ->orderBy('permohonan_cuti.created_at');
+        ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+        ->orderBy('permohonan_cuti.created_at', "desc");
 
         if ($request->namaStatus == "Baru"){
             $permohonan = $permohonanGet
-            ->where('permohonan_cuti.status','Baru');
-            // ->orderBy('permohonan_cuti.created_at');
+            ->where('permohonan_cuti.status','Baru')
+            ->orderBy('permohonan_cuti.created_at', "desc");
             
         } elseif ($request->namaStatus == "Diterima"){
             $permohonan = $permohonanGet
-            ->where('permohonan_cuti.status','Diterima');
-            // ->orderBy('permohonan_cuti.created_at');
+            ->where('permohonan_cuti.status','Diterima')
+            ->orderBy('permohonan_cuti.created_at', "desc");
             
         }elseif ($request->namaStatus == "Diatasan"){
             $permohonan = $permohonanGet
-            ->where('permohonan_cuti.status','Diatasan');
-            // ->orderBy('permohonan_cuti.created_at');
+            ->where('permohonan_cuti.status','Diatasan')
+            ->orderBy('permohonan_cuti.created_at', "desc");
         
         }elseif ($request->namaStatus == "Dibatalkan"){
             $permohonan = $permohonanGet
-            ->where('permohonan_cuti.status','Dibatalkan');
-            // ->orderBy('permohonan_cuti.created_at');
+            ->where('permohonan_cuti.status','Dibatalkan')
+            ->orderBy('permohonan_cuti.created_at', "desc");
             
         }elseif ($request->namaStatus == "Ditolak"){
             $permohonan = $permohonanGet
-            ->where('permohonan_cuti.status','Ditolak');
-            // ->orderBy('permohonan_cuti.created_at');
+            ->where('permohonan_cuti.status','Ditolak')
+            ->orderBy('permohonan_cuti.created_at', "desc");
             
         }elseif ($request->namaStatus == "Semua"){
             $permohonan = DB::table('users')
@@ -280,9 +281,9 @@ class DashboardController extends Controller
         ->join('karyawan','users.id','=','karyawan.user_id')
         ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','karyawan.jumlah_cuti')
         ->where('users.id',$id)
-        ->orderBy('permohonan_cuti.created_at')
+        ->orderBy('permohonan_cuti.created_at', "desc")
         // ->limit(5)
-        ->get();
+        ->paginate(10);
 
         $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
