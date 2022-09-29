@@ -33,11 +33,11 @@ class PermohonanCutiController extends Controller
                     return $query
                         ->where('permohonan_cuti.status', '=', 'Baru')
                         ->orWhere('permohonan_cuti.status', '=', 'Diatasan');
-                })
-            ->orderBy('permohonan_cuti.created_at');
+                });
+            // ->orderBy('permohonan_cuti.created_at');
             // ->get();
 
-            $permohonan = $permohonanDivisi->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
+            $permohonan = $permohonanDivisi->where('karyawan.divisi', Auth::user()->karyawan->divisi)->paginate(10);
 
             $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
@@ -52,8 +52,7 @@ class PermohonanCutiController extends Controller
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->select('permohonan_cuti.id','users.name','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_memohon','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_akhir','permohonan_cuti.status')
             ->where('permohonan_cuti.status','Diatasan')
-            ->orderBy('permohonan_cuti.created_at')
-            ->get();
+            ->paginate(10);
 
             $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
@@ -192,7 +191,7 @@ class PermohonanCutiController extends Controller
             $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
 
             $getTelp = DB::table('users')
-            ->where('role','Staf HR')
+            ->where('role','HRD')
             ->value('no_telpon');
 
             function send_wa($telp, $pesan)
@@ -277,7 +276,7 @@ class PermohonanCutiController extends Controller
             $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
 
             $getTelp = DB::table('users')
-            ->where('role','Staf HR')
+            ->where('role','HRD')
             ->value('no_telpon');
 
             function send_wa($telp, $pesan)

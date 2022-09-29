@@ -28,6 +28,25 @@
         <link rel="stylesheet" href="{{asset('css/custom.css')}}">
         <link href="{{ asset('css/mobile.css') }}" rel="stylesheet" type="text/css" >
         <link rel='shortcut icon' type='image/x-icon' href="{{asset('https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png')}}" />
+
+        <style>
+            .resizeformc {
+                width: 150px;
+                height:200px;
+}
+        </style>
+
+        {{-- <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
+
+
+        {{-- <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        @vite('resources/css/app.css') --}}
+
+        {{-- <script type="text/javascript">
+        </script> --}}
+
+        {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css"> --}}
       
         <!-- FullCalendar -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
@@ -82,7 +101,7 @@
                     </li>
                 </ul>
             <ul class="sidebar-menu">
-                @if(Auth::user()->role === "Staf HR")
+                @if(Auth::user()->role === "HRD")
                 <li>
                     <a class="nav-link" href="{{ route('admin.dashboard')}}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
@@ -237,80 +256,120 @@
 
         <div class="row">
             <div class="col-12 col-sm-12 col-lg-12">
+                <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-header">
+                            <h4>Daftar Riwayat Cuti</h4>
+                        </div>
+                        
+                        <tr>
+                        <th class="mr-4 mt-3 ">
+                            {{-- <label>Filter Status Cuti</label> --}}
+                            <Form method="POST" action="{{route('admin.changeStatusBaru')}}">
+                            @csrf
+                            <select name="namaStatus" class="resizeformc form-control rounded-3" onchange='this.form.submit()'>
+                                  <option value="">Filter Status</option>
+                                  <option value="Semua">Semua Status</option>
+                                  <option value="Baru">Baru</option>
+                                  <option value="Diterima">Diterima</option>
+                                  <option value="Diatasan">Diatasan</option>
+                                  <option value="Dibatalkan">Dibatalkan</option>
+                                  <option value="Ditolak">Ditolak</option>
+                            </select>
+                            </Form>
+                        </th>
+                            <th class="ml-4 mt-3 text-right">
+                                <Form method="POST" action="{{route('admin.searchNameAdmin')}}">
+                                    @csrf
+                                <input style="font-size: 15px; margin-left: 10px; height: 40px; width:200px; " class="form-control" type="search" placeholder="search" name="searchName" value="{{ request()->input('searchName') }}">
+                                </Form>
+                          </th>
+                          </tr>
+                    </div> 
+                <div class="card-body">
+                    <div class="table-responsive table-invoice">
+                    <table class="table table-striped" id="table_id">
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th class="text-center">Tgl Memohon</th>
+                            <th class="text-center">Nama Pegawai</th>
+                            <th class="text-center">Alasan Cuti</th>
+                            <th class="text-center">Mulai Cuti</th>
+                            <th class="text-center">Berakhir Cuti</th>
+                            <th class="text-center">Durasi</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">#</th>
+                        </tr>
+                        @foreach($permohonan as $i => $p)
+                        <tr>
+                            <td class="p-0 text-center">{{$i+1}}</td>
+                            <td class="align-middle">{{$p->tgl_memohon}}</td>
+                            <td class="font-weight-600">{{$p->name}}</td>
+                            <td class="text-truncate">{{$p->alasan_cuti}}</td>
+                            <td class="align-middle">{{$p->tgl_mulai}}</td>
+                            <td class="align-middle">{{$p->tgl_akhir}}</td>
+                            <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
+                            <td class="align-middle text-center">
+                                @if($p->status === "Baru")
+                                    <span class="badge baru">{{$p->status}}</span>
+                                @elseif($p->status === "Diterima")
+                                    <span class="badge diterima">{{$p->status}}</span>
+                                @elseif($p->status === "Diatasan")
+                                    <span class="badge diatasan">{{$p->status}}</span>
+                                @elseif($p->status === "Dibatalkan")
+                                    <span class="badge batal">{{$p->status}}</span>
+                                @elseif($p->status === "Ditolak")
+                                    <span class="badge ditolak">{{$p->status}}</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($p->status === "Diterima")
+                                <a data-id="{{$p->id}}" class="badge cetakSurat" href="#" data-toggle="modal" data-target="#exampleModal" data-backdrop="true" >Cetak Surat</a>
+                                @elseif($p->status === "Ditolak")
+                                <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
+                                @else
+                                @endif
+                            </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                    <br>
+                        {{ $permohonan->links() }}
+                    {{-- <nav>
+                        <ul class="pagination">
+                          <li class="page-item disabled">
+                            <a class="page-link">Previous</a>
+                          </li>
+                          <li class="page-item"><a class="page-link" href="#">1</a></li>
+                          <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="#">2</a>
+                          </li>
+                          <li class="page-item"><a class="page-link" href="#">3</a></li>
+                          <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                          </li>
+                        </ul>
+                      </nav> --}}
+                    
+                    
+                </div>
+                </div>
+            </div>
+            </div>
+
+            {{-- <div class="row"> --}}
+            <div class="col-12 col-sm-12 col-lg-12">
                 <div class="card">
                     <div class="card-body">
                         <div id="calendar"></div>
                 </div>
                 </div>
             </div>
-            </div>
+            {{-- </div> --}}
 
-        <div class="row">
-        <div class="col-12 col-sm-12 col-lg-12">
-            <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-header">
-                        <h4>Daftar Riwayat Cuti</h4>
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" type="search" placeholder="search">
-                    </div>
-                </div> 
-            <div class="card-body">
-                <div class="table-responsive table-invoice">
-                <table class="table table-striped">
-                    <tr>
-                        <th class="text-center">No</th>
-                        <th>Tgl Memohon</th>
-                        <th>Nama Pegawai</th>
-                        <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
-                        <th>Durasi</th>
-                        <th>Status</th>
-                        <th class="text-center">#</th>
-                    </tr>
-                    @foreach($permohonan as $i => $p)
-                    <tr>
-                        <td class="p-0 text-center">{{$i+1}}</td>
-                        <td class="align-middle">{{$p->tgl_memohon}}</td>
-                        <td class="font-weight-600">{{$p->name}}</td>
-                        <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                        <td class="align-middle">{{$p->tgl_mulai}}</td>
-                        <td class="align-middle">{{$p->tgl_akhir}}</td>
-                        <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
-                        <td class="align-middle text-center">
-                            @if($p->status === "Baru")
-                                <span class="badge baru">{{$p->status}}</span>
-                            @elseif($p->status === "Diterima")
-                                <span class="badge diterima">{{$p->status}}</span>
-                            @elseif($p->status === "Diatasan")
-                                <span class="badge diatasan">{{$p->status}}</span>
-                            @elseif($p->status === "Dibatalkan")
-                                <span class="badge batal">{{$p->status}}</span>
-                            @elseif($p->status === "Ditolak")
-                                <span class="badge ditolak">{{$p->status}}</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($p->status === "Diterima")
-                            <a data-id="{{$p->id}}" class="badge cetakSurat" href="#" data-toggle="modal" data-target="#exampleModal" data-backdrop="true" >Cetak Surat</a>
-                            @elseif($p->status === "Ditolak")
-                            <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
-                            @else
-                            @endif
-                        </div>
-                        </td>
-                    </tr>
-                    
-                    @endforeach
-                </table>
-                
-            </div>
-            </div>
-        </div>
-        </div>
+        
     </section>
 
     <!-- modal -->
@@ -401,9 +460,18 @@
   <script src="{{asset('bundles/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js')}}"></script>
   <script src="{{asset('bundles/select2/dist/js/select2.full.min.js')}}"></script>
   <script src="{{asset('bundles/jquery-selectric/jquery.selectric.min.js')}}"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+
+  <script>
+    const table = $('#table_id').DataTable({
+        "responsive": true,
+        "autowidth": true,
+    });
+  </script>
   
 
-  <script src="{{asset('js/page/forms-advanced-forms.js')}}"></script>
+  <script src="{{asset('js/page/forms-advanced-forms.js')}}"></scrip>
   <script src="{{asset('bundles/izitoast/js/iziToast.min.js')}}"></script>
   <script>
     $('#exampleModal').on('show.bs.modal', function (event) {
@@ -419,6 +487,12 @@
 </script>
 
 <script>
+    function filter (){
+        table.ajax.reload(null,false)
+    }
+</script>
+
+<script>
     $('#ketTolakAdmin').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
   
@@ -430,6 +504,22 @@
     modal.find('#ketTolakAdminUser').val(recipient); // set input value
   })
   </script>
+
+//   <script>
+//     $('#pilihStatus').on('change',function(){
+//     var namaStatus =  $(this).val();
+//     var token = $(this).data('token');
+//     var base_url = $(this).data('url');
+//         $.ajax({
+//             url:base_url+`${namaStatus}`,
+//             type: 'POST',
+//             data: { _token :token,namaStatus:namaStatus },
+//             success:function(response){
+//                 window.location.href = redirect;
+//           }
+//         });
+//     })
+//   </script>
 
   <script>
   

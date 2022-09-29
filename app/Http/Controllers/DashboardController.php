@@ -13,23 +13,17 @@ use Carbon\Carbon;
 class DashboardController extends Controller
 {
     public function index()
-    {
-        $city = 'Sales';
-        $permohonan = DB::table('users')
-            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
-            ->join('karyawan','users.id','=','karyawan.user_id')
-            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','karyawan.divisi')
-            ->where('permohonan_cuti.status','pending')
-            // ->limit(5)
-            // ->orderBy('permohonan_cuti.created_at')
-            ->whereHas(
-                'karyawan',
-                function ($query) use ($city) {
-                    $query->where('divisi', 'LIKE', "%{$city}%");
-                }
-            )
-            ->get();
+    {   
 
+            $permohonan = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            // ->where('permohonan_cuti.status','Baru')
+            // ->orderBy('permohonan_cuti.created_at')
+            // ->limit(5)
+            ->paginate(10);
+            
+            // ->get();
             
         $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
@@ -47,6 +41,96 @@ class DashboardController extends Controller
 
         return view('pages.Dashboard.DashboardAdmin',["permohonan" => $permohonan,"permohonanTerima" => $permohonanTerima,"jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
     }
+
+    public function searchNameAdmin(Request $request)
+    {   
+        
+        // $cari = $request->searchName;
+
+        $permohonan = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('users.name','LIKE','%'.$request->searchName.'%')
+            // ->orderBy('permohonan_cuti.created_at')
+            // ->limit(5)
+            ->paginate(10);
+            
+        $permohonanTerima = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('permohonan_cuti.status','Diterima')
+            // ->limit(5)
+            ->get();
+            
+        $jmlPermohonan = Permohonan_Cuti::where('status', 'Baru')->get()->count();
+        $jmlDiProses = Permohonan_Cuti::where('status', 'Diatasan')->get()->count();
+        $jmlBatal = Permohonan_Cuti::where('status', 'Dibatalkan')->get()->count();
+        $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
+        $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
+
+        return view('pages.Dashboard.DashboardAdmin',["permohonan" => $permohonan,"permohonanTerima" => $permohonanTerima,"jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
+    }
+
+    public function changeStatus(Request $request)
+    {   
+        
+        $permohonanGet = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon');
+
+        if ($request->namaStatus == "Baru"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Baru')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->paginate(10);
+        } elseif ($request->namaStatus == "Diterima"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Diterima')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->paginate(10);
+        }elseif ($request->namaStatus == "Diatasan"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Diatasan')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->paginate(10);
+        }elseif ($request->namaStatus == "Dibatalkan"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Dibatalkan')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->paginate(10);
+        }elseif ($request->namaStatus == "Ditolak"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Ditolak')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->paginate(10);
+        }elseif ($request->namaStatus == "Semua"){
+            $permohonan = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            // ->where('permohonan_cuti.status','Baru')
+            // ->orderBy('permohonan_cuti.created_at')
+            // ->limit(5)
+            ->paginate(10);
+        }
+            
+        $permohonanTerima = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('permohonan_cuti.status','Diterima')
+            // ->limit(5)
+            ->get();
+            
+        $jmlPermohonan = Permohonan_Cuti::where('status', 'Baru')->get()->count();
+        $jmlDiProses = Permohonan_Cuti::where('status', 'Diatasan')->get()->count();
+        $jmlBatal = Permohonan_Cuti::where('status', 'Dibatalkan')->get()->count();
+        $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
+        $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
+
+        return view('pages.Dashboard.DashboardAdmin',["permohonan" => $permohonan,"permohonanTerima" => $permohonanTerima,"jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
+    }
+
 
     public function indexKadivisi()
     {
@@ -72,7 +156,7 @@ class DashboardController extends Controller
         $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
         $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
 
-        $permohonanDivisi = $permohonan->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
+        $permohonanDivisi = $permohonan->where('karyawan.divisi', Auth::user()->karyawan->divisi)->paginate(10);
         
 
         $calendarAdmin = $permohonanTerima->get();
@@ -81,6 +165,112 @@ class DashboardController extends Controller
         
         return view('pages.Dashboard.DashboardKaDivisi',["permohonan" => $permohonan,"permohonanDivisi"=>$permohonanDivisi,"permohonanTerima" => $calendarAdmin, "calendarDivisi" => $calendarDivisi, "jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
     }
+
+    public function searchNameKaDivisi(Request $request)
+    {   
+        
+        // $cari = $request->searchName;
+
+        $permohonan = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            // ->orderBy('permohonan_cuti.created_at')
+            ->where('users.name','LIKE','%'.$request->searchName.'%');
+            // ->where('permohonan_cuti.status','pending')
+            // ->limit(5)
+            // ->get();
+        $permohonanTerima = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->where('permohonan_cuti.status','Diterima');
+            // ->limit(5)
+            // ->get();
+
+        $jmlPermohonan = Permohonan_Cuti::where('status', 'Baru')->get()->count();
+        $jmlDiProses = Permohonan_Cuti::where('status', 'Diatasan')->get()->count();
+        $jmlBatal = Permohonan_Cuti::where('status', 'Dibatalkan')->get()->count();
+        $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
+        $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
+
+        $permohonanDivisi = $permohonan->where('karyawan.divisi', Auth::user()->karyawan->divisi)->paginate(10);;
+        
+
+        $calendarAdmin = $permohonanTerima->get();
+
+        $calendarDivisi = $permohonanTerima->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
+        
+        return view('pages.Dashboard.DashboardKaDivisi',["permohonan" => $permohonan,"permohonanDivisi"=>$permohonanDivisi,"permohonanTerima" => $calendarAdmin, "calendarDivisi" => $calendarDivisi, "jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
+        
+    }
+
+    public function changeStatusKaDivisi(Request $request)
+    {   
+        
+        $permohonanGet = DB::table('users')
+        ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+        ->join('karyawan','users.id','=','karyawan.user_id')
+        ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon');
+        // ->orderBy('permohonan_cuti.created_at');
+
+        if ($request->namaStatus == "Baru"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Baru');
+            // ->orderBy('permohonan_cuti.created_at');
+            
+        } elseif ($request->namaStatus == "Diterima"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Diterima');
+            // ->orderBy('permohonan_cuti.created_at');
+            
+        }elseif ($request->namaStatus == "Diatasan"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Diatasan');
+            // ->orderBy('permohonan_cuti.created_at');
+        
+        }elseif ($request->namaStatus == "Dibatalkan"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Dibatalkan');
+            // ->orderBy('permohonan_cuti.created_at');
+            
+        }elseif ($request->namaStatus == "Ditolak"){
+            $permohonan = $permohonanGet
+            ->where('permohonan_cuti.status','Ditolak');
+            // ->orderBy('permohonan_cuti.created_at');
+            
+        }elseif ($request->namaStatus == "Semua"){
+            $permohonan = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->join('karyawan','users.id','=','karyawan.user_id')
+            ->select('users.name','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon');
+            // ->limit(5)
+            
+        }
+        $permohonanTerima = DB::table('users')
+        ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+        ->join('karyawan','users.id','=','karyawan.user_id')
+        ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+        ->where('permohonan_cuti.status','Diterima');
+        // ->limit(5)
+        // ->get();
+
+        $jmlPermohonan = Permohonan_Cuti::where('status', 'Baru')->get()->count();
+        $jmlDiProses = Permohonan_Cuti::where('status', 'Diatasan')->get()->count();
+        $jmlBatal = Permohonan_Cuti::where('status', 'Dibatalkan')->get()->count();
+        $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
+        $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
+
+        $permohonanDivisi = $permohonan->where('karyawan.divisi', Auth::user()->karyawan->divisi)->paginate(10);
+        
+
+        $calendarAdmin = $permohonanTerima->get();
+
+        $calendarDivisi = $permohonanTerima->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
+        
+        return view('pages.Dashboard.DashboardKaDivisi',["permohonan" => $permohonan,"permohonanDivisi"=>$permohonanDivisi,"permohonanTerima" => $calendarAdmin, "calendarDivisi" => $calendarDivisi, "jmlPermohonan" => $jmlPermohonan,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,'jmlPermohonanDitolak' => $jmlPermohonanDitolak,'jmlBatal' => $jmlBatal,'jmlDiProses' => $jmlDiProses]);
+    }
+    
 
     public function show()
     {
@@ -108,7 +298,7 @@ class DashboardController extends Controller
         $calendarAdmin = $permohonanTerima->get();
 
         $calendarDivisi = $permohonanTerima->where('karyawan.divisi', Auth::user()->karyawan->divisi)->get();
-       
+
         return view('pages.Dashboard.DashboardKaryawan',["permohonan" => $permohonan,'sisa_cuti' => $sisaCuti,'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui,"calendarDivisi" => $calendarDivisi,'jmlPermohonanDitolak' =>$jmlPermohonanDitolak]);
     }
 }

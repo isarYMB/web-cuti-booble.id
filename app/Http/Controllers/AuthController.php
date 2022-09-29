@@ -16,7 +16,7 @@ class AuthController extends Controller
             //Login Success
             if(Auth::user()->role === 'karyawan'){
                 return redirect()->route('karyawan.dashboard');
-            }elseif(Auth::user()->role === 'Staf HR'){
+            }elseif(Auth::user()->role === 'HRD'){
                 return redirect()->route('admin.dashboard');
             }elseif(Auth::user()->role === 'Leader'){
                 return redirect()->route('permohonan.index'); 
@@ -60,7 +60,7 @@ class AuthController extends Controller
             //Login Success
             if(Auth::user()->role === 'karyawan'){
                 return redirect()->route('karyawan.dashboard');
-            }elseif(Auth::user()->role === 'Staf HR'){
+            }elseif(Auth::user()->role === 'HRD'){
                 return redirect()->route('admin.dashboard');
             }elseif(Auth::user()->role === 'Leader'){
                 return redirect()->route('permohonan.index'); 

@@ -108,13 +108,13 @@ class UserSeeder extends Seeder
             'no_telpon' => 628967567543,
         ]);
         
-        // staf Hr
+        // HRD
 
         $user = User::create([
             'name' => 'Citra ',
             'email' => 'citra@example.com',
             'password' => Hash::make("citraweb"),
-            'role' => 'Staf HR',
+            'role' => 'HRD',
             'nik' => 1231234,
             'no_telpon' => 628967567543,
         ]);

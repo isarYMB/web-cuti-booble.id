@@ -98,7 +98,7 @@
                           <span>Ubah Profil</span>
                       </a>
                   </li>
-              @elseif(Auth::user()->role === "Staf HR")
+              @elseif(Auth::user()->role === "HRD")
                   <li>
                       <a class="nav-link" href="{{ route('admin.dashboard')}}">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
@@ -217,7 +217,94 @@
       </nav>
 <div class="main-content">
     <section class="section">
-      <div class="row">
+
+        <div class="row">
+            <div class="col-12 col-sm-12 col-lg-12">
+            <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
+            @if(session()->has('message'))
+                <div class="alert alert-dismissable alert-danger">
+                    {{ session()->get('message') }}
+                </div>
+            @endif
+                <div class="card">
+                    <div class="card-header ml-4">
+                        <h4>Mengajukan Cuti</h4>
+                    </div>
+                    <table class="table table-striped">
+                    <tr>
+                      <th class="ml-4 mt-3 text-left  ">
+                        @if ( $sisa_cuti != 0)
+                        <div class="ml-4 badge text-wrap diterima">Sisa Cuti: {{$sisa_cuti}}</div>
+                        @else
+                        <div class="ml-4 badge text-wrap ditolak">Sisa Cuti: {{$sisa_cuti}}</div>
+                        @endif
+                      
+                    </th>
+                      <th class="ml-4 mt-3 text-right  ">
+                        <button class="btn btn-warning mr-4" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah</button>
+                    </th>
+                    </tr>
+                    </table>
+                    
+                <div class="card-body">
+                    <div class="table-responsive table-invoice">
+                    <table class="table table-striped">
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th>nama karyawan</th>
+                            <th>Alasan Cuti</th>
+                            <th>Mulai Cuti</th>
+                            <th>Berakhir Cuti</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Durasi</th>
+                            <th class="text-center">#</th>
+                        </tr>
+                        @foreach($permohonan as $i => $p)
+                        <tr>
+                            <td class="p-0 text-center">{{$i+1}}</td>
+                            <td class="font-weight-600">{{$p->name}}</td>
+                            <td class="text-truncate">{{$p->alasan_cuti}}</td>
+                            <td class="align-middle">{{$p->tgl_mulai}}</td>
+                            <td class="align-middle">{{$p->tgl_akhir}}</td>
+                            <td class="align-middle text-center">
+                                @if($p->status === "Baru")
+                                    <span class="badge baru">{{$p->status}}</span>
+                                @elseif($p->status === "Diterima")
+                                    <span class="badge diterima">{{$p->status}}</span>
+                                @elseif($p->status === "Diatasan")
+                                    <span class="badge diatasan">{{$p->status}}</span>
+                                @elseif($p->status === "Dibatalkan")
+                                    <span class="badge batal">{{$p->status}}</span>
+                                @elseif($p->status === "Ditolak")
+                                    <span class="badge ditolak">{{$p->status}}</span>
+                                @endif
+                            </td>
+                            <td class="align-middle text-center">{{$p->durasi_cuti}}</td>
+                            <td class="text-center">
+                                {{-- @if($p->status === "Diterima")
+                                <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
+                                @if($p->status === "Baru")
+                                <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
+                                @elseif($p->status === "Diatasan")
+                                <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
+                                {{-- <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" >Setuju</a>  --}}
+                                @elseif($p->status === "Batal")
+                                <div></div>
+                                @elseif($p->status === "Ditolak")
+                                <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
+                                @else
+                                <div></div>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
         <div class="col-12 col-sm-12 col-lg-12">
             <div class="card">
                 <div class="card-body">
@@ -225,93 +312,7 @@
             </div>
             </div>
         </div>
-        </div>
-        <div class="row">
-        <div class="col-12 col-sm-12 col-lg-12">
-        <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
-        @if(session()->has('message'))
-            <div class="alert alert-dismissable alert-danger">
-                {{ session()->get('message') }}
-            </div>
-        @endif
-            <div class="card">
-                <div class="card-header ml-4">
-                    <h4>Mengajukan Cuti</h4>
-                </div>
-                <table class="table table-striped">
-                <tr>
-                  <th class="ml-4 mt-3 text-left  ">
-                    @if ( $sisa_cuti != 0)
-                    <div class="ml-4 badge text-wrap diterima">Sisa Cuti: {{$sisa_cuti}}</div>
-                    @else
-                    <div class="ml-4 badge text-wrap ditolak">Sisa Cuti: {{$sisa_cuti}}</div>
-                    @endif
-                  
-                </th>
-                  <th class="ml-4 mt-3 text-right  ">
-                    <button class="btn btn-warning mr-4" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i> Tambah</button>
-                </th>
-                </tr>
-                </table>
-                
-            <div class="card-body">
-                <div class="table-responsive table-invoice">
-                <table class="table table-striped">
-                    <tr>
-                        <th class="text-center">No</th>
-                        <th>nama karyawan</th>
-                        <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Durasi</th>
-                        <th class="text-center">#</th>
-                    </tr>
-                    @foreach($permohonan as $i => $p)
-                    <tr>
-                        <td class="p-0 text-center">{{$i+1}}</td>
-                        <td class="font-weight-600">{{$p->name}}</td>
-                        <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                        <td class="align-middle">{{$p->tgl_mulai}}</td>
-                        <td class="align-middle">{{$p->tgl_akhir}}</td>
-                        <td class="align-middle text-center">
-                            @if($p->status === "Baru")
-                                <span class="badge baru">{{$p->status}}</span>
-                            @elseif($p->status === "Diterima")
-                                <span class="badge diterima">{{$p->status}}</span>
-                            @elseif($p->status === "Diatasan")
-                                <span class="badge diatasan">{{$p->status}}</span>
-                            @elseif($p->status === "Dibatalkan")
-                                <span class="badge batal">{{$p->status}}</span>
-                            @elseif($p->status === "Ditolak")
-                                <span class="badge ditolak">{{$p->status}}</span>
-                            @endif
-                        </td>
-                        <td class="align-middle text-center">{{$p->durasi_cuti}}</td>
-                        <td class="text-center">
-                            {{-- @if($p->status === "Diterima")
-                            <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
-                            @if($p->status === "Baru")
-                            <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
-                            @elseif($p->status === "Diatasan")
-                            <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
-                            {{-- <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" >Setuju</a>  --}}
-                            @elseif($p->status === "Batal")
-                            <div></div>
-                            @elseif($p->status === "Ditolak")
-                            <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
-                            @else
-                            <div></div>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </table>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
+        
     </section>
     <!-- modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"

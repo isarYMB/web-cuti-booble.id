@@ -32,7 +32,15 @@ Route::group(['middleware' => 'auth'], function () {
     
     // Admin
     Route::get('admin/dashboard',[DashboardController::class, 'index'])->name('admin.dashboard');
+
+    Route::post('admin/dashboard/changeStatusBaru',[DashboardController::class, 'changeStatus'])->name('admin.changeStatusBaru');
     
+    Route::post('admin/dashboard/cariPegawai',[DashboardController::class, 'searchNameAdmin'])->name('admin.searchNameAdmin');
+
+    Route::post('admin/dashboard/changeStatusDivisi',[DashboardController::class, 'changeStatusKaDivisi'])->name('admin.changeStatusKaDivisi');
+    
+    Route::post('admin/dashboard/cariDivisiPegawai',[DashboardController::class, 'searchNameKaDivisi'])->name('admin.searchNameKaDivisi');
+
     Route::get('kadivisi/dashboard',[DashboardController::class, 'indexKadivisi'])->name('kadivisi.dashboard');
     Route::get('admin/permohonan',[PermohonanCutiController::class, 'index'])->name('permohonan.index');
     Route::get('admin/permohonan/disetujui',[RiwayatPermohonanController::class, 'disetujui'])->name('permohonan.disetujui');

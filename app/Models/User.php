@@ -31,6 +31,11 @@ class User extends Authenticatable
         return $this->hasOne(Karyawan::class);
     }
 
+    public function permohonanCuti()
+    {
+        return $this->hasMany(Permohonan_Cuti::class);
+    }
+
     // scope
     public function scopeSearch($query, $name)
     {
