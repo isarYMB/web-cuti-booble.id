@@ -46,12 +46,12 @@
             right: 'next',
           },
           events: [
-            @foreach($calendarDivisi as $c)
+            @foreach($getRagneTanggal as $c)
             {
                 title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
                 start: "{{ $c->tgl_mulai }}", // a property!
                 end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
-                color: '#334D6E',
+                color: "{{ $c->warna_cuti }}",
                 allDay:true,
             },
             @endforeach
@@ -264,21 +264,26 @@
                     <table class="table table-striped">
                         <tr>
                             <th class="text-center">No</th>
-                            <th>nama karyawan</th>
+                            <th>Nama Karyawan</th>
                             <th>Alasan Cuti</th>
-                            <th>Mulai Cuti</th>
-                            <th>Berakhir Cuti</th>
+                            <th class="text-center" style="min-width: 100px;">Mulai</th>
+                            <th class="text-center" style="min-width: 100px;">Berakhir</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Durasi</th>
                             <th class="text-center">#</th>
                         </tr>
+                        @if($permohonan->isEmpty())
+                        <tr>
+                        <td colspan="8" class="p-0 text-center">Anda Belum Mengajukan Cuti</td>
+                        </tr>
+                        @else
                         @foreach($permohonan as $i => $p)
                         <tr>
                             <td class="p-0 text-center">{{$i+1}}</td>
                             <td class="font-weight-600">{{$p->name}}</td>
                             <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                            <td class="align-middle">{{$p->tgl_mulai}}</td>
-                            <td class="align-middle">{{$p->tgl_akhir}}</td>
+                            <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
+                            <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                             <td class="align-middle text-center">
                                 @if($p->status === "Baru")
                                     <span class="badge baru">{{$p->status}}</span>
@@ -309,8 +314,11 @@
                                 <div></div>
                                 @endif
                             </td>
+
+                            
                         </tr>
                         @endforeach
+                        @endif
                     </table>
                     <br>
                         {{ $permohonan->links() }}
@@ -348,11 +356,11 @@
               <textarea class="form-control" name="alasan_cuti" required ></textarea>
             </div>
             <div class="form-group">
-              <label>tanggal Mulai Cuti</label>
+              <label>Tanggal Mulai Cuti</label>
               <input type="text" name="tgl_mulai" required class="form-control datepicker">
             </div>
             <div class="form-group">
-              <label>tanggal Berahir Cuti</label>
+              <label>Tanggal Berahir Cuti</label>
               <input type="text" name="tgl_akhir" required class="form-control datepicker">
             </div> 
             <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
@@ -472,27 +480,39 @@
   var someDate = new Date();
   someDate.setDate(someDate.getDate() + 14); //number  of days to add, e.x. 15 days
   var dateFormated = someDate.toISOString().substr(0,10);  
-  
 
   var today = new Date();  //Get today's date
   var lastDate = new Date(today.getFullYear() +0, 11, 31);  //To get the 31st Dec of next year
 
   var year1 = moment().format('YYYY');
 
-  if (jQuery().daterangepicker) {
+//   @foreach($calendarDivisi as $c)
+//             {
+//                 title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
+//                 start: "{{ $c->tgl_mulai }}", // a property!
+//                 end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
+//                 color: '#334D6E',
+//                 allDay:true,
+//             },
+//             @endforeach
+
+
+
+if (jQuery().daterangepicker) {
     if ($(".datepicker").length) {
       $(".datepicker").daterangepicker({
         locale: { format: "YYYY-MM-DD" },
         singleDatePicker: true,
         minDate: dateFormated,
-        maxDate: lastDate, //set the lastDate as maxDate
         isInvalidDate: function(date) {
             var dateRanges = [
-                // { 'start': moment().startOf('year').format('YYYY-MM-DD'), 'end': moment().endtOf('year').format('YYYY-MM-DD') },
-                { 'start': moment(`${year1}-10-9`), 'end': moment(`${year1}-10-9`) },
+                @foreach($getRagneTanggal as $g)
+                { 'start': moment('{{ $g->tgl_mulai }}'), 'end': moment('{{ $g->tgl_akhir }}') },
+                // { 'start': moment('2022-10-25'), 'end': moment('2022-10-30') },
+                @endforeach
             ];
             return dateRanges.reduce(function(bool, range) {
-                return bool || (date >= range.start && date <= range.end || date.day() == 0 );
+                return bool || (date >= range.start && date <= range.end || date.day() == 0);
             }, false);
         }
         // isInvalidDate: function(date) {

@@ -42,7 +42,7 @@ class PermohonanCutiController extends Controller
             $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
-            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','permohonan_cuti.warna_cuti')
             ->where('permohonan_cuti.status','Diterima')
             // ->limit(5)
             ->get();
@@ -58,8 +58,13 @@ class PermohonanCutiController extends Controller
             $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
             ->join('karyawan','users.id','=','karyawan.user_id')
-            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon')
-            ->where('permohonan_cuti.status','Diterima')
+            ->select('users.name','karyawan.divisi','permohonan_cuti.id','permohonan_cuti.alasan_cuti','permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir','permohonan_cuti.status','permohonan_cuti.ket_tolak','permohonan_cuti.durasi_cuti','permohonan_cuti.tgl_memohon','permohonan_cuti.warna_cuti')
+            // ->where('permohonan_cuti.status','Diterima')
+            ->where(function($query){
+                $query->where('permohonan_cuti.status','Diterima');
+                $query->orWhere('permohonan_cuti.status','Baru');
+                $query->orWhere('permohonan_cuti.status','Diatasan');
+            })
             // ->limit(5)
             ->get();
 
@@ -140,6 +145,7 @@ class PermohonanCutiController extends Controller
      */
     public function store(Request $request)
     {
+
         $id=Auth::user()->id;
         $permohonan = DB::table('karyawan')
             ->join('permohonan_cuti','karyawan.id','=','permohonan_cuti.user_id')
@@ -163,6 +169,7 @@ class PermohonanCutiController extends Controller
 
         // dd($arrayTanggal);
             
+        
 
         $data = DB::table('karyawan')->select('jumlah_cuti')->where('user_id',$id)->get();
 
@@ -201,6 +208,7 @@ class PermohonanCutiController extends Controller
                 'tgl_mulai' => $request->tgl_mulai,
                 'tgl_akhir' => $request->tgl_akhir,
                 'durasi_cuti' => $totalCuti,
+                'warna_cuti' => "#929090",
                 'tgl_memohon' => Carbon::now(),
                 'status' => 'Baru',
                 'created_at' => Carbon::now()->toDateTimeString()
@@ -286,6 +294,7 @@ class PermohonanCutiController extends Controller
                     'tgl_mulai' => $request->tgl_mulai,
                     'tgl_akhir' => $request->tgl_akhir,
                     'durasi_cuti' => $totalCuti,
+                    'warna_cuti' => "#6900c7",
                     'tgl_memohon' => Carbon::now(),
                     'status' => 'Diatasan',
                     'created_at' => Carbon::now()->toDateTimeString()
@@ -374,6 +383,7 @@ class PermohonanCutiController extends Controller
                 'tgl_akhir' => $request->tgl_akhir,
                 'durasi_cuti' => $totalCuti,
                 'tgl_memohon' => Carbon::now(),
+                'warna_cuti' => "#929090",
                 'status' => 'Baru',
                 'created_at' => Carbon::now()->toDateTimeString()
             ]);
@@ -458,6 +468,7 @@ class PermohonanCutiController extends Controller
                 'tgl_mulai' => $request->tgl_mulai,
                 'tgl_akhir' => $request->tgl_akhir,
                 'durasi_cuti' => $totalCuti,
+                'warna_cuti' => "#6900c7",
                 'tgl_memohon' => Carbon::now(),
                 'status' => 'Diatasan',
                 'created_at' => Carbon::now()->toDateTimeString()
@@ -578,6 +589,7 @@ class PermohonanCutiController extends Controller
      */
     public function setuju($id)
     {
+
         $data = DB::table('users')
         ->join('karyawan','users.id','=','karyawan.user_id')
         ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
@@ -595,6 +607,7 @@ class PermohonanCutiController extends Controller
         $tgl_akhir='';
         $status='';
         $jumlah_cuti='';
+        
 
         foreach ($data as $key => $value) {
             $user_id = $value->user_id ;
@@ -621,6 +634,12 @@ class PermohonanCutiController extends Controller
             // 'tgl_mulai' => $tgl_mulai,
             // 'tgl_akhir' => $tgl_akhir,
             'status' => "Diterima"
+        ]);
+
+        DB::table('permohonan_cuti')->where('id',$id)->update([
+            'user_id' => $user_id,
+            'status' => "Diterima",
+            'warna_cuti' => "#00ac69",
         ]);
 
         $getPesan = 'Permohonan Cuti Anda Telah Disetujui Oleh Atasan';
@@ -701,6 +720,7 @@ class PermohonanCutiController extends Controller
      */
     public function dikirim($id)
     {
+
         $data = DB::table('users')
         ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
         ->select('permohonan_cuti.id','permohonan_cuti.user_id','permohonan_cuti.status')
@@ -709,7 +729,8 @@ class PermohonanCutiController extends Controller
         
         DB::table('permohonan_cuti')->where('id',$id)->update([
             // 'user_id' => $user_id,
-            'status' => "Diatasan"
+            'status' => "Diatasan",
+            'warna_cuti' => "#6900c7",
         ]);
 
         $getNama = DB::table('users')
@@ -811,6 +832,7 @@ class PermohonanCutiController extends Controller
      */
     public function tolak(Request $request)
     {
+        
         $data = DB::table('users')
         ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
         ->select('permohonan_cuti.id','permohonan_cuti.user_id','users.name',

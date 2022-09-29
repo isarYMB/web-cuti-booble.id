@@ -37,34 +37,34 @@
         </style>
 
         <!-- FullCalendar -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-        <script type="text/javascript">
-          document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-              initialView: 'dayGridMonth',
-              headerToolbar: {
-                left: 'prev',
-                center: 'title',
-                right: 'next',
-              },
-              events: [
-                @foreach($calendarDivisi as $c)
-                {
-                    title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
-                    start: "{{ $c->tgl_mulai }}", // a property!
-                    end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
-                    color: '#334D6E',
-                    allDay:true,
-                },
-                @endforeach
-              ],
-              editable: false
-            });
-            calendar.render();
-          });
-        </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          headerToolbar: {
+            left: 'prev',
+            center: 'title',
+            right: 'next',
+          },
+          events: [
+            @foreach($permohonanTerima as $c)
+            {
+                title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
+                start: "{{ $c->tgl_mulai }}", // a property!
+                end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
+                color: "{{ $c->warna_cuti }}",
+                allDay:true,
+            },
+            @endforeach
+          ],
+          editable: false
+        });
+        calendar.render();
+      });
+    </script>
       </head>
       
 <body>
@@ -301,21 +301,26 @@
                             <th>Tgl Memohon</th>
                             <th>Nama Pegawai</th>
                             <th>Alasan Cuti</th>
-                            <th>Mulai Cuti</th>
-                            <th>Berakhir Cuti</th>
+                            <th>Mulai</th>
+                            <th>Berakhir</th>
                             <th>Durasi</th>
                             {{-- <th>Ket. Tolak</th> --}}
                             <th>Status</th>
                             <th class="text-center">#</th>
                         </tr>
+                        @if($permohonanDivisi->isEmpty())
+                        <tr>
+                        <td colspan="8" class="p-0 text-center">Data Pengajuan Cuti Kosong</td>
+                        </tr>
+                        @else
                         @foreach($permohonanDivisi as $i => $p)
                         <tr>
                             <td class="p-0 text-center">{{$i+1}}</td>
-                            <td class="align-middle">{{$p->tgl_memohon}}</td>
+                            <td class="align-middle" style="min-width: 100px;">{{$p->tgl_memohon}}</td>
                             <td class="font-weight-600">{{$p->name}}</td>
                             <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                            <td class="align-middle">{{$p->tgl_mulai}}</td>
-                            <td class="align-middle">{{$p->tgl_akhir}}</td>
+                            <td class="align-middle" style="min-width: 100px;">{{$p->tgl_mulai}}</td>
+                            <td class="align-middle" style="min-width: 100px;">{{$p->tgl_akhir}}</td>
                             <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
                             {{-- <td>
                                 @if($p->status === "Ditolak")
@@ -354,6 +359,7 @@
                         </tr>
                         
                         @endforeach
+                        @endif
                     </table>
                     <br>
                     {{ $permohonanDivisi->links() }}

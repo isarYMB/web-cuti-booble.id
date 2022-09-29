@@ -49,35 +49,34 @@
         {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css"> --}}
       
         <!-- FullCalendar -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-        <script type="text/javascript">
-          document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-              initialView: 'dayGridMonth',
-              headerToolbar: {
-                left: 'prev',
-                center: 'title',
-                right: 'next',
-              },
-              events: [
-                @foreach($permohonanTerima as $c)
-                {
-                    title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
-                    start: "{{ $c->tgl_mulai }}", // a property!
-                    end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
-                    color: '#334D6E',
-                    allDay:true,
-                },
-                
-                @endforeach
-              ],
-              editable: false
-            });
-            calendar.render();
-          });
-        </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          headerToolbar: {
+            left: 'prev',
+            center: 'title',
+            right: 'next',
+          },
+          events: [
+            @foreach($permohonanTerima as $c)
+            {
+                title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
+                start: "{{ $c->tgl_mulai }}", // a property!
+                end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
+                color: "{{ $c->warna_cuti }}",
+                allDay:true,
+            },
+            @endforeach
+          ],
+          editable: false
+        });
+        calendar.render();
+      });
+    </script>
       </head>
       
 <body>
@@ -290,25 +289,30 @@
                 <div class="card-body">
                     <div class="table-responsive table-invoice">
                     <table class="table table-striped" id="table_id">
-                        <tr>
+                        <tr> 
                             <th class="text-center">No</th>
-                            <th class="text-center">Tgl Memohon</th>
-                            <th class="text-center">Nama Pegawai</th>
-                            <th class="text-center">Alasan Cuti</th>
-                            <th class="text-center">Mulai Cuti</th>
-                            <th class="text-center">Berakhir Cuti</th>
+                            <th class="text-center"style="min-width: 100px;">Tgl Memohon</th>
+                            <th class="text-center" style="min-width: 100px;">Nama Pegawai</th>
+                            <th class="text-center" style="min-width: 100px;">Alasan Cuti</th>
+                            <th class="text-center" style="min-width: 100px;">Mulai</th>
+                            <th class="text-center" style="min-width: 100px;">Berakhir</th>
                             <th class="text-center">Durasi</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">#</th>
                         </tr>
+                        @if($permohonan->isEmpty())
+                        <tr>
+                        <td colspan="8" class="p-0 text-center">Data Pengajuan Cuti Kosong</td>
+                        </tr>
+                        @else
                         @foreach($permohonan as $i => $p)
                         <tr>
                             <td class="p-0 text-center">{{$i+1}}</td>
-                            <td class="align-middle">{{$p->tgl_memohon}}</td>
+                            <td class="align-middle text-center">{{$p->tgl_memohon}}</td>
                             <td class="font-weight-600">{{$p->name}}</td>
-                            <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                            <td class="align-middle">{{$p->tgl_mulai}}</td>
-                            <td class="align-middle">{{$p->tgl_akhir}}</td>
+                            <td class="text-truncate" >{{$p->alasan_cuti}}</td>
+                            <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
+                            <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                             <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
                             <td class="align-middle text-center">
                                 @if($p->status === "Baru")
@@ -340,6 +344,7 @@
                             </td>
                         </tr>
                         @endforeach
+                        @endif
                     </table>
                     <br>
                         {{ $permohonan->links() }}

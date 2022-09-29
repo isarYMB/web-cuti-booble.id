@@ -31,36 +31,35 @@
     <link rel='shortcut icon' type='image/x-icon' href="{{asset('https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png')}}" />
     <script type="text/javascript" src="{{ mix('js/app.js') }}"></script>
 
-    <!-- FullCalendar -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
-    <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          headerToolbar: {
-            left: 'prev',
-            center: 'title',
-            right: 'next',
-          },
-          events: [
-            @foreach($permohonanTerima as $c)
-            {
-                title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
-                start: "{{ $c->tgl_mulai }}", // a property!
-                end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
-                color: '#334D6E',
-                allDay:true,
-            },
-            
-            @endforeach
-          ],
-          editable: false
-        });
-        calendar.render();
-      });
-    </script>
+        <!-- FullCalendar -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+        <script type="text/javascript">
+          document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridMonth',
+              headerToolbar: {
+                left: 'prev',
+                center: 'title',
+                right: 'next',
+              },
+              events: [
+                @foreach($permohonanTerima as $c)
+                {
+                    title: "{{ $c->name }} ({{ $c->divisi }})", // a property!
+                    start: "{{ $c->tgl_mulai }}", // a property!
+                    end: "{{ \Carbon\Carbon::parse($c->tgl_akhir)->addDays(1) }}",
+                    color: "{{ $c->warna_cuti }}",
+                    allDay:true,
+                },
+                @endforeach
+              ],
+              editable: false
+            });
+            calendar.render();
+          });
+        </script>
 
   </head>
   <body>
@@ -242,22 +241,27 @@
                 <table class="table table-striped" id="table-1">
                     <tr>
                         <th class="text-center">No</th>
-                        <th>Tanggal Mohon</th>
+                        <th style="min-width: 100px;">Tgl Mohon</th>
                         <th>Nama Pegawai</th>
                         <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
-                        <th>Durasi Cuti</th>
+                        <th style="min-width: 100px;">Mulai</th>
+                        <th style="min-width: 100px;">Berakhir</th>
+                        <th style="min-width: 100px;">Durasi</th>
                         <th class="text-center">#</th>
                     </tr>
+                    @if($permohonan->isEmpty())
+                        <tr>
+                        <td colspan="8" class="p-0 text-center">Data Pengajuan Cuti Kosong</td>
+                        </tr>
+                    @else
                     @foreach($permohonan as $i => $p)
                     <tr>
                         <td class="p-0 text-center">{{$i+1}}</td>
-                        <td class="align-middle">{{$p->tgl_memohon}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_memohon}}</td>
                         <td class="font-weight-600">{{$p->name}}</td>
                         <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                        <td class="align-middle">{{$p->tgl_mulai}}</td>
-                        <td class="align-middle">{{$p->tgl_akhir}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                         <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
                         @if($p->status === "Baru")
                         <td class="text-center">
@@ -308,6 +312,7 @@
                   </div> --}}
 
                     @endforeach
+                    @endif
                 </table>
                 <br>
                         {{ $permohonan->links() }}
@@ -394,22 +399,27 @@
                 <table class="table table-striped" id="table-1">
                     <tr>
                         <th class="text-center">No</th>
-                        <th>Tanggal Mohon</th>
+                        <th style="min-width: 100px;">Tgl Mohon</th>
                         <th>Nama Pegawai</th>
                         <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
-                        <th>Durasi Cuti</th>
+                        <th style="min-width: 100px;">Mulai</th>
+                        <th style="min-width: 100px;">Berakhir</th>
+                        <th>Durasi</th>
                         <th class="text-center">#</th>
                     </tr>
+                    @if($permohonan->isEmpty())
+                        <tr>
+                        <td colspan="8" class="p-0 text-center">Data Pengajuan Cuti Kosong</td>
+                        </tr>
+                    @else
                     @foreach($permohonan as $i => $p)
                     <tr>
                         <td class="p-0 text-center">{{$i+1}}</td>
-                        <td class="align-middle">{{$p->tgl_memohon}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_memohon}}</td>
                         <td class="font-weight-600">{{$p->name}}</td>
                         <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                        <td class="align-middle">{{$p->tgl_mulai}}</td>
-                        <td class="align-middle">{{$p->tgl_akhir}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                         <td class="font-weight-600 text-center">{{$p->durasi_cuti}}</td>
                         <td>
                             <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.setuju',['id' => $p->id])}}" >Setuju</a> 
@@ -424,6 +434,7 @@
 
                     
                     @endforeach
+                    @endif
                 </table>
                 <br>
                         {{ $permohonan->links() }}

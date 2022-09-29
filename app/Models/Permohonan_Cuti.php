@@ -14,7 +14,8 @@ class Permohonan_Cuti extends Model
     protected $fillable = [
         'user_id',
         'alasan_cuti',
-        'ket_tolak'
+        'ket_tolak',
+        'warna_cuti'
     ];
 
     protected $dates = [

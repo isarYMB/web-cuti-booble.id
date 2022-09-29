@@ -39,10 +39,10 @@
                 <table class="table table-striped" id="table-1">
                     <tr>
                         <th class="text-center">No</th>
-                        <th>nama karyawan</th>
+                        <th>Nama Karyawan</th>
                         <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
+                        <th>Mulai</th>
+                        <th>Berakhir</th>
                         <th>Status</th>
                     </tr>
                     @foreach($permohonan as $i => $p)

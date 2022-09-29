@@ -58,16 +58,16 @@
                       <tr>
                         <th class="text-center">No</th>
                         <th>Alasan Cuti</th>
-                        <th>Mulai Cuti</th>
-                        <th>Berakhir Cuti</th>
+                        <th style="min-width: 100px;">Mulai</th>
+                        <th style="min-width: 100px;">Berakhir</th>
                         <th>Status</th>
                       </tr>
                     @foreach($permohonan as $i => $p)
                       <tr>
                         <td class="p-0 text-center">{{$i+1}}</td>
                         <td class="text-truncate">{{$p->alasan_cuti}}</td>
-                        <td class="align-middle">{{$p->tgl_mulai}}</td>
-                        <td class="align-middle">{{$p->tgl_akhir}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
+                        <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                         <td class="align-middle"><span class="badge badge-warning">{{$p->status}}</span></td>
                       </tr>
                     @endforeach
@@ -97,11 +97,11 @@
                     <textarea class="form-control" name="alasan_cuti" required ></textarea>
                   </div>
                   <div class="form-group">
-                    <label>tanggal Mulai Cuti</label>
+                    <label>Tanggal Mulai Cuti</label>
                     <input type="text" name="tgl_mulai" required class="form-control datepicker">
                   </div>
                   <div class="form-group">
-                    <label>tanggal Berahir Cuti</label>
+                    <label>Tanggal Berahir Cuti</label>
                     <input type="text" name="tgl_akhir" required class="form-control datepicker">
                   </div> 
                   <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>

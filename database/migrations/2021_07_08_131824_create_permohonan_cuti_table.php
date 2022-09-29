@@ -23,6 +23,7 @@ class CreatePermohonanCutiTable extends Migration
             $table->date('tgl_mulai');
             $table->date('tgl_akhir');
             $table->string('status');
+            $table->string('warna_cuti')->nullable();
             $table->timestamps();
         });
     }
