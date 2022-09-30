@@ -32,7 +32,6 @@
               <div class="col-12 col-md-12 col-lg-12">
                 <Form method="POST" action="{{route('karyawan.store')}}">
                 @csrf
-                {{-- @foreach ($karyawan as $k) --}}
                     <div class="card">
                     <div class="card-header">
                         <h4>Form Karyawan</h4>
@@ -60,7 +59,7 @@
                           <label>Divisi</label>
                           <select name="divisi" class="custom-select">
                             @foreach($divisi as $row)
-                              <option value="{{old('divisi'),$row->nama_divisi}}">{{$row->nama_divisi}}</option>
+                              <option value="{{$row->nama_divisi}}">{{$row->nama_divisi}}</option>
                             @endforeach
                           </select>
                         </div>
@@ -68,7 +67,7 @@
                           <label>Jabatan</label>
                           <select name="jabatan" class="custom-select">
                             @foreach($jabatan as $row)
-                              <option value="{{old('jabatan'),$row->nama_jabatan}}">{{$row->nama_jabatan}}</option>
+                              <option value="{{$row->nama_jabatan}}">{{$row->nama_jabatan}}</option>
                             @endforeach
                           </select>
                         </div>
@@ -94,7 +93,7 @@
                             <label>Role</label>
                             <select name="role" class="custom-select">
                               @foreach($role as $row)
-                                <option value="{{old('role'),$row->nama_role}}">{{$row->nama_role}}</option>
+                                <option value="{{$row->nama_role}}">{{$row->nama_role}}</option>
                               @endforeach
                             </select>
                           </div>
@@ -107,9 +106,9 @@
                           </span>
                           @enderror
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                           <label>Password</label>
-                          <input class="form-control @error('password') is-invalid @enderror" type="password" class="form-control" name="password">
+                          <input class="form-control @error('password') is-invalid @enderror" type="password" name="password">
                           @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>Inputan password nimimal 6 karakter</strong>
@@ -118,19 +117,18 @@
                         </div>
                         <div class="form-group">
                           <label>Konfirmasi Password</label>
-                          <input class="form-control @error('password') is-invalid @enderror" type="password" class="form-control" name="password_confirmation">
+                          <input class="form-control @error('password') is-invalid @enderror" type="password" name="password_confirmation">
                           @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>Password yang dimasukkan tidak sama</strong>
                             </span>
                           @enderror
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="card-footer text-right">
                         <button class="btn btn-primary mr-1" type="submit">Submit</button>
                     </div>
                     </div>
-                {{-- @endforeach --}}
                 </Form>
               </div>
             </div>

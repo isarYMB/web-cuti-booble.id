@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    
     use HasFactory, Notifiable;
 
     /**
@@ -29,17 +30,6 @@ class User extends Authenticatable
     public function karyawan()
     {
         return $this->hasOne(Karyawan::class);
-    }
-
-    public function permohonanCuti()
-    {
-        return $this->hasMany(Permohonan_Cuti::class);
-    }
-
-    // scope
-    public function scopeSearch($query, $name)
-    {
-        return $query->where('name', 'LIKE', "%{$name}%");
     }
 
     /**

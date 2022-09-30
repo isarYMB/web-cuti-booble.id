@@ -10,7 +10,10 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use App\Mail\SendEmail;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 
 class KaryawanController extends Controller
@@ -61,6 +64,9 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
 
+        $randomPassword =Str::random(10);
+        $hashPassword = Hash::make($randomPassword);
+
         $name = $request->old('name');
         $nik = $request->old('nik');
         $email = $request->old('email');
@@ -71,21 +77,25 @@ class KaryawanController extends Controller
         $jumlah_cuti = $request->old('jumlah_cuti');
 
         $validasiUser = $request->validate([
-            'name' => ['required', 'max:255'],
-            'nik' => ['required', 'max:16', 'min:16'],
-            'email' => ['unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:6'],
-            'no_telpon' => ['required', 'max:13', 'min:12'],
-            'role' => ['required'],
+            'name' => 'required|max:255',
+            'nik' => 'required|max:16|min:16',
+            'email' => 'required|unique:users,email',
+            'password' => 'min:6',
+            'role' => 'required',
+            'no_telpon' => 'required|max:13|min:12',
         ]);
 
         $validasiKaryawan = $request->validate([
-            'divisi' => ['required'],
-            'jabatan' => ['required'],
-            'jumlah_cuti' => ['required', 'max:2', 'min:1'],
+            'divisi' => 'required',
+            'jabatan' => 'required',
+            'jumlah_cuti' => 'required|max:2|min:1',
         ]);
 
-        $validasiUser['password'] = Hash::make($validasiUser['password']);
+        
+        $validasiUser['password'] = $hashPassword;
+
+
+        
 
         // User::create($validasiUser);
 
@@ -93,6 +103,15 @@ class KaryawanController extends Controller
 
         $user = User::create($validasiUser);
         $user->karyawan()->create($validasiKaryawan);
+
+        $isi_email = [
+            'title' => 'Akun Permohonan Cuti Anda Telah Dibuat',
+            'body' => 'Silahkan login dengan email dan password di bawah dan lakukan pengubahan password segera.',
+            'email' => $validasiUser['email'],
+            'password' => $randomPassword
+        ];
+
+        Mail::to($validasiUser['email'])->send(new SendEmail($isi_email));
 
         return redirect()->route('karyawan.index')->with(['success' => 'Data Karyawan Berhasil Ditambahkan!'])->withInput();
     }

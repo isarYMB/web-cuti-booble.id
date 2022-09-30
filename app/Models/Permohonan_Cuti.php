@@ -23,9 +23,9 @@ class Permohonan_Cuti extends Model
         'tgl_akhir',
     ];
 
-    public function userCuti()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function userCuti()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
 }

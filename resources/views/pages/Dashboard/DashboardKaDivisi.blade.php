@@ -298,14 +298,14 @@
                     <table class="table table-striped">
                         <tr>
                             <th class="text-center">No</th>
-                            <th>Tgl Memohon</th>
-                            <th>Nama Pegawai</th>
-                            <th>Alasan Cuti</th>
-                            <th>Mulai</th>
-                            <th>Berakhir</th>
-                            <th>Durasi</th>
+                            <th class="text-center" style="min-width: 120px;">Tgl Memohon</th>
+                            <th style="min-width: 120px;">Nama Pegawai</th>
+                            <th class="text-center">Alasan Cuti</th>
+                            <th class="text-center">Mulai</th>
+                            <th class="text-center">Berakhir</th>
+                            <th class="text-center">Durasi</th>
                             {{-- <th>Ket. Tolak</th> --}}
-                            <th>Status</th>
+                            <th class="text-center">Status</th>
                             <th class="text-center">#</th>
                         </tr>
                         @if($permohonanDivisi->isEmpty())
@@ -316,7 +316,7 @@
                         @foreach($permohonanDivisi as $i => $p)
                         <tr>
                             <td class="p-0 text-center">{{$i+1}}</td>
-                            <td class="align-middle" style="min-width: 100px;">{{$p->tgl_memohon}}</td>
+                            <td class="align-middle text-center" style="min-width: 100px;">{{$p->tgl_memohon}}</td>
                             <td class="font-weight-600">{{$p->name}}</td>
                             <td class="text-truncate">{{$p->alasan_cuti}}</td>
                             <td class="align-middle" style="min-width: 100px;">{{$p->tgl_mulai}}</td>
