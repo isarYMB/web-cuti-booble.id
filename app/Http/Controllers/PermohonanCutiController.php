@@ -29,13 +29,7 @@ class PermohonanCutiController extends Controller
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak')
-                ->where(
-                    function ($query) {
-                        return $query
-                            ->where('permohonan_cuti.status', '=', 'Diproses')
-                            ->orWhere('permohonan_cuti.status', '=', 'Diatasan');
-                    }
-                )
+                ->where('permohonan_cuti.status', '=', 'Diproses')
                 ->orderBy('permohonan_cuti.created_at', "desc");
             // ->get();
 
@@ -46,12 +40,12 @@ class PermohonanCutiController extends Controller
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->select('users.name', 'karyawan.divisi', 'permohonan_cuti.id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.warna_cuti')
                 ->where('permohonan_cuti.status', 'Diterima')
-                // ->limit(5)
                 ->get();
         } elseif (Auth::user()->role === "Leader") {
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-                ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status')
+                ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak')
                 ->orderBy('permohonan_cuti.created_at', "desc")
                 ->where('permohonan_cuti.status', 'Diatasan')
                 ->paginate(10);
@@ -209,19 +203,36 @@ class PermohonanCutiController extends Controller
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
-                // $getNama = Auth::user()->value('name');
+
+                //Pesan untuk karyawan
 
                 $getNama = DB::table('users')
-                    ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-                    ->where('permohonan_cuti.id', $id)
-                    ->value('users.name');
+                    ->where('id', $id)
+                    ->value('name');
+                $getDivisi = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.divisi');
+                $getJabatan = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.jabatan');
 
-                $getPesan = 'Karyawan Atas Nama' . $getNama . ' Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                     ->where('users.role', 'Kepala Divisi')
                     ->where('karyawan.divisi', Auth::user()->karyawan->divisi)
+                    ->value('users.no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
                     ->value('users.no_telpon');
 
                 function send_wa($telp, $pesan)
@@ -284,8 +295,9 @@ class PermohonanCutiController extends Controller
 
                 send_wa($getTelp, $getPesan);
 
+                send_wa($getTelpHRD, $getPesanHRD);
 
-                return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti (Ada minggu)']);
+                return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti']);
             } else {
                 $totalCuti = $durasi->days - 0;
                 DB::table('permohonan_cuti')->insert([
@@ -300,18 +312,34 @@ class PermohonanCutiController extends Controller
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
-                // $getNama = Auth::user()->value('name');
+                //Pesan untuk karyawan
 
                 $getNama = DB::table('users')
-                    ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-                    ->where('permohonan_cuti.id', $id)
-                    ->value('users.name');
+                    ->where('id', $id)
+                    ->value('name');
+                $getDivisi = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.divisi');
+                $getJabatan = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.jabatan');
 
-                $getPesan = 'Karyawan Atas Nama' . $getNama . 'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->where('role', 'Leader')
                     ->value('no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
+                    ->value('users.no_telpon');
 
                 function send_wa($telp, $pesan)
                 {
@@ -373,8 +401,10 @@ class PermohonanCutiController extends Controller
 
                 send_wa($getTelp, $getPesan);
 
+                send_wa($getTelpHRD, $getPesanHRD);
 
-                return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti (Ada minggu)']);
+
+                return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti.']);
             }
         } else {
             if (Auth::user()->role === "karyawan") {
@@ -392,17 +422,35 @@ class PermohonanCutiController extends Controller
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
-                $getNama = DB::table('users')
-                    ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-                    ->where('permohonan_cuti.id', $id)
-                    ->value('users.name');
+                //Pesan untuk karyawan
 
-                $getPesan = 'Karyawan Atas Nama' . $getNama . 'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
+                $getNama = DB::table('users')
+                    ->where('id', $id)
+                    ->value('name');
+                $getDivisi = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.divisi');
+                $getJabatan = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.jabatan');
+
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                     ->where('users.role', 'Kepala Divisi')
                     ->where('karyawan.divisi', Auth::user()->karyawan->divisi)
+                    ->value('users.no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
                     ->value('users.no_telpon');
 
                 function send_wa($telp, $pesan)
@@ -465,6 +513,8 @@ class PermohonanCutiController extends Controller
 
                 send_wa($getTelp, $getPesan);
 
+                send_wa($getTelpHRD, $getPesanHRD);
+
                 return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti']);
             } else {
                 $totalCuti = $durasi->days + 1;
@@ -481,18 +531,34 @@ class PermohonanCutiController extends Controller
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
-                // $getNama = Auth::user()->value('name');
+                //Pesan untuk karyawan
 
                 $getNama = DB::table('users')
-                    ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-                    ->where('permohonan_cuti.id', $id)
-                    ->value('users.name');
+                    ->where('id', $id)
+                    ->value('name');
+                $getDivisi = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.divisi');
+                $getJabatan = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.id', $id)
+                    ->value('karyawan.jabatan');
 
-                $getPesan = 'Karyawan Atas Nama' . $getNama . 'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->where('role', 'Leader')
                     ->value('no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
+                    ->value('users.no_telpon');
 
                 function send_wa($telp, $pesan)
                 {
@@ -553,6 +619,7 @@ class PermohonanCutiController extends Controller
                 }
 
                 send_wa($getTelp, $getPesan);
+                send_wa($getTelpHRD, $getPesanHRD);
 
                 return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti']);
             }
@@ -642,12 +709,12 @@ class PermohonanCutiController extends Controller
         $jmlCuti = $jumlah_cuti - $durasi->days - 1;
 
         DB::table('karyawan')->where('user_id', $user_id)->update([
-            'user_id' => $user_id,
+            // 'user_id' => $user_id,
             'jumlah_cuti' => $jmlCuti,
         ]);
 
         DB::table('permohonan_cuti')->where('id', $id)->update([
-            'user_id' => $user_id,
+            // 'user_id' => $user_id,
             // 'alasan_cuti' => $alasan_cuti,
             // 'tgl_mulai' => $tgl_mulai,
             // 'tgl_akhir' => $tgl_akhir,
@@ -655,16 +722,57 @@ class PermohonanCutiController extends Controller
         ]);
 
         DB::table('permohonan_cuti')->where('id', $id)->update([
-            'user_id' => $user_id,
+            // 'user_id' => $user_id,
             'status' => "Diterima",
             'warna_cuti' => "#00ac69",
         ]);
 
-        $getPesan = 'Permohonan Cuti Anda Telah Disetujui oleh Atasan. Silahkan Mengecek Status Cuti di Web Pengajuan Cuti Booble.id';
+        // Pesan untuk Karyawan
+
+        $getUserId = DB::table('permohonan_cuti')
+            ->where('id', $id)
+            ->value('user_id');
+
+        $getNama = DB::table('users')
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->select(
+                'users.name',
+            )
+            ->where('permohonan_cuti.id', $id)
+            ->value('users.name');
+        $getDivisi = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select(
+                'karyawan.divisi',
+            )
+            ->where('karyawan.user_id', $getUserId)
+            ->value('karyawan.divisi');
+        $getJabatan = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select(
+                'karyawan.jabatan',
+            )
+            ->where('karyawan.user_id', $getUserId)
+            ->value('karyawan.jabatan');
 
         $getTelp = DB::table('users')
-            ->where('id', $id)
-            ->value('no_telpon');
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->select(
+                'users.no_telpon',
+            )
+            ->where('permohonan_cuti.id', $id)
+            ->value('users.no_telpon');
+
+        $getPesan = "*Pengajuan* *Cuti* *Anda* *Telah* *Disetujui*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+        //Pesan untuk HRD
+
+        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan* *Telah* *Disetujui*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+        $getTelpHRD = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->where('users.role', 'HRD')
+            ->value('users.no_telpon');
 
         function send_waSetuju($telp, $pesan)
         {
@@ -725,6 +833,8 @@ class PermohonanCutiController extends Controller
         }
 
         send_waSetuju($getTelp, $getPesan);
+
+        send_waSetuju($getTelpHRD, $getPesanHRD);
 
         return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Berhasil Disetujui']);
     }
@@ -886,7 +996,7 @@ class PermohonanCutiController extends Controller
         }
 
         DB::table('permohonan_cuti')->where('id', $request->custId)->update([
-            'user_id' => $user_id,
+            // 'user_id' => $request->custId,
             // 'alasan_cuti' => $alasan_cuti,
             // 'tgl_mulai' => $tgl_mulai,
             // 'tgl_akhir' => $tgl_akhir,
@@ -894,13 +1004,54 @@ class PermohonanCutiController extends Controller
             'ket_tolak' => $request->ket_tolak,
         ]);
 
-        $getPesan = $request->ket_tolak;
+        // Pesan untuk Karyawan
 
-        $getPesan = 'Pengajuan Cuti Anda Ditolak dengan Alasan:' . ' ' . $request->ket_tolak . '. Mohon Mengecek Status Cuti Di Web Pengajuan Cuti Booble.id';
+        $getUserId = DB::table('permohonan_cuti')
+            ->where('id', $request->custId)
+            ->value('user_id');
+
+        $getNama = DB::table('users')
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->select(
+                'users.name',
+            )
+            ->where('permohonan_cuti.id', $request->custId)
+            ->value('users.name');
+        $getDivisi = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select(
+                'karyawan.divisi',
+            )
+            ->where('karyawan.user_id', $getUserId)
+            ->value('karyawan.divisi');
+        $getJabatan = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select(
+                'karyawan.jabatan',
+            )
+            ->where('karyawan.user_id', $getUserId)
+            ->value('karyawan.jabatan');
 
         $getTelp = DB::table('users')
-            ->where('id', $request->custId)
-            ->value('no_telpon');
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->select(
+                'users.no_telpon',
+            )
+            ->where('permohonan_cuti.id', $request->custId)
+            ->value('users.no_telpon');
+
+        $getPesan = $request->ket_tolak;
+
+        $getPesan = "*Pengajuan* *Cuti* *Anda Ditolak*" . "\n\nAlasan: " .  "*"  . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+        //Pesan untuk HRD
+
+        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan Ditolak*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nAlasan: " . "*"  . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+        $getTelpHRD = DB::table('users')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->where('users.role', 'HRD')
+            ->value('users.no_telpon');
 
         function send_wa($telp, $pesan)
         {
@@ -961,6 +1112,8 @@ class PermohonanCutiController extends Controller
         }
 
         send_wa($getTelp, $getPesan);
+
+        send_wa($getTelpHRD, $getPesanHRD);
 
         return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Berhasi Ditolak!']);
     }

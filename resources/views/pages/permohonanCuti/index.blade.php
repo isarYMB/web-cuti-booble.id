@@ -543,13 +543,13 @@
                                                             <td class="font-weight-600 text-center">
                                                                 {{ $p->durasi_cuti }}</td>
                                                             <td>
-                                                                <a class="btn btn-action bg-purple mr-1"
-                                                                    href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setuju</a>
+                                                                <a class="badge batal"
+                                                                    href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a>
                                                                 {{-- <a data-id="{{$p->id}}" href="#" class="btn btn-danger btn-action" data-toggle="modal" data-target="#tolakModal" data-backdrop="false">Tolak</a> --}}
                                                                 <a data-id="{{ $p->id }}"
-                                                                    class="btn btn-danger btn-action"
-                                                                    data-toggle="modal" data-backdrop="true"
-                                                                    href="#"
+                                                                    style="color: white !important"
+                                                                    class="badge ditolak" data-toggle="modal"
+                                                                    data-backdrop="true" href="#"
                                                                     data-target="#tolakModalLeader">Tolak</a>
 
 
@@ -627,6 +627,8 @@
                                         {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
 
                                     </form>
+
+
                                 </div>
                             </div>
                         </div>
