@@ -309,8 +309,8 @@
             <div class="card-statistic-3">
                 <div class="card-icon card-icon-large"><i class="fa fa-spinner"></i></div>
                 <div class="card-content">
-                <h4 class="card-title">Diproses</h4>
-                <span>{{$jmlDiProses}} Diproses</span>
+                <h4 class="card-title">Di Ka.Divisi</h4>
+                <span>{{$jmlDiProses}} Di Ka.Divisi</span>
                 </div>
             </div>
             </div>
@@ -368,9 +368,9 @@
                                                     onchange='this.form.submit()'>
                                                     <option value="">Filter Status</option>
                                                     <option value="Semua">Semua Status</option>
-                                                    <option value="Diproses">Diproses</option>
+                                                    <option value="Di Ka.Divisi">Di Ka.Divisi</option>
                                                     <option value="Diterima">Diterima</option>
-                                                    <option value="Diatasan">Diatasan</option>
+                                                    <option value="Di Direktur">Di Direktur</option>
                                                     <option value="Dibatalkan">Dibatalkan</option>
                                                     <option value="Ditolak">Ditolak</option>
                                                 </select>
@@ -432,14 +432,13 @@
                             </td> --}}
                                                         {{-- <td class="align-middle"><span class="badge bg-success text-white">{{$p->status}}</span></td> --}}
                                                         <td class="align-middle text-center">
-                                                            @if ($p->status === 'Diproses')
-                                                                <span class="badge baru">{{ $p->status }}</span>
+                                                            @if ($p->status === 'Di Ka.Divisi')
+                                                                <span class="badge baru">Diproses</span>
                                                             @elseif($p->status === 'Diterima')
                                                                 <span
                                                                     class="badge diterima">{{ $p->status }}</span>
-                                                            @elseif($p->status === 'Diatasan')
-                                                                <span
-                                                                    class="badge diatasan">{{ $p->status }}</span>
+                                                            @elseif($p->status === 'Di Direktur')
+                                                                <span class="badge diatasan">Diproses</span>
                                                             @elseif($p->status === 'Dibatalkan')
                                                                 <span class="badge batal">{{ $p->status }}</span>
                                                             @elseif($p->status === 'Ditolak')
@@ -484,10 +483,10 @@
                                     <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
 
                                     <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan Diproses</span>
+                                    <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
 
                                     <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
+                                    <span style="vertical-align: middle;">Pengajuan di Direktur</span>
 
                                     <div style="background-color: #00ac69;" class="rectangleKeterangan square"></div>
                                     <span style="vertical-align: middle;">Pengajuan Disetujui</span>

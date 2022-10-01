@@ -273,12 +273,12 @@
                             <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
                             <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                             <td class="align-middle text-center">
-                                @if($p->status === "Diproses")
-                                    <span class="badge baru">{{$p->status}}</span>
+                                @if($p->status === "Di Ka.Divisi")
+                                    <span class="badge baru">Diproses</span>
                                 @elseif($p->status === "Diterima")
                                     <span class="badge diterima">{{$p->status}}</span>
-                                @elseif($p->status === "Diatasan")
-                                    <span class="badge diatasan">{{$p->status}}</span>
+                                @elseif($p->status === "Di Direktur")
+                                    <span class="badge diatasan">Diproses</span>
                                 @elseif($p->status === "Dibatalkan")
                                     <span class="badge batal">{{$p->status}}</span>
                                 @elseif($p->status === "Ditolak")
@@ -289,9 +289,9 @@
                             <td class="text-center">
                                 {{-- @if($p->status === "Diterima")
                                 <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
-                                @if($p->status === "Diproses")
+                                @if($p->status === "Di Ka.Divisi")
                                 <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
-                                @elseif($p->status === "Diatasan")
+                                @elseif($p->status === "Di Direktur")
                                 <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
                                 {{-- <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" >Setuju</a>  --}}
                                 @elseif($p->status === "Batal")
@@ -325,10 +325,10 @@
                             <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
 
                             <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
-                            <span style="vertical-align: middle;">Pengajuan Diproses</span>
+                            <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
 
                             <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
-                            <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
+                            <span style="vertical-align: middle;">Pengajuan di Direktur</span>
 
                             <div style="background-color: #00ac69;" class="rectangleKeterangan square"></div>
                             <span style="vertical-align: middle;">Pengajuan Disetujui</span>

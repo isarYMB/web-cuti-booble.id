@@ -256,27 +256,27 @@
                 <section class="section">
                     <div class="row ">
                         <div class="col">
-                            <div class="card l-bg-cyan-dark">
-                                <div class="card-statistic-3">
-                                    <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                                    <div class="card-content">
-                                        <h4 class="card-title">Pengajuan</h4>
-                                        <span>{{ $jmlPermohonan }} Pengajuan</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
                             <div class="card l-bg-purple-dark">
                                 <div class="card-statistic-3">
                                     <div class="card-icon card-icon-large"><i class="fa fa-spinner"></i></div>
                                     <div class="card-content">
                                         <h4 class="card-title">Diproses</h4>
-                                        <span>{{ $jmlDiProses }} Diproses</span>
+                                        <span>{{ $jmlTotalPengajuan }} Pengajuan</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {{-- <div class="col">
+                            <div class="card l-bg-purple-dark">
+                                <div class="card-statistic-3">
+                                    <div class="card-icon card-icon-large"><i class="fa fa-spinner"></i></div>
+                                    <div class="card-content">
+                                        <h4 class="card-title">Di Direktur</h4>
+                                        <span>{{ $jmlDiProses }} Pengajuan</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
                         <div class="col">
                             <div class="card l-bg-green-dark">
                                 <div class="card-statistic-3">
@@ -300,7 +300,7 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="card l-bg-orange-dark">
+                            <div class="card l-bg-cyan-dark">
                                 <div class="card-statistic-3">
                                     <div class="card-icon card-icon-large"><i class="fa fa-fire"></i></div>
                                     <div class="card-content">
@@ -330,9 +330,9 @@
                                                     onchange='this.form.submit()'>
                                                     <option value="">Filter Status</option>
                                                     <option value="Semua">Semua Status</option>
-                                                    <option value="Diproses">Diproses</option>
+                                                    <option value="Di Ka.Divisi">Di Ka.Divisi</option>
                                                     <option value="Diterima">Diterima</option>
-                                                    <option value="Diatasan">Diatasan</option>
+                                                    <option value="Di Direktur">Di Direktur</option>
                                                     <option value="Dibatalkan">Dibatalkan</option>
                                                     <option value="Ditolak">Ditolak</option>
                                                 </select>
@@ -346,6 +346,21 @@
                                                     class="form-control" type="search" placeholder="search"
                                                     name="searchName" value="{{ request()->input('searchName') }}">
                                             </Form>
+                                        </th>
+                                        <th class="ml-6 mt-3 text-right form-inline">
+                                            <div class="container-fluid">
+                                                <form id="filterDate" class=""
+                                                    action="{{ route('admin.filterDateReport') }}" method="post">
+                                                    @csrf
+                                                    <input type="text" style="height: 40px;" name="daterange"
+                                                        required class="form-control datepicker" id="book_date">
+                                                </form>
+
+                                            </div>
+                                        </th>
+                                        <th class="mt-3 text-right form-inline">
+                                            <button type="submit" style="height: 40px; width:200px;"
+                                                class="btn ml-2 btn-primary m-t-15 waves-effect">Cetak</button>
                                         </th>
                                     </tr>
                                 </div>
@@ -381,14 +396,13 @@
                                                         <td class="font-weight-600 text-center">{{ $p->durasi_cuti }}
                                                         </td>
                                                         <td class="align-middle text-center">
-                                                            @if ($p->status === 'Diproses')
-                                                                <span class="badge baru">{{ $p->status }}</span>
+                                                            @if ($p->status === 'Di Ka.Divisi')
+                                                                <span class="badge baru">Diproses</span>
                                                             @elseif($p->status === 'Diterima')
                                                                 <span
                                                                     class="badge diterima">{{ $p->status }}</span>
-                                                            @elseif($p->status === 'Diatasan')
-                                                                <span
-                                                                    class="badge diatasan">{{ $p->status }}</span>
+                                                            @elseif($p->status === 'Di Direktur')
+                                                                <span class="badge diatasan">Diproses</span>
                                                             @elseif($p->status === 'Dibatalkan')
                                                                 <span class="badge batal">{{ $p->status }}</span>
                                                             @elseif($p->status === 'Ditolak')
@@ -461,10 +475,10 @@
                                     <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
 
                                     <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan Diproses</span>
+                                    <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
 
                                     <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
+                                    <span style="vertical-align: middle;">Pengajuan di Direktur</span>
 
                                     <div style="background-color: #00ac69;" class="rectangleKeterangan square"></div>
                                     <span style="vertical-align: middle;">Pengajuan Disetujui</span>
@@ -573,6 +587,22 @@
     <script src="{{ asset('bundles/jquery-selectric/jquery.selectric.min.js') }}"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 
+    <script>
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left',
+        });
+
+        $(function() {
+            $('#book_date').on('apply.daterangepicker', function(ev, picker) {
+                // var startDate = picker.startDate;
+                // var endDate = picker.endDate;
+                // alert("New date range selected: '" + startDate.format('YYYY-MM-DD') + "' to '" + endDate
+                //     .format(
+                //         'YYYY-MM-DD') + "'");
+                $('#filterDate').submit();
+            });
+        });
+    </script>
 
     <script>
         const table = $('#table_id').DataTable({

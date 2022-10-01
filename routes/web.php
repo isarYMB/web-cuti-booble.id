@@ -44,6 +44,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('admin/dashboard/cariPegawai', [DashboardController::class, 'searchNameAdmin'])->name('admin.searchNameAdmin');
 
+    Route::post('admin/dashboard/filterDateReport', [DashboardController::class, 'filterDateReport'])->name('admin.filterDateReport');
+
     Route::post('admin/dashboard/changeStatusDivisi', [DashboardController::class, 'changeStatusKaDivisi'])->name('admin.changeStatusKaDivisi');
 
     Route::post('admin/dashboard/cariDivisiPegawai', [DashboardController::class, 'searchNameKaDivisi'])->name('admin.searchNameKaDivisi');
@@ -92,6 +94,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('karyawan/permohonan/disetujui', [RiwayatPermohonanController::class, 'disetujui'])->name('karyawan.permohonan.disetujui');
     Route::get('karyawan/permohonan/ditolak', [RiwayatPermohonanController::class, 'ditolak'])->name('karyawan.permohonan.ditolak');
     Route::post('karyawan', [PermohonanCutiController::class, 'store'])->name('permohonan.insert');
+
 
     // Route::post('/setNamaAtasan',[PermohonanCutiController::class, 'isiSurat'])->name('namaAtasan.isiSurat');
 

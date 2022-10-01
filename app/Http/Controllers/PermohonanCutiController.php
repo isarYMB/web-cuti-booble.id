@@ -29,7 +29,7 @@ class PermohonanCutiController extends Controller
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak')
-                ->where('permohonan_cuti.status', '=', 'Diproses')
+                ->where('permohonan_cuti.status', '=', 'Di Ka.Divisi')
                 ->orderBy('permohonan_cuti.created_at', "desc");
             // ->get();
 
@@ -47,7 +47,7 @@ class PermohonanCutiController extends Controller
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak')
                 ->orderBy('permohonan_cuti.created_at', "desc")
-                ->where('permohonan_cuti.status', 'Diatasan')
+                ->where('permohonan_cuti.status', 'Di Direktur')
                 ->paginate(10);
 
             $permohonanTerima = DB::table('users')
@@ -57,8 +57,8 @@ class PermohonanCutiController extends Controller
                 // ->where('permohonan_cuti.status','Diterima')
                 ->where(function ($query) {
                     $query->where('permohonan_cuti.status', 'Diterima');
-                    $query->orWhere('permohonan_cuti.status', 'Diproses');
-                    $query->orWhere('permohonan_cuti.status', 'Diatasan');
+                    $query->orWhere('permohonan_cuti.status', 'Di Ka.Divisi');
+                    $query->orWhere('permohonan_cuti.status', 'Di Direktur');
                 })
                 // ->limit(5)
                 ->get();
@@ -199,7 +199,7 @@ class PermohonanCutiController extends Controller
                     'durasi_cuti' => $totalCuti,
                     'warna_cuti' => "#929090",
                     'tgl_memohon' => Carbon::now(),
-                    'status' => 'Diproses',
+                    'status' => 'Di Ka.Divisi',
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
@@ -308,7 +308,7 @@ class PermohonanCutiController extends Controller
                     'durasi_cuti' => $totalCuti,
                     'warna_cuti' => "#6900c7",
                     'tgl_memohon' => Carbon::now(),
-                    'status' => 'Diatasan',
+                    'status' => 'Di Direktur',
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
@@ -418,7 +418,7 @@ class PermohonanCutiController extends Controller
                     'durasi_cuti' => $totalCuti,
                     'tgl_memohon' => Carbon::now(),
                     'warna_cuti' => "#929090",
-                    'status' => 'Diproses',
+                    'status' => 'Di Ka.Divisi',
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
@@ -527,7 +527,7 @@ class PermohonanCutiController extends Controller
                     'durasi_cuti' => $totalCuti,
                     'warna_cuti' => "#6900c7",
                     'tgl_memohon' => Carbon::now(),
-                    'status' => 'Diatasan',
+                    'status' => 'Di Direktur',
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
 
@@ -641,7 +641,7 @@ class PermohonanCutiController extends Controller
         $permohonan = DB::table('users')
             ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
             ->select('permohonan_cuti.id', 'users.name', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status')
-            ->where('permohonan_cuti.status', 'Diproses')
+            ->where('permohonan_cuti.status', 'Di Ka.Divisi')
             ->where('permohonan_cuti.user_id', $id)
             ->get();
 
@@ -857,7 +857,7 @@ class PermohonanCutiController extends Controller
 
         DB::table('permohonan_cuti')->where('id', $id)->update([
             // 'user_id' => $user_id,
-            'status' => "Diatasan",
+            'status' => "Di Direktur",
             'warna_cuti' => "#6900c7",
         ]);
 

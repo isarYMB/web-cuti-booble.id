@@ -373,7 +373,7 @@
                                                             </td>
                                                             <td class="font-weight-600 text-center">
                                                                 {{ $p->durasi_cuti }}</td>
-                                                            @if ($p->status === 'Diproses')
+                                                            @if ($p->status === 'Di Ka.Divisi')
                                                                 <td class="text-center">
                                                                     <a class="badge batal"
                                                                         href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a>
@@ -384,7 +384,7 @@
                                                                         data-target="#tolakModalLeader">Tolak</a>
 
                                                                 </td>
-                                                            @elseif($p->status === 'Diatasan')
+                                                            @elseif($p->status === 'Di Direktur')
                                                                 <td class="text-center">
                                                                     <a class="badge cetakSurat">Menunggu
                                                                         Persetujuan</a>
@@ -579,12 +579,12 @@
 
                                         <div style="background-color: #929090;" class="rectangleKeterangan square">
                                         </div>
-                                        <span style="vertical-align: middle;">Pengajuan Diproses</span>
+                                        <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
 
                                         <div style="background-color: #6900c7;" class="rectangleKeterangan square">
                                         </div>
-                                        <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
-                                        Diproses
+                                        <span style="vertical-align: middle;">Pengajuan di Direktur</span>
+                                        Di Ka.Divisi
                                         <div style="background-color: #00ac69;" class="rectangleKeterangan square">
                                         </div>
                                         <span style="vertical-align: middle;">Pengajuan Disetujui</span>

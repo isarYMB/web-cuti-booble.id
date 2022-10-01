@@ -24,7 +24,7 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-15',
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '4',
-            'status' => 'Diatasan',
+            'status' => 'Di Direktur',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
             'warna_cuti' => '#6900c7'
@@ -37,7 +37,7 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-20',
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '4',
-            'status' => 'Diproses',
+            'status' => 'Di Ka.Divisi',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
             'warna_cuti' => '#929090'
@@ -63,7 +63,7 @@ class PermohonanSeeder extends Seeder
             'tgl_akhir' => '2022-10-20',
             'tgl_memohon' => '2022-09-14',
             'durasi_cuti' => '4',
-            'status' => 'Diatasan',
+            'status' => 'Di Direktur',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
             'warna_cuti' => '#6900c7'
