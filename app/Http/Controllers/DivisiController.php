@@ -10,7 +10,7 @@ use DB;
 
 class DivisiController extends Controller
 {
-        /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -19,20 +19,20 @@ class DivisiController extends Controller
     public function index()
     {
         $divisi = DB::table('divisi')
-        ->join('jabatan','divisi.id','=','jabatan.id_divisi')
-        ->select('jabatan.nama_jabatan','jabatan.id','jabatan.id_divisi','divisi.nama_divisi')
-        ->orderBy('divisi.nama_divisi')
-        ->get();
+            ->join('jabatan', 'divisi.id', '=', 'jabatan.id_divisi')
+            ->select('jabatan.nama_jabatan', 'jabatan.id', 'jabatan.id_divisi', 'divisi.nama_divisi')
+            ->orderBy('divisi.nama_divisi')
+            ->get();
 
         $divisiAll = DB::table('divisi')
-        ->select('divisi.id','divisi.nama_divisi')
-        ->get();
+            ->select('divisi.id', 'divisi.nama_divisi')
+            ->get();
 
         $jabatanAll = DB::table('divisi')
-        ->select('divisi.id','divisi.nama_divisi')
-        ->get();
-        
-        return view('pages.divisi.index',['divisi' =>$divisi, 'divisiAll' =>$divisiAll]);
+            ->select('divisi.id', 'divisi.nama_divisi')
+            ->get();
+
+        return view('pages.divisi.index', ['divisi' => $divisi, 'divisiAll' => $divisiAll]);
     }
 
     /**
@@ -85,5 +85,3 @@ class DivisiController extends Controller
         return redirect()->route('divisi.index')->with(['success' => 'Jabatan Berhasil Dihapuskan!']);
     }
 }
-
-

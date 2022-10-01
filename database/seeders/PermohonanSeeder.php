@@ -16,7 +16,7 @@ class PermohonanSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $permohonan = Permohonan_Cuti::create([
             'user_id' => '10',
             'alasan_cuti' => 'Istri Melahirkan',
@@ -31,7 +31,7 @@ class PermohonanSeeder extends Seeder
         ]);
 
         $permohonan = Permohonan_Cuti::create([
-            'user_id' => '9',
+            'user_id' => '2',
             'alasan_cuti' => 'Acara Pernikahan',
             'tgl_mulai' => '2022-10-17',
             'tgl_akhir' => '2022-10-20',

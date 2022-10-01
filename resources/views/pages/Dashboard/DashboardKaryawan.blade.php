@@ -273,7 +273,7 @@
                             <td class="align-middle text-center">{{$p->tgl_mulai}}</td>
                             <td class="align-middle text-center">{{$p->tgl_akhir}}</td>
                             <td class="align-middle text-center">
-                                @if($p->status === "Baru")
+                                @if($p->status === "Diproses")
                                     <span class="badge baru">{{$p->status}}</span>
                                 @elseif($p->status === "Diterima")
                                     <span class="badge diterima">{{$p->status}}</span>
@@ -289,7 +289,7 @@
                             <td class="text-center">
                                 {{-- @if($p->status === "Diterima")
                                 <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
-                                @if($p->status === "Baru")
+                                @if($p->status === "Diproses")
                                 <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
                                 @elseif($p->status === "Diatasan")
                                 <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
@@ -325,7 +325,7 @@
                             <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
 
                             <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
-                            <span style="vertical-align: middle;">Pengajuan Baru</span>
+                            <span style="vertical-align: middle;">Pengajuan Diproses</span>
 
                             <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
                             <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
