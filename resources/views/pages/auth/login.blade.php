@@ -87,8 +87,12 @@
                       Masuk
                     </button>
                   </div>
+                  <div class="form-group text-center">
+                            <label>
+                                <a href="{{ route('forget.password.get') }}">Lupa Password?</a>
+                            </label>
+                </div>
                 </form>
-               
               </div>
             </div>
           </div>

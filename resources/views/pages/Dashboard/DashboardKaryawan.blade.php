@@ -328,13 +328,31 @@
             </div>
             </div>
 
-        <div class="col-12 col-sm-12 col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div id="calendar"></div>
+            <div class="col-12 col-sm-12 col-lg-12">
+                <div class="card">
+                    <ul class="list-group list-group-flush">
+                        <li  class="list-group-item"><div id="calendar"></div></li>
+                        <li class="list-group-item">
+
+                            <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
+
+                            <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
+                            <span style="vertical-align: middle;">Pengajuan Baru</span>
+
+                            <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
+                            <span style="vertical-align: middle;">Pengajuan Di Atasan</span>
+
+                            <div style="background-color: #00ac69;" class="rectangleKeterangan square"></div>
+                            <span style="vertical-align: middle;">Pengajuan Disetujui</span>
+                        </li>
+                      </ul>
+                    {{-- <div class="card-body">
+                        
+                        
+                    </div> --}}
+                </div>
+                
             </div>
-            </div>
-        </div>
         
     </section>
     <!-- modal -->
@@ -504,6 +522,7 @@ if (jQuery().daterangepicker) {
         locale: { format: "YYYY-MM-DD" },
         singleDatePicker: true,
         minDate: dateFormated,
+        maxDate: lastDate, //set the lastDate as maxDate
         isInvalidDate: function(date) {
             var dateRanges = [
                 @foreach($getRagneTanggal as $g)

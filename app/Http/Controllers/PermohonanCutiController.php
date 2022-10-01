@@ -214,9 +214,14 @@ class PermohonanCutiController extends Controller
                 'created_at' => Carbon::now()->toDateTimeString()
             ]);
 
-            $getNama = auth()->user()->value('name');
+            // $getNama = Auth::user()->value('name');
 
-            $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+            $getNama = DB::table('users')
+            ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+            ->where('permohonan_cuti.id',$id)
+            ->value('users.name');
+
+            $getPesan = 'Karyawan Atas Nama'.$getNama.' Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
 
             $getTelp = DB::table('users')
             ->join('karyawan','users.id','=','karyawan.user_id')
@@ -300,9 +305,14 @@ class PermohonanCutiController extends Controller
                     'created_at' => Carbon::now()->toDateTimeString()
                 ]);
     
-                $getNama = auth()->user()->value('name');
+                // $getNama = Auth::user()->value('name');
+
+                $getNama = DB::table('users')
+                ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+                ->where('permohonan_cuti.id',$id)
+                ->value('users.name');
     
-                $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+                $getPesan = 'Karyawan Atas Nama'.$getNama.'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
     
                 $getTelp = DB::table('users')
                 ->where('role','Leader')
@@ -388,9 +398,12 @@ class PermohonanCutiController extends Controller
                 'created_at' => Carbon::now()->toDateTimeString()
             ]);
 
-            $getNama = auth()->user()->value('name');
+            $getNama = DB::table('users')
+                ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+                ->where('permohonan_cuti.id',$id)
+                ->value('users.name');
 
-            $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+            $getPesan = 'Karyawan Atas Nama'.$getNama.'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
 
             $getTelp = DB::table('users')
             ->join('karyawan','users.id','=','karyawan.user_id')
@@ -474,9 +487,14 @@ class PermohonanCutiController extends Controller
                 'created_at' => Carbon::now()->toDateTimeString()
             ]);
 
-            $getNama = auth()->user()->value('name');
+            // $getNama = Auth::user()->value('name');
 
-            $getPesan = 'Pesan Dari Karyawan. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+            $getNama = DB::table('users')
+                ->join('permohonan_cuti','users.id','=','permohonan_cuti.user_id')
+                ->where('permohonan_cuti.id',$id)
+                ->value('users.name');
+
+            $getPesan = 'Karyawan Atas Nama'.$getNama.'Telah Melakukan Pengajuan Cuti, Mohon Mengecek Web Pengajuan Cuti Segera.';
 
             $getTelp = DB::table('users')
                 ->where('role','Leader')
@@ -621,7 +639,7 @@ class PermohonanCutiController extends Controller
         $tglAkhir = date_create($tgl_akhir);
         $durasi = date_diff($tglMulai,$tglAkhir);
         
-        $jmlCuti=$jumlah_cuti - $durasi->days;
+        $jmlCuti=$jumlah_cuti - $durasi->days - 1;
 
         DB::table('karyawan')->where('user_id',$user_id)->update([
             'user_id' => $user_id,
@@ -642,7 +660,7 @@ class PermohonanCutiController extends Controller
             'warna_cuti' => "#00ac69",
         ]);
 
-        $getPesan = 'Permohonan Cuti Anda Telah Disetujui Oleh Atasan';
+        $getPesan = 'Permohonan Cuti Anda Telah Disetujui oleh Atasan. Silahkan Mengecek Status Cuti di Web Pengajuan Cuti Booble.id';
 
         $getTelp = DB::table('users')
         ->where('id',$id)
@@ -738,7 +756,7 @@ class PermohonanCutiController extends Controller
         ->where('permohonan_cuti.id',$id)
         ->value('users.name');
 
-        $getPesan = 'Pesan Dari HRD. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
+        $getPesan = 'Pesan Dari Kepala Divisi. Pengajuan cuti baru oleh'.' '.$getNama.'. Mohon mengecek web cuti Booble.id';
 
         $getTelp = DB::table('users')
             ->where('role','Leader')
@@ -871,6 +889,8 @@ class PermohonanCutiController extends Controller
         ]);
 
         $getPesan = $request->ket_tolak;
+
+        $getPesan = 'Pengajuan Cuti Anda Ditolak dengan Alasan:'.' '.$request->ket_tolak.'. Mohon Mengecek Status Cuti Di Web Pengajuan Cuti Booble.id';
 
         $getTelp = DB::table('users')
         ->where('id',$request->custId)

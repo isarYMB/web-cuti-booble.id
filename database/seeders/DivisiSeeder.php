@@ -17,6 +17,8 @@ class DivisiSeeder extends Seeder
 
     public function run()
     {
+        //Jabatan
+
         DB::table('jabatan')->insert([
             'nama_jabatan' => 'Android Developer',
             'id_divisi' => 1,
@@ -36,11 +38,45 @@ class DivisiSeeder extends Seeder
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
         DB::table('jabatan')->insert([
-            'nama_jabatan' => 'Akuntansi',
+            'nama_jabatan' => 'Finance',
             'id_divisi' => 3,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
+        DB::table('jabatan')->insert([
+            'nama_jabatan' => 'Sales',
+            'id_divisi' => 2,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        DB::table('jabatan')->insert([
+            'nama_jabatan' => 'Direktur',
+            'id_divisi' => 4,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        DB::table('jabatan')->insert([
+            'nama_jabatan' => 'HRD',
+            'id_divisi' => 3,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        DB::table('jabatan')->insert([
+            'nama_jabatan' => 'Supervisor Operasional',
+            'id_divisi' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        DB::table('jabatan')->insert([
+            'nama_jabatan' => 'Supervisor Marketing',
+            'id_divisi' => 2,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        //Divisi
 
         DB::table('divisi')->insert([
             'nama_divisi' => 'Operasional',
@@ -48,12 +84,17 @@ class DivisiSeeder extends Seeder
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
         DB::table('divisi')->insert([
-            'nama_divisi' => 'Sales',
+            'nama_divisi' => 'Marketing',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
         DB::table('divisi')->insert([
-            'nama_divisi' => 'Akuntan',
+            'nama_divisi' => 'Divisi Support',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+        DB::table('divisi')->insert([
+            'nama_divisi' => 'Direktur',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
