@@ -38,12 +38,6 @@ class DivisiSeeder extends Seeder
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
         DB::table('jabatan')->insert([
-            'nama_jabatan' => 'Finance',
-            'id_divisi' => 3,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        DB::table('jabatan')->insert([
             'nama_jabatan' => 'Sales',
             'id_divisi' => 2,
             'created_at' => date('Y-m-d H:i:s'),

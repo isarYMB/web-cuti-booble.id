@@ -27,8 +27,5 @@ class RoleSeeder extends Seeder
         DB::table('role')->insert([
             'nama_role' => 'Kepala Divisi',
         ]);
-        DB::table('role')->insert([
-            'nama_role' => 'Finance',
-        ]);
     }
 }

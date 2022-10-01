@@ -66,7 +66,7 @@ class UserSeeder extends Seeder
             'name' => 'Sukraini M Nur',
             'email' => 'sukraini@example.com',
             'password' => Hash::make("sukraini"),
-            'role' => 'Finance',
+            'role' => 'Kepala Divisi',
             'nik' => 1231234,
             'no_telpon' => 628967567543,
         ]);
@@ -143,13 +143,6 @@ class UserSeeder extends Seeder
             'jumlah_cuti' => 12,
             'divisi' => 'Marketing',
             'jabatan' => 'Sales',
-        ]);
-
-        $user = Karyawan::create([
-            'user_id' => '6',
-            'jumlah_cuti' => 12,
-            'divisi' => 'Divisi Support',
-            'jabatan' => 'Finance',
         ]);
 
         $user = Karyawan::create([
