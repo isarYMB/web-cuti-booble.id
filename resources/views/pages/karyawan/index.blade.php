@@ -8,11 +8,6 @@
                 <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg
 									collapse-btn text-dark mr-3">
                         <i data-feather="align-justify"></i></a></li>
-                {{-- <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
-                <i data-feather="maximize"></i>
-              </a></li> --}}
-
-
             </ul>
 
             <ul class="navbar-nav font-weight-bold h6">
@@ -20,11 +15,6 @@
             </ul>
 
         </div>
-        {{-- <ul class="navbar-nav navbar-right">
-          <a href="{{route('logout')}}" class="dropdown-item text-danger"> <i class="fas fa-sign-out-alt"></i>
-            Logout
-          </a>
-        </ul> --}}
     </nav>
     <div class="main-content">
         <section class="section">
@@ -32,12 +22,6 @@
                 <div class="col-12 col-sm-12 col-lg-12">
                     <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
                     <div class="card">
-                        {{-- <div class="card-header">
-                <div class="card-header">
-                    <h4>Master Pegawai</h4>
-                </div>
-                
-            </div> --}}
                         <div class="d-flex justify-content-end">
                             <div class="card-footer text-right">
                                 <a class="btn btn-warning mr-1" href="{{ route('karyawan.create') }}">

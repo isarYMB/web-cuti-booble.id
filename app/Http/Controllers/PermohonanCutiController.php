@@ -190,24 +190,6 @@ class PermohonanCutiController extends Controller
             ->where('karyawan.user_id', 'id')
             ->get();
 
-        // $divisiUser='Akuntan';
-        // $jadwalSama = DB::table('karyawan')
-        //     ->join('permohonan_cuti','karyawan.id','=','permohonan_cuti.user_id')
-        //     ->select('permohonan_cuti.tgl_mulai','permohonan_cuti.tgl_akhir')
-        //     ->where('karyawan.divisi','divisiUser')
-        //     ->get();
-
-        // $jadwalSama = Divisi::all();
-
-        // $arrayTanggal = [];
-        // foreach ($jadwalSama as $jadwalsama){
-        //     $arrayTanggal = $jadwalsama;
-        // }
-
-        // dd($arrayTanggal);
-
-
-
         $data = DB::table('karyawan')->select('jumlah_cuti')->where('user_id', $id)->get();
 
         $sisaCuti = $data[0]->jumlah_cuti;

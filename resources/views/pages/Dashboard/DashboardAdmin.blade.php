@@ -38,18 +38,6 @@
         }
     </style>
 
-    {{-- <link rel="stylesheet" href="{{ mix('css/app.css') }}"> --}}
-
-
-    {{-- <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        @vite('resources/css/app.css') --}}
-
-    {{-- <script type="text/javascript">
-        </script> --}}
-
-    {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css"> --}}
-
     <!-- FullCalendar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -116,12 +104,6 @@
                                     <span>Dashboard</span>
                                 </a>
                             </li>
-                            {{-- <li>
-                    <a class="nav-link" href="{{ route('permohonan.index')}}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder-plus"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
-                        <span>Pengajuan Cuti</span>
-                    </a>
-                </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('karyawan.dashboard') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -175,12 +157,6 @@
                                 </a>
                             </li>
                         @elseif(Auth::user()->role === 'Leader')
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('admin.dashboard')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                            <span>Dashboard</span>
-                        </a>
-                    </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('permohonan.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -196,18 +172,6 @@
                                     <span>Pengajuan Cuti</span>
                                 </a>
                             </li>
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('divisi.index')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg>
-                            <span>Master Divisi</span>
-                        </a>
-                    </li> --}}
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('karyawan.index')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            <span>Master Pegawai</span>
-                        </a>
-                    </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('karyawan.editUser') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -266,17 +230,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col">
-                            <div class="card l-bg-purple-dark">
-                                <div class="card-statistic-3">
-                                    <div class="card-icon card-icon-large"><i class="fa fa-spinner"></i></div>
-                                    <div class="card-content">
-                                        <h4 class="card-title">Di Direktur</h4>
-                                        <span>{{ $jmlDiProses }} Pengajuan</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
                         <div class="col">
                             <div class="card l-bg-green-dark">
                                 <div class="card-statistic-3">
@@ -323,16 +276,8 @@
 
                                     <tr>
                                         <th class="">
-                                            {{-- <label>Filter Status Cuti</label> --}}
                                             <Form method="get" action="{{ route('admin.changeStatusBaru') }}">
                                                 @csrf
-                                                {{-- <select name="role" class="custom-select">
-                                                    @foreach ($role as $row)
-                                                        <option value="{{ $row->nama_role }}"
-                                                            {{ old('role') == $row->nama_role ? 'selected' : '' }}>
-                                                            {{ $row->nama_role }}</option>
-                                                    @endforeach
-                                                </select> --}}
                                                 <select style=" margin-left: 5px;  height: 40px; width:200px; "
                                                     name="namaStatus"
                                                     class="custom-select resizeformc form-control rounded-3"
@@ -468,30 +413,12 @@
                                     @endif
                                     </table>
                                     <br>
-                                    {{ $permohonan->links() }}
-                                    {{-- <nav>
-                        <ul class="pagination">
-                          <li class="page-item disabled">
-                            <a class="page-link">Previous</a>
-                          </li>
-                          <li class="page-item"><a class="page-link" href="#">1</a></li>
-                          <li class="page-item active" aria-current="page">
-                            <a class="page-link" href="#">2</a>
-                          </li>
-                          <li class="page-item"><a class="page-link" href="#">3</a></li>
-                          <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                          </li>
-                        </ul>
-                      </nav> --}}
-
-
+                                    {{ $permohonan->appends(request()->query())->links() }}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- <div class="row"> --}}
                     <div class="col-12 col-sm-12 col-lg-12">
                         <div class="card">
                             <ul class="list-group list-group-flush">
@@ -512,55 +439,11 @@
                                     <span style="vertical-align: middle;">Pengajuan Disetujui</span>
                                 </li>
                             </ul>
-                            {{-- <div class="card-body">
-                        
-                        
-                    </div> --}}
                         </div>
 
                     </div>
-                    {{-- </div> --}}
-
 
                 </section>
-
-                <!-- modal -->
-                {{-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"
-    aria-hidden="true">
-    <div class="modal-dialog-centered modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="formModal">Masukan nama yang menyetujui dan mengetahui</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-            
-            <form class="" action="{{route('dataSurat.cuti')}}" method="post" >
-            
-            @csrf
-                <div class="form-group">
-                    <label>Atasan langsung yang disetujui oleh:</label>
-                    <input class="form-control" name="namaAtasan" required >
-                </div>
-                <div class="form-group">
-                    <label>Mengetahui oleh:</label>
-                    <input class="form-control" name="mengetahuiOleh" required >
-                </div>
-                <div class="form-group">
-                    <input type="hidden" id="input-customer-id" name="custId">
-                </div>
-
-                <button type="submit" class="btn btn-warning m-t-15 waves-effect" formtarget="_blank">Cetak Surat</button> --}}
-                {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
-
-                {{-- </form>
-        </div>
-    </div>
-    </div>
-</div> --}}
-
 
                 <div class="modal fade" id="ketTolakAdmin" tabindex="-1" role="dialog"
                     aria-labelledby="formModal" aria-hidden="true">
@@ -669,24 +552,6 @@
             // modal.find('.modal-body input').val(recipient)
             modal.find('#ketTolakAdminUser').val(recipient); // set input value
         })
-    </script>
-
-    //
-    <script>
-        //     $('#pilihStatus').on('change',function(){
-        //     var namaStatus =  $(this).val();
-        //     var token = $(this).data('token');
-        //     var base_url = $(this).data('url');
-        //         $.ajax({
-        //             url:base_url+`${namaStatus}`,
-        //             type: 'POST',
-        //             data: { _token :token,namaStatus:namaStatus },
-        //             success:function(response){
-        //                 window.location.href = redirect;
-        //           }
-        //         });
-        //     })
-        //   
     </script>
 
     <script>

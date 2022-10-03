@@ -128,12 +128,6 @@
                                     <span>Dashboard</span>
                                 </a>
                             </li>
-                            {{-- <li>
-                      <a class="nav-link" href="{{ route('permohonan.index')}}">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder-plus"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
-                          <span>Pengajuan Cuti</span>
-                      </a>
-                  </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('karyawan.dashboard') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -242,12 +236,6 @@
                                 </a>
                             </li>
                         @elseif(Auth::user()->role === 'Leader')
-                            {{-- <li>
-                      <a class="nav-link" href="{{ route('admin.dashboard')}}">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                          <span>Dashboard</span>
-                      </a>
-                  </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('permohonan.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -263,18 +251,6 @@
                                     <span>Pengajuan Cuti</span>
                                 </a>
                             </li>
-                            {{-- <li>
-                      <a class="nav-link" href="{{ route('divisi.index')}}">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg>
-                          <span>Master Divisi</span>
-                      </a>
-                  </li> --}}
-                            {{-- <li>
-                      <a class="nav-link" href="{{ route('karyawan.index')}}">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                          <span>Master Pegawai</span>
-                      </a>
-                  </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('karyawan.editUser') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -313,11 +289,6 @@
                                     class="nav-link nav-link-lg
 									collapse-btn text-dark mr-3"> <i
                                         data-feather="align-justify"></i></a></li>
-                            {{-- <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
-                <i data-feather="maximize"></i>
-              </a></li> --}}
-
-
                         </ul>
 
                         <ul class="navbar-nav font-weight-bold h6">
@@ -325,11 +296,6 @@
                         </ul>
 
                     </div>
-                    {{-- <ul class="navbar-nav navbar-right">
-          <a href="{{route('logout')}}" class="dropdown-item text-danger"> <i class="fas fa-sign-out-alt"></i>
-            Logout
-          </a>
-        </ul> --}}
                 </nav>
 
                 <div class="main-content">
@@ -392,40 +358,6 @@
                                                             @endif
 
                                                         </tr>
-
-                                                        <!-- modal -->
-                                                        {{-- <div class="modal fade" id="tolakModalAdmin" tabindex="-1" role="dialog" aria-labelledby="formModal"
-                    aria-hidden="true">
-                    <div class="modal-dialog-centered modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="formModal">Masukan Alasan Penolakan</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                            <form class="" action="{{route('permohonan.tolak')}}" method="post" >
-                            
-                            @csrf
-                                <div class="form-group">
-                                <label>Alasan Penolakan Cuti</label>
-                                <textarea class="form-control" name="ket_tolak" required ></textarea>
-                                </div>
-                                <div class="form-group">
-                                  <input type="hidden" id="userTolakAdmin" name="custId">
-                                </div>
-                                <button type="submit" class="btn btn-danger m-t-15 waves-effect">Tolak</button> --}}
-                                                        {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
-
-                                                        {{-- </form>
-                        
-                        
-                        </div>
-                      </div>
-                    </div>
-                  </div> --}}
                                                     @endforeach
                                                 @endif
                                             </table>
@@ -483,23 +415,11 @@
                                     class="nav-link nav-link-lg
 									collapse-btn text-dark mr-3"> <i
                                         data-feather="align-justify"></i></a></li>
-                            {{-- <li><a href="#" class="nav-link nav-link-lg fullscreen-btn">
-                <i data-feather="maximize"></i>
-              </a></li> --}}
-
-
                         </ul>
-
                         <ul class="navbar-nav font-weight-bold h6">
                             Riwayat Cuti
                         </ul>
-
                     </div>
-                    {{-- <ul class="navbar-nav navbar-right">
-          <a href="{{route('logout')}}" class="dropdown-item text-danger"> <i class="fas fa-sign-out-alt"></i>
-            Logout
-          </a>
-        </ul> --}}
                 </nav>
                 <div class="main-content">
                     <section class="section">
@@ -551,10 +471,6 @@
                                                                     class="badge ditolak" data-toggle="modal"
                                                                     data-backdrop="true" href="#"
                                                                     data-target="#tolakModalLeader">Tolak</a>
-
-
-                                                                {{-- <a class="btn btn-danger btn-action" href="{{route('permohonan.tolak',['id' => $p->id])}}">Tolak</a> --}}
-
                                                             </td>
                                                         </tr>
                                                     @endforeach
@@ -673,8 +589,6 @@
             var recipient = button.data('id') // Target data-id
             console.log(recipient); // Here you can see the data-id value from a element
             var modal = $(this)
-            // modal.find('.modal-title').text('New message to ' + recipient)
-            // modal.find('.modal-body input').val(recipient)
             modal.find('#userTolak').val(recipient); // set input value
         })
     </script>
@@ -686,8 +600,6 @@
             var recipient = button.data('id') // Target data-id
             console.log(recipient); // Here you can see the data-id value from a element
             var modal = $(this)
-            // modal.find('.modal-title').text('New message to ' + recipient)
-            // modal.find('.modal-body input').val(recipient)
             modal.find('#userTolakAdmin').val(recipient); // set input value
         })
     </script>
@@ -699,8 +611,6 @@
             var recipient = button.data('id') // Target data-id
             console.log(recipient); // Here you can see the data-id value from a element
             var modal = $(this)
-            // modal.find('.modal-title').text('New message to ' + recipient)
-            // modal.find('.modal-body input').val(recipient)
             modal.find('#ketTolakAdminUser').val(recipient); // set input value
         })
     </script>
@@ -712,8 +622,6 @@
             var recipient = button.data('id') // Target data-id
             console.log(recipient); // Here you can see the data-id value from a element
             var modal = $(this)
-            // modal.find('.modal-title').text('New message to ' + recipient)
-            // modal.find('.modal-body input').val(recipient)
             modal.find('#tolakModalLeaderUser').val(recipient); // set input value
         })
     </script>
@@ -746,13 +654,6 @@
                                     .day() == 0);
                             }, false);
                         }
-                        // isInvalidDate: function(date) {
-                        //   if (date.day() == 0) {
-                        //     return true;
-                        // } else {
-                        //     return false;
-                        // }
-                        // }
                     });
                 }
             }

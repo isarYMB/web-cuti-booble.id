@@ -213,12 +213,6 @@
                                 </a>
                             </li>
                         @elseif(Auth::user()->role === 'Leader')
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('admin.dashboard')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-monitor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                            <span>Dashboard</span>
-                        </a>
-                    </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('permohonan.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -234,18 +228,6 @@
                                     <span>Pengajuan Cuti</span>
                                 </a>
                             </li>
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('divisi.index')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay"><path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path><polygon points="12 15 17 21 7 21 12 15"></polygon></svg>
-                            <span>Master Divisi</span>
-                        </a>
-                    </li> --}}
-                            {{-- <li>
-                        <a class="nav-link" href="{{ route('karyawan.index')}}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            <span>Master Pegawai</span>
-                        </a>
-                    </li> --}}
                             <li>
                                 <a class="nav-link" href="{{ route('karyawan.editUser') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -292,63 +274,6 @@
             </nav>
             <div class="main-content">
                 <section class="section">
-                    {{-- <div class="row ">
-        <div class="col">
-            <div class="card l-bg-cyan-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-briefcase"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Pengajuan</h4>
-                <span>{{$jmlPermohonan}}  Pengajuan</span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card l-bg-purple-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-spinner"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Di Ka.Divisi</h4>
-                <span>{{$jmlDiProses}} Di Ka.Divisi</span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card l-bg-green-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-check"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Diterima</h4>
-                <span>{{$jmlPermohonanDisetujui}} Diterima</span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card l-bg-orange-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-times"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Ditolak</h4>
-                <span>{{$jmlPermohonanDitolak}} Ditolak</span>
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card l-bg-orange-dark">
-            <div class="card-statistic-3">
-                <div class="card-icon card-icon-large"><i class="fa fa-fire"></i></div>
-                <div class="card-content">
-                <h4 class="card-title">Dibatalkan</h4>
-                <span>{{$jmlBatal}} Dibatalkan</span>
-                </div>
-            </div>
-            </div>
-        </div>
-        </div> --}}
 
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-12">
@@ -485,7 +410,7 @@
                                     @endif
                                     </table>
                                     <br>
-                                    {{ $permohonanDivisi->links() }}
+                                    {{ $permohonan->appends(request()->query())->links() }}
 
                                 </div>
                             </div>
