@@ -361,23 +361,44 @@
 
                                     <tr>
                                         <th class="mr-4 mt-3 ">
-                                            {{-- <label>Filter Status Cuti</label> --}}
-                                            <Form method="POST" action="{{ route('admin.changeStatusKaDivisi') }}">
+                                            <Form method="get" action="{{ route('admin.changeStatusKaDivisi') }}">
                                                 @csrf
-                                                <select name="namaStatus" class="resizeformc form-control rounded-3"
+                                                {{-- <select name="role" class="custom-select">
+                                                    @foreach ($role as $row)
+                                                        <option value="{{ $row->nama_role }}"
+                                                            {{ old('role') == $row->nama_role ? 'selected' : '' }}>
+                                                            {{ $row->nama_role }}</option>
+                                                    @endforeach
+                                                </select> --}}
+                                                <select style=" margin-left: 5px;  height: 40px; width:200px; "
+                                                    name="namaStatus"
+                                                    class="custom-select resizeformc form-control rounded-3"
                                                     onchange='this.form.submit()'>
                                                     <option value="">Filter Status</option>
-                                                    <option value="Semua">Semua Status</option>
-                                                    <option value="Di Ka.Divisi">Di Ka.Divisi</option>
-                                                    <option value="Diterima">Diterima</option>
-                                                    <option value="Di Direktur">Di Direktur</option>
-                                                    <option value="Dibatalkan">Dibatalkan</option>
-                                                    <option value="Ditolak">Ditolak</option>
+                                                    <option value="Semua"
+                                                        {{ request()->input('namaStatus') == 'Semua' ? 'selected' : '' }}>
+                                                        Semua
+                                                        Status</option>
+                                                    <option value="Di Ka.Divisi"
+                                                        {{ request()->input('namaStatus') == 'Di Ka.Divisi' ? 'selected' : '' }}>
+                                                        Di Ka.Divisi</option>
+                                                    <option value="Diterima"
+                                                        {{ request()->input('namaStatus') == 'Diterima' ? 'selected' : '' }}>
+                                                        Diterima</option>
+                                                    <option value="Di Direktur"
+                                                        {{ request()->input('namaStatus') == 'Di Direktur' ? 'selected' : '' }}>
+                                                        Di Direktur</option>
+                                                    <option value="Dibatalkan"
+                                                        {{ request()->input('namaStatus') == 'Dibatalkan' ? 'selected' : '' }}>
+                                                        Dibatalkan</option>
+                                                    <option value="Ditolak"
+                                                        {{ request()->input('namaStatus') == 'Ditolak' ? 'selected' : '' }}>
+                                                        Ditolak</option>
                                                 </select>
                                             </Form>
                                         </th>
                                         <th class="ml-4 mt-3 text-right">
-                                            <Form method="POST" action="{{ route('admin.searchNameKaDivisi') }}">
+                                            <Form method="get" action="{{ route('admin.searchNameKaDivisi') }}">
                                                 @csrf
                                                 <input
                                                     style="font-size: 15px; margin-left: 10px; height: 40px; width:200px; "

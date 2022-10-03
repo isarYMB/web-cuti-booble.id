@@ -322,45 +322,73 @@
                                     </div>
 
                                     <tr>
-                                        <th class="mr-4 mt-3 ">
+                                        <th class="">
                                             {{-- <label>Filter Status Cuti</label> --}}
-                                            <Form method="POST" action="{{ route('admin.changeStatusBaru') }}">
+                                            <Form method="get" action="{{ route('admin.changeStatusBaru') }}">
                                                 @csrf
-                                                <select name="namaStatus" class="resizeformc form-control rounded-3"
+                                                {{-- <select name="role" class="custom-select">
+                                                    @foreach ($role as $row)
+                                                        <option value="{{ $row->nama_role }}"
+                                                            {{ old('role') == $row->nama_role ? 'selected' : '' }}>
+                                                            {{ $row->nama_role }}</option>
+                                                    @endforeach
+                                                </select> --}}
+                                                <select style=" margin-left: 5px;  height: 40px; width:200px; "
+                                                    name="namaStatus"
+                                                    class="custom-select resizeformc form-control rounded-3"
                                                     onchange='this.form.submit()'>
                                                     <option value="">Filter Status</option>
-                                                    <option value="Semua">Semua Status</option>
-                                                    <option value="Di Ka.Divisi">Di Ka.Divisi</option>
-                                                    <option value="Diterima">Diterima</option>
-                                                    <option value="Di Direktur">Di Direktur</option>
-                                                    <option value="Dibatalkan">Dibatalkan</option>
-                                                    <option value="Ditolak">Ditolak</option>
+                                                    <option value="Semua"
+                                                        {{ request()->input('namaStatus') == 'Semua' ? 'selected' : '' }}>
+                                                        Semua
+                                                        Status</option>
+                                                    <option value="Di Ka.Divisi"
+                                                        {{ request()->input('namaStatus') == 'Di Ka.Divisi' ? 'selected' : '' }}>
+                                                        Di Ka.Divisi</option>
+                                                    <option value="Diterima"
+                                                        {{ request()->input('namaStatus') == 'Diterima' ? 'selected' : '' }}>
+                                                        Diterima</option>
+                                                    <option value="Di Direktur"
+                                                        {{ request()->input('namaStatus') == 'Di Direktur' ? 'selected' : '' }}>
+                                                        Di Direktur</option>
+                                                    <option value="Dibatalkan"
+                                                        {{ request()->input('namaStatus') == 'Dibatalkan' ? 'selected' : '' }}>
+                                                        Dibatalkan</option>
+                                                    <option value="Ditolak"
+                                                        {{ request()->input('namaStatus') == 'Ditolak' ? 'selected' : '' }}>
+                                                        Ditolak</option>
                                                 </select>
                                             </Form>
                                         </th>
                                         <th class="ml-4 mt-3 text-right">
-                                            <Form method="POST" action="{{ route('admin.searchNameAdmin') }}">
+                                            <Form method="get" action="{{ route('admin.searchNameAdmin') }}">
                                                 @csrf
                                                 <input
-                                                    style="font-size: 15px; margin-left: 10px; height: 40px; width:200px; "
-                                                    class="form-control" type="search" placeholder="search"
-                                                    name="searchName" value="{{ request()->input('searchName') }}">
+                                                    style="font-size: 15px; margin-left: 5px; height: 40px; width:200px; "
+                                                    class="form-control" type="search"
+                                                    placeholder="Cari Nama Karyawan" name="searchName"
+                                                    value="{{ request()->input('searchName') }}">
                                             </Form>
                                         </th>
-                                        <th class="ml-6 mt-3 text-right form-inline">
-                                            <div class="container-fluid">
-                                                <form id="filterDate" class=""
-                                                    action="{{ route('admin.filterDateReport') }}" method="post">
-                                                    @csrf
-                                                    <input type="text" style="height: 40px;" name="daterange"
-                                                        required class="form-control datepicker" id="book_date">
-                                                </form>
-
-                                            </div>
+                                        <th class="ml-4 mt-3 form-inline">
+                                            <form id="filterDate" class="" style="margin-left: 5px;"
+                                                action="{{ route('admin.filterDateReport') }}" method="get">
+                                                @csrf
+                                                <input type="text" style="height: 40px; width:200px;"
+                                                    name="daterange" required class="form-control datepicker"
+                                                    id="book_date" value="{{ request()->input('daterange') }}">
+                                            </form>
                                         </th>
-                                        <th class="mt-3 text-right form-inline">
-                                            <button type="submit" style="height: 40px; width:200px;"
-                                                class="btn ml-2 btn-primary m-t-15 waves-effect">Cetak</button>
+                                        <th class=" form-inline">
+                                            <form class="" style="margin-left: 5px;"
+                                                action="{{ route('permohonan.laporanCuti') }}" method="get">
+                                                @csrf
+                                                <input type="hidden" class="form-control" name="dateRangeReport"
+                                                    id="data_laporan" value="{{ request()->input('daterange') }}">
+                                                <button formtarget="_blank" type="submit"
+                                                    style="height: 40px; margin-left: 5px; width:70px;"
+                                                    class="btn ml-2 btn-warning m-t-15 waves-effect">Cetak</button>
+                                            </form>
                                         </th>
                                     </tr>
                                 </div>
@@ -369,7 +397,7 @@
                                         <table class="table table-striped" id="table_id">
                                             <tr>
                                                 <th class="text-center">No</th>
-                                                <th class="text-center"style="min-width: 100px;">Tgl Memohon</th>
+                                                <th class="text-center" style="min-width: 100px;">Tgl Memohon</th>
                                                 <th class="text-center" style="min-width: 100px;">Nama Pegawai</th>
                                                 <th class="text-center" style="min-width: 100px;">Alasan Cuti</th>
                                                 <th class="text-center" style="min-width: 100px;">Mulai</th>
@@ -594,11 +622,6 @@
 
         $(function() {
             $('#book_date').on('apply.daterangepicker', function(ev, picker) {
-                // var startDate = picker.startDate;
-                // var endDate = picker.endDate;
-                // alert("New date range selected: '" + startDate.format('YYYY-MM-DD') + "' to '" + endDate
-                //     .format(
-                //         'YYYY-MM-DD') + "'");
                 $('#filterDate').submit();
             });
         });

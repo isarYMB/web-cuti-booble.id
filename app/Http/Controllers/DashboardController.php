@@ -63,7 +63,8 @@ class DashboardController extends Controller
             ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
             ->select('users.name', 'permohonan_cuti.id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.warna_cuti', 'karyawan.divisi', 'users.role')
             ->orderBy('permohonan_cuti.created_at', "desc")
-            ->whereBetween('permohonan_cuti.tgl_memohon', [$start_date, $end_date])
+            ->whereBetween('permohonan_cuti.tgl_mulai', [$start_date, $end_date])
+            ->where('permohonan_cuti.status', 'Diterima')
             // ->limit(5)
             ->paginate(10);
 
@@ -136,38 +137,34 @@ class DashboardController extends Controller
         if ($request->namaStatus == "Di Ka.Divisi") {
             $permohonan = $permohonanGet
                 ->where('permohonan_cuti.status', 'Di Ka.Divisi')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
         } elseif ($request->namaStatus == "Diterima") {
             $permohonan = $permohonanGet
                 ->where('permohonan_cuti.status', 'Diterima')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
         } elseif ($request->namaStatus == "Di Direktur") {
             $permohonan = $permohonanGet
                 ->where('permohonan_cuti.status', 'Di Direktur')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
         } elseif ($request->namaStatus == "Dibatalkan") {
             $permohonan = $permohonanGet
                 ->where('permohonan_cuti.status', 'Dibatalkan')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
         } elseif ($request->namaStatus == "Ditolak") {
             $permohonan = $permohonanGet
                 ->where('permohonan_cuti.status', 'Ditolak')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
         } elseif ($request->namaStatus == "Semua") {
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->select('users.name', 'users.role', 'karyawan.divisi', 'permohonan_cuti.id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon')
                 // ->where('permohonan_cuti.status','Di Ka.Divisi')
-                ->orderBy('permohonan_cuti.created_at', "desc")
-                // ->limit(5)
-                ->paginate(10);
+                ->orderBy('permohonan_cuti.created_at', "desc");
+            // ->limit(5)
         }
+
+        $permohonanFinal = $permohonan->paginate(10);
 
         $permohonanTerima = DB::table('users')
             ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
@@ -188,7 +185,7 @@ class DashboardController extends Controller
         $jmlPermohonanDisetujui = Permohonan_Cuti::where('status', 'Diterima')->get()->count();
         $jmlPermohonanDitolak = Permohonan_Cuti::where('status', 'Ditolak')->get()->count();
 
-        return view('pages.Dashboard.DashboardAdmin', ["permohonan" => $permohonan, "permohonanTerima" => $permohonanTerima, "jmlPermohonan" => $jmlPermohonan, 'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui, 'jmlPermohonanDitolak' => $jmlPermohonanDitolak, 'jmlBatal' => $jmlBatal, 'jmlDiProses' => $jmlDiProses, 'jmlTotalPengajuan' => $jmlTotalPengajuan]);
+        return view('pages.Dashboard.DashboardAdmin', ["permohonan" => $permohonanFinal, "permohonanTerima" => $permohonanTerima, "jmlPermohonan" => $jmlPermohonan, 'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui, 'jmlPermohonanDitolak' => $jmlPermohonanDitolak, 'jmlBatal' => $jmlBatal, 'jmlDiProses' => $jmlDiProses, 'jmlTotalPengajuan' => $jmlTotalPengajuan]);
     }
 
 

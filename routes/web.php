@@ -13,6 +13,7 @@ use App\Http\Controllers\ForgotPasswordController;
 
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,20 +36,32 @@ Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPa
 Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
 Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
+//Reset Jumlah Cuti
+Route::get('admin/resetJumlahCuti/dDFgdsErfCvdfErgEGldSp', [KaryawanController::class, 'resetJumlahCuti']);
+
+//Kirim Pesan Sebelum 2 Hari Mulai Cuti
+Route::get('admin/kirimPesan/kjDLeoerDfVderd', [PermohonanCutiController::class, 'kirimSebelumDuaHari']);
+
 Route::group(['middleware' => 'auth'], function () {
 
     // Admin
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::post('admin/dashboard/changeStatusBaru', [DashboardController::class, 'changeStatus'])->name('admin.changeStatusBaru');
 
-    Route::post('admin/dashboard/cariPegawai', [DashboardController::class, 'searchNameAdmin'])->name('admin.searchNameAdmin');
 
-    Route::post('admin/dashboard/filterDateReport', [DashboardController::class, 'filterDateReport'])->name('admin.filterDateReport');
+    Route::get('admin/dashboard/changeStatusBaru', [DashboardController::class, 'changeStatus'])->name('admin.changeStatusBaru');
 
-    Route::post('admin/dashboard/changeStatusDivisi', [DashboardController::class, 'changeStatusKaDivisi'])->name('admin.changeStatusKaDivisi');
+    Route::get('admin/dashboard/cariPegawai', [DashboardController::class, 'searchNameAdmin'])->name('admin.searchNameAdmin');
 
-    Route::post('admin/dashboard/cariDivisiPegawai', [DashboardController::class, 'searchNameKaDivisi'])->name('admin.searchNameKaDivisi');
+    Route::get('admin/dashboard/filterDateReport', [DashboardController::class, 'filterDateReport'])->name('admin.filterDateReport');
+
+
+
+    Route::get('admin/laporanCuti', [PermohonanCutiController::class, 'laporanCuti'])->name('permohonan.laporanCuti');
+
+    Route::get('admin/dashboard/changeStatusDivisi', [DashboardController::class, 'changeStatusKaDivisi'])->name('admin.changeStatusKaDivisi');
+
+    Route::get('admin/dashboard/cariDivisiPegawai', [DashboardController::class, 'searchNameKaDivisi'])->name('admin.searchNameKaDivisi');
 
     Route::get('kadivisi/dashboard', [DashboardController::class, 'indexKadivisi'])->name('kadivisi.dashboard');
     Route::get('admin/permohonan', [PermohonanCutiController::class, 'index'])->name('permohonan.index');

@@ -202,6 +202,17 @@ class KaryawanController extends Controller
         return redirect()->route('karyawan.editUser')->with(['success' => 'Data Profil Kamu Berhasil Diupdate!']);
     }
 
+    public function resetJumlahCuti()
+    {
+        $resetCuti = 12;
+        DB::table('karyawan')
+            ->update([
+                'jumlah_cuti' => $resetCuti,
+            ]);
+
+        return "Berhasil Reset Cuti Semua Karyawan Booble.id";
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -211,9 +222,7 @@ class KaryawanController extends Controller
      */
     public function update(Request $request)
     {
-        $firstJanuary = Carbon::parse('first day of January');
-        $currentTime = Carbon::now();
-        $resetCuti = 12;
+
 
         if ($request->password != '') {
             $validasiUser = $request->validate([
@@ -270,11 +279,6 @@ class KaryawanController extends Controller
                 ->update([
                     'user_id' => $request->id,
                     'jumlah_cuti' => $validasiKaryawan['jumlah_cuti'],
-                ]);
-        } elseif ($firstJanuary == $currentTime) {
-            DB::table('karyawan')
-                ->update([
-                    'jumlah_cuti' => $resetCuti,
                 ]);
         } elseif ($request->password == '') {
             $validasiUser = $request->validate([

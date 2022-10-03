@@ -76,6 +76,14 @@ class PermohonanCutiController extends Controller
             ->where('permohonan_cuti.id', $request->custId)
             ->get();
 
+        $ifOneDayMulai = DB::table('permohonan_cuti')
+            ->where('id', $request->custId)
+            ->value('tgl_mulai');
+
+        $ifOneDayAkhir = DB::table('permohonan_cuti')
+            ->where('id', $request->custId)
+            ->value('tgl_akhir');
+
         $getHRD = DB::table('users')
             ->where('role', 'HRD')
             ->value('name');
@@ -92,28 +100,66 @@ class PermohonanCutiController extends Controller
                 ->value('users.name');
         }
 
-        // $tglMulai = DB::table('permohonan_cuti')
-        // ->where('id',$id)
-        // ->value('tgl_mulai');
-
-        // $date = new DateTime($tglMulai);
-        // $dateNewTime = $date->format('Y-m-d H:i:s');
-
-        // $registeredAt = $dateNewTime->isoFormat('dddd, D MMMM Y');
-        // $mengetahuiOleh = $request->mengetahuiOleh;
-        // $namaAtasan = $request->namaAtasan;
-
         $tanggalCuti = Permohonan_Cuti::find($request->custId);
         $hariMulai = $tanggalCuti->tgl_mulai->isoFormat('dddd');
         $hariAkhir = $tanggalCuti->tgl_akhir->isoFormat('dddd');
         $tglMulai = $tanggalCuti->tgl_mulai->isoFormat('D MMMM Y');
         $tglAkhir = $tanggalCuti->tgl_akhir->isoFormat('D MMMM Y');
 
+        $hari_mulai = $tanggalCuti->tgl_mulai->isoFormat('D');
+        $hari_akhir = $tanggalCuti->tgl_akhir->isoFormat('D');
+
+        $bulanLaporan_awalBulan = $tanggalCuti->tgl_mulai->isoFormat('MMMM');
+
+        $bulanLaporan_awal = $tanggalCuti->tgl_mulai->isoFormat('MMMM Y');
+        $bulanLaporan_akhir = $tanggalCuti->tgl_akhir->isoFormat('MMMM Y');
+
 
         $hariIni = Carbon::now()->isoFormat('D MMMM Y');
 
-        $pdf = PDF::loadview('pages.permohonanCuti.surat', ['dataSurat' => $dataSurat, 'getHRD' => $getHRD, 'hariIni' => $hariIni, 'hariMulai' => $hariMulai, 'hariAkhir' => $hariAkhir, 'tglMulai' => $tglMulai, 'tglAkhir' => $tglAkhir, 'getAtasan' => $getAtasan])->setpaper('A4', 'potrait');
+        $pdf = PDF::loadview('pages.permohonanCuti.surat', ['dataSurat' => $dataSurat, 'getHRD' => $getHRD, 'hariIni' => $hariIni, 'hariMulai' => $hariMulai, 'hariAkhir' => $hariAkhir, 'tglMulai' => $tglMulai, 'tglAkhir' => $tglAkhir, 'getAtasan' => $getAtasan, 'ifOneDayMulai' => $ifOneDayMulai, 'ifOneDayAkhir' => $ifOneDayAkhir, 'hari_mulai' => $hari_mulai, 'hari_akhir' => $hari_akhir, 'bulanLaporan_awal' => $bulanLaporan_awal, 'bulanLaporan_akhir' => $bulanLaporan_akhir, "bulanLaporan_awalBulan" => $bulanLaporan_awalBulan])->setpaper('A4', 'potrait');
         return $pdf->stream('Surat_Cuti_Booble.id.pdf');
+    }
+
+    public function laporanCuti(Request $request)
+    {
+
+        $dates = explode(' - ', $request->dateRangeReport);
+        $start_date = Carbon::parse($dates[0])->toDateString();
+        $end_date = Carbon::parse($dates[1])->toDateString();
+
+        $get_start_date = Carbon::parse($dates[0]);
+        $get_end_date = Carbon::parse($dates[1]);
+
+        $tglMulai = date_create($get_start_date);
+        $tglAkhir = date_create($get_end_date);
+        $durasi = date_diff($tglAkhir, $tglMulai);
+
+        $jumlah_durasi = $durasi->days;
+
+        $bulanLaporan = $get_start_date->isoFormat('MMMM Y');
+
+        $bulanLaporan_mulai = $get_start_date->isoFormat('MMMM Y');
+        $bulanLaporan_akhir = $get_end_date->isoFormat('MMMM Y');
+
+        $bedaBulanLaporan_mulai = $get_start_date->isoFormat('D MMMM Y');
+        $bedaBulanLapora_akhir = $get_end_date->isoFormat('D MMMM Y');
+
+        $hari_mulai = $get_start_date->isoFormat('D');
+        $hari_akhir = $get_end_date->isoFormat('D');
+
+        $permohonan = DB::table('users')
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select('users.name', 'permohonan_cuti.id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.warna_cuti', 'karyawan.divisi', 'karyawan.jabatan', 'karyawan.jumlah_cuti', 'users.role')
+            ->orderBy('permohonan_cuti.created_at', "desc")
+            ->whereBetween('permohonan_cuti.tgl_mulai', [$start_date, $end_date])
+            ->where('permohonan_cuti.status', 'Diterima')
+            // ->limit(5)
+            ->get();
+
+        $pdf = PDF::loadview('pages.permohonanCuti.laporan', ["permohonan" => $permohonan, "bulanLaporan" => $bulanLaporan, "bulanLaporan_mulai" => $bulanLaporan_mulai, "bulanLaporan_akhir" => $bulanLaporan_akhir, "bedaBulanLaporan_mulai" => $bedaBulanLaporan_mulai, "bedaBulanLapora_akhir" => $bedaBulanLapora_akhir, "jumlah_durasi" => $jumlah_durasi, "hari_mulai" => $hari_mulai, "hari_akhir" => $hari_akhir])->setpaper('A4', 'landscape');
+        return $pdf->stream('Surat_Cuti_Booble_id.pdf');
     }
 
     /**
@@ -218,7 +264,7 @@ class PermohonanCutiController extends Controller
                     ->where('users.id', $id)
                     ->value('karyawan.jabatan');
 
-                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -228,7 +274,7 @@ class PermohonanCutiController extends Controller
 
                 //Pesan untuk HRD
 
-                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelpHRD = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -326,7 +372,7 @@ class PermohonanCutiController extends Controller
                     ->where('users.id', $id)
                     ->value('karyawan.jabatan');
 
-                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->where('role', 'Leader')
@@ -334,7 +380,7 @@ class PermohonanCutiController extends Controller
 
                 //Pesan untuk HRD
 
-                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelpHRD = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -436,7 +482,7 @@ class PermohonanCutiController extends Controller
                     ->where('users.id', $id)
                     ->value('karyawan.jabatan');
 
-                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -446,7 +492,7 @@ class PermohonanCutiController extends Controller
 
                 //Pesan untuk HRD
 
-                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelpHRD = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -545,7 +591,7 @@ class PermohonanCutiController extends Controller
                     ->where('users.id', $id)
                     ->value('karyawan.jabatan');
 
-                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelp = DB::table('users')
                     ->where('role', 'Leader')
@@ -553,7 +599,7 @@ class PermohonanCutiController extends Controller
 
                 //Pesan untuk HRD
 
-                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
                 $getTelpHRD = DB::table('users')
                     ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -763,11 +809,23 @@ class PermohonanCutiController extends Controller
             ->where('permohonan_cuti.id', $id)
             ->value('users.no_telpon');
 
-        $getPesan = "*Pengajuan* *Cuti* *Anda* *Telah* *Disetujui*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+        $tgl_akhir = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.tgl_akhir');
+
+        $tgl_mulai = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.tgl_mulai');
+
+        $alasan_cuti = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.alasan_cuti');
+
+        $getPesan = "*Pengajuan* *Cuti* *Anda* *Disetujui*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $tgl_mulai . "\nAkhir Cuti: " . $tgl_akhir . "\nAlasan Cuti: " . $alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
         //Pesan untuk HRD
 
-        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan* *Telah* *Disetujui*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\n\nMohon mengecek web pengajuan cuti segera.";
+        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan* *Disetujui*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $tgl_mulai . "\nAkhir Cuti: " . $tgl_akhir . "\nAlasan Cuti: " . $alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
 
         $getTelpHRD = DB::table('users')
             ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -837,6 +895,131 @@ class PermohonanCutiController extends Controller
         send_waSetuju($getTelpHRD, $getPesanHRD);
 
         return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Berhasil Disetujui']);
+    }
+
+    public function kirimSebelumDuaHari()
+    {
+        $date = Carbon::now();
+        $date->addDays(2);
+        $currentTime = $date->isoFormat('YYYY-MM-DD');
+
+        // dd($mytime);
+
+        // $coba = '2022-10-21';
+        // $coba2 = Carbon::parse($coba)->isoFormat('YYYY-MM-DD');
+
+        $permohonan = DB::table('users')
+            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+            ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+            ->select('users.name', 'permohonan_cuti.id', 'permohonan_cuti.user_id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.warna_cuti', 'karyawan.divisi', 'karyawan.jabatan', 'users.role', 'users.no_telpon')
+            ->where('tgl_mulai', $currentTime)
+            ->where(function ($query) {
+                $query->where('permohonan_cuti.status', 'Di Ka.Divisi');
+                $query->orWhere('permohonan_cuti.status', 'Di Direktur');
+            })
+            ->get();
+
+        function send_waKirim($telp, $pesan)
+        {
+            // METHOD POST
+            // Pastikan phone menggunakan kode negara 62 di depannya
+            $phone = str_replace('08', '628', $telp);
+            $message = $pesan;
+
+            $apikey = '51Uy5loPoLC2FAuiAYhypAhv4IqU6xOy';
+            $url = 'https://api.wanotif.id/v1/send';
+
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+                'Apikey'    => $apikey,
+                'Phone'     => $phone,
+                'Message'   => $message,
+            ));
+            $response = curl_exec($curl);
+            curl_close($curl);
+
+            $res = json_decode($response, TRUE);
+
+            if ($res['wanotif']['status'] != 'sent') {
+                $userkey = '3efc3303a58c';
+                $passkey = 'kp6iswm84z';
+                $telepon = $telp;
+                $message = $pesan;
+
+                $url = 'https://console.zenziva.net/wareguler/api/sendWA/';
+                $curlHandle = curl_init();
+                curl_setopt($curlHandle, CURLOPT_URL, $url);
+                curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+                curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
+                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
+                curl_setopt($curlHandle, CURLOPT_POST, 1);
+                curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
+                    'userkey' => $userkey,
+                    'passkey' => $passkey,
+                    'to' => $telepon,
+                    'message' => $message
+                ));
+                $response = json_decode(curl_exec($curlHandle), true);
+                curl_close($curlHandle);
+            }
+
+            $resulte = $res['wanotif']['status'];
+
+            return $resulte;
+        }
+
+        foreach ($permohonan as $p) {
+            if ($p->role === "karyawan") {
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelp = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'Kepala Divisi')
+                    ->where('karyawan.divisi', $p->divisi)
+                    ->value('users.no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
+                    ->value('users.no_telpon');
+
+                send_waKirim($getTelp, $getPesan);
+
+                send_waKirim($getTelpHRD, $getPesanHRD);
+            } else {
+                $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelp = DB::table('users')
+                    ->where('role', 'Leader')
+                    ->value('no_telpon');
+
+                //Pesan untuk HRD
+
+                $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera.";
+
+                $getTelpHRD = DB::table('users')
+                    ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
+                    ->where('users.role', 'HRD')
+                    ->value('users.no_telpon');
+
+                send_waKirim($getTelp, $getPesan);
+
+                send_waKirim($getTelpHRD, $getPesanHRD);
+            }
+        }
     }
 
     /**
@@ -1040,13 +1223,23 @@ class PermohonanCutiController extends Controller
             ->where('permohonan_cuti.id', $request->custId)
             ->value('users.no_telpon');
 
-        $getPesan = $request->ket_tolak;
+        $tgl_akhir = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.tgl_akhir');
 
-        $getPesan = "*Pengajuan* *Cuti* *Anda Ditolak*" . "\n\nAlasan: " .  "*"  . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+        $tgl_mulai = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.tgl_mulai');
+
+        $alasan_cuti = DB::table('permohonan_cuti')
+            ->where('permohonan_cuti.user_id', $getUserId)
+            ->value('permohonan_cuti.alasan_cuti');
+
+        $getPesan = "*Pengajuan* *Cuti* *Anda* *Ditolak*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $tgl_mulai . "\nAkhir Cuti: " . $tgl_akhir . "\nAlasan Cuti: " . $alasan_cuti . "\nAlasan Ditolak: " . "*" . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
 
         //Pesan untuk HRD
 
-        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan Ditolak*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nAlasan: " . "*"  . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
+        $getPesanHRD = "*Pengajuan* *Cuti* *Karyawan* *Ditolak*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $tgl_mulai . "\nAkhir Cuti: " . $tgl_akhir . "\nAlasan Cuti: " . $alasan_cuti . "\nAlasan Ditolak: " . "*" . $request->ket_tolak . "*" . "\n\nMohon mengecek web pengajuan cuti segera.";
 
         $getTelpHRD = DB::table('users')
             ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
