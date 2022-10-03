@@ -288,18 +288,10 @@
                                         <th class="mr-4 mt-3 ">
                                             <Form method="get" action="{{ route('admin.changeStatusKaDivisi') }}">
                                                 @csrf
-                                                {{-- <select name="role" class="custom-select">
-                                                    @foreach ($role as $row)
-                                                        <option value="{{ $row->nama_role }}"
-                                                            {{ old('role') == $row->nama_role ? 'selected' : '' }}>
-                                                            {{ $row->nama_role }}</option>
-                                                    @endforeach
-                                                </select> --}}
                                                 <select style=" margin-left: 5px;  height: 40px; width:200px; "
                                                     name="namaStatus"
                                                     class="custom-select resizeformc form-control rounded-3"
                                                     onchange='this.form.submit()'>
-                                                    <option value="">Filter Status</option>
                                                     <option value="Semua"
                                                         {{ request()->input('namaStatus') == 'Semua' ? 'selected' : '' }}>
                                                         Semua
@@ -367,16 +359,6 @@
                                                             {{ $p->tgl_akhir }}</td>
                                                         <td class="font-weight-600 text-center">{{ $p->durasi_cuti }}
                                                         </td>
-                                                        {{-- <td>
-                                @if ($p->status === 'Ditolak')
-                                
-                                <a data-id="{{$p->ket_tolak}}" class="badge detail" data-toggle="modal" data-backdrop="true" href="#" data-target="#ketTolakAdmin">Detail..</a>
-    
-                                
-                                @else
-                                @endif    <!-- modal -->
-                            </td> --}}
-                                                        {{-- <td class="align-middle"><span class="badge bg-success text-white">{{$p->status}}</span></td> --}}
                                                         <td class="align-middle text-center">
                                                             @if ($p->status === 'Di Ka.Divisi')
                                                                 <span class="badge baru">Diproses</span>
@@ -410,7 +392,7 @@
                                     @endif
                                     </table>
                                     <br>
-                                    {{ $permohonan->appends(request()->query())->links() }}
+                                    {{ $permohonanDivisi->appends(request()->query())->links() }}
 
                                 </div>
                             </div>

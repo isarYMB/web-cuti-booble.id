@@ -282,7 +282,6 @@
                                                     name="namaStatus"
                                                     class="custom-select resizeformc form-control rounded-3"
                                                     onchange='this.form.submit()'>
-                                                    <option value="">Filter Status</option>
                                                     <option value="Semua"
                                                         {{ request()->input('namaStatus') == 'Semua' ? 'selected' : '' }}>
                                                         Semua
