@@ -491,19 +491,27 @@
                                     </li>
                                     <li class="list-group-item">
 
-                                        <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
-
-                                        <div style="background-color: #929090;" class="rectangleKeterangan square">
-                                        </div>
-                                        <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
-
-                                        <div style="background-color: #6900c7;" class="rectangleKeterangan square">
-                                        </div>
-                                        <span style="vertical-align: middle;">Pengajuan di Direktur</span>
-                                        Di Ka.Divisi
-                                        <div style="background-color: #00ac69;" class="rectangleKeterangan square">
-                                        </div>
-                                        <span style="vertical-align: middle;">Pengajuan Disetujui</span>
+                                        <div style="vertical-align: middle; font-weight: bold;">Keterangan : </div>
+                                        <ul style="list-style: none;">
+                                            <li style="margin-left: -40px">
+                                                <div style="background-color: #929090;"
+                                                    class="rectangleKeteranganFirst square">
+                                                </div>
+                                                <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
+                                            </li>
+                                            <li style="margin-left: -40px">
+                                                <div style="background-color: #6900c7;"
+                                                    class="rectangleKeteranganFirst square">
+                                                </div>
+                                                <span style="vertical-align: middle;">Pengajuan di Direktur</span>
+                                            </li>
+                                            <li style="margin-left: -40px">
+                                                <div style="background-color: #00ac69;"
+                                                    class="rectangleKeteranganFirst square">
+                                                </div>
+                                                <span style="vertical-align: middle;">Pengajuan Disetujui</span>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
                                 {{-- <div class="card-body">

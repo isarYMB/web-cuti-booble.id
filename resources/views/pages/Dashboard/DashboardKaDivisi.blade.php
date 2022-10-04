@@ -281,14 +281,15 @@
                             <div class="card">
                                 <div class="card-header">
                                     <div class="card-header">
-                                        <h4>Daftar Riwayat Cuti</h4>
+                                        <h4>Riwayat Cuti</h4>
                                     </div>
 
                                     <tr>
                                         <th class="mr-4 mt-3 ">
                                             <Form method="get" action="{{ route('admin.changeStatusKaDivisi') }}">
                                                 @csrf
-                                                <select style=" margin-left: 5px;  height: 40px; width:200px; "
+                                                <select
+                                                    style=" margin-left: 10px; margin-bottom: 10px;  height: 40px; width:190px; "
                                                     name="namaStatus"
                                                     class="custom-select resizeformc form-control rounded-3"
                                                     onchange='this.form.submit()'>
@@ -318,7 +319,7 @@
                                             <Form method="get" action="{{ route('admin.searchNameKaDivisi') }}">
                                                 @csrf
                                                 <input
-                                                    style="font-size: 15px; margin-left: 10px; height: 40px; width:200px; "
+                                                    style="font-size: 15px; margin-left: 10px; margin-bottom: 5px; height: 40px; width:190px; "
                                                     class="form-control" type="search" placeholder="search"
                                                     name="searchName" value="{{ request()->input('searchName') }}">
                                             </Form>
@@ -408,16 +409,27 @@
                                 </li>
                                 <li class="list-group-item">
 
-                                    <span style="vertical-align: middle; font-weight: bold;">Keterangan: </span>
-
-                                    <div style="background-color: #929090;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
-
-                                    <div style="background-color: #6900c7;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan di Direktur</span>
-
-                                    <div style="background-color: #00ac69;" class="rectangleKeterangan square"></div>
-                                    <span style="vertical-align: middle;">Pengajuan Disetujui</span>
+                                    <div style="vertical-align: middle; font-weight: bold;">Keterangan : </div>
+                                    <ul style="list-style: none;">
+                                        <li style="margin-left: -40px">
+                                            <div style="background-color: #929090;"
+                                                class="rectangleKeteranganFirst square">
+                                            </div>
+                                            <span style="vertical-align: middle;">Pengajuan di Kepala Divisi</span>
+                                        </li>
+                                        <li style="margin-left: -40px">
+                                            <div style="background-color: #6900c7;"
+                                                class="rectangleKeteranganFirst square">
+                                            </div>
+                                            <span style="vertical-align: middle;">Pengajuan di Direktur</span>
+                                        </li>
+                                        <li style="margin-left: -40px">
+                                            <div style="background-color: #00ac69;"
+                                                class="rectangleKeteranganFirst square">
+                                            </div>
+                                            <span style="vertical-align: middle;">Pengajuan Disetujui</span>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                             {{-- <div class="card-body">
