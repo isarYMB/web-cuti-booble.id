@@ -1,0 +1,48 @@
+version: "3.7"
+services:
+
+  app:
+    build:
+      args:
+          user: booble
+          uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/var/www
+    networks:
+      - boobleid
+
+  db:
+    image: mysql:5.7
+    container_name: booble-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: webcuti_booble
+      MYSQL_ROOT_PASSWORD: secretBooble
+      MYSQL_PASSWORD: secretBooble
+      MYSQL_USER: webcuti_booble
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - 4306:3306
+    networks:
+      - boobleid
+
+  nginx:
+    image: nginx:alpine
+    container_name: booble-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - boobleid
+
+networks:
+  boobleid:
+    driver: bridge
