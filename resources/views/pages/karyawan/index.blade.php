@@ -67,8 +67,15 @@
                                                         </path>
                                                     </svg>
                                                 </a>
-                                                <a class="hoverHapus"
-                                                    href="{{ route('karyawan.destroy', ['id' => $k->user_id]) }}">
+
+                                                {{-- <a data-id="{{ $p->id }}" style="color: white !important"
+                                                    class="badge batal" data-toggle="modal" data-backdrop="true"
+                                                    href="#" data-target="#setujuiKaryawan">Setujui</a>
+                                                href="{{ route('karyawan.destroy', ['id' => $k->user_id]) }}" --}}
+
+                                                <a class="hoverHapus" data-id="{{ $k->id }}"
+                                                    data-target="#hapusUser" data-toggle="modal" data-backdrop="true"
+                                                    href="#">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -93,6 +100,32 @@
                 </div>
             </div>
         </section>
+
+        <!-- modal hapus -->
+        <div class="modal fade" id="hapusUser" tabindex="-1" role="dialog" aria-labelledby="formModal" aria-hidden="true">
+            <div class="modal-dialog-centered modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModal">Anda Yakin Menghapus User Ini?
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="" action="{{ route('karyawan.destroy') }}" method="get">
+                            @csrf
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-block btn-danger m-t-15 waves-effect">Hapus</button>
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" id="hapusUserModal" name="custId">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="formModal"

@@ -26,6 +26,32 @@
 <script src="{{ asset('bundles/izitoast/js/iziToast.min.js') }}"></script>
 
 <script>
+    $('#hapusUser').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+
+        var recipient = button.data('id') // Target data-id
+        console.log(recipient); // Here you can see the data-id value from a element
+        var modal = $(this)
+        // modal.find('.modal-title').text('New message to ' + recipient)
+        // modal.find('.modal-body input').val(recipient)
+        modal.find('#hapusUserModal').val(recipient); // set input value
+    })
+</script>
+
+<script>
+    $('#hapusJabatan').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+
+        var recipient = button.data('id') // Target data-id
+        console.log(recipient); // Here you can see the data-id value from a element
+        var modal = $(this)
+        // modal.find('.modal-title').text('New message to ' + recipient)
+        // modal.find('.modal-body input').val(recipient)
+        modal.find('#hapusJabatanModal').val(recipient); // set input value
+    })
+</script>
+
+<script>
     $('#tolakModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);
 

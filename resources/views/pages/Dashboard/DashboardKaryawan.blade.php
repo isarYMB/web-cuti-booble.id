@@ -278,9 +278,18 @@
                                     {{-- @if($p->status === "Diterima")
                                     <a class="badge cetakSurat" href="{{ url('cetak-surat') }}" target="_blank">Cetak Surat</a> --}}
                                     @if($p->status === "Di Ka.Divisi")
-                                    <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a>
+                                    {{-- <a class="badge batal" style="color: white !important" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}">Batalkan</a> --}}
+                                    <a data-id="{{ $p->id }}"
+                                        style="color: white !important"
+                                        class="badge batal" data-toggle="modal"
+                                        data-backdrop="true" href="#"
+                                        data-target="#batalkanKaryawan">Batalkan</a>
                                     @elseif($p->status === "Di Direktur")
-                                    <a href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" class="badge batal" style="color: white !important">Batalkan</a>
+                                    <a data-id="{{ $p->id }}"
+                                        style="color: white !important"
+                                        class="badge batal" data-toggle="modal"
+                                        data-backdrop="true" href="#"
+                                        data-target="#batalkanKaryawan">Batalkan</a>
                                     {{-- <a class="btn btn-action bg-purple mr-1" href="{{route('permohonan.dibatalkan',['id' => $p->id])}}" >Setuju</a>  --}}
                                     @elseif($p->status === "Batal")
                                     <div></div>
@@ -375,6 +384,42 @@
         </div>
     </div>
 
+    <!-- modal batalkan -->
+    <div class="modal fade" id="batalkanKaryawan" tabindex="-1" role="dialog"
+    aria-labelledby="formModal" aria-hidden="true">
+    <div class="modal-dialog-centered modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formModal">Anda Yakin Membatalkan Pengajuan Cuti?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form class="" action="{{ route('permohonan.dibatalkan') }}" method="get">
+
+                    @csrf
+                    {{-- <div class="form-group">
+                        <label>Alasan Penolakan Cuti</label>
+                        <textarea class="form-control" name="ket_tolak" required></textarea>
+                    </div> --}}
+                    <div class="col-md-12">
+                    <button type="submit"
+                        class="btn btn-block btn-danger m-t-15 waves-effect">Batalkan</button>
+                    {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" id="batalkanKaryawanModal" name="custId">
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
     <div class="modal fade" id="ketTolakAdmin" tabindex="-1" role="dialog" aria-labelledby="formModal"
                                 aria-hidden="true">
                                 <div class=" modal-dialog modal-dialog-centered" role="document">
@@ -426,6 +471,17 @@
 
     <script src="{{asset('js/page/forms-advanced-forms.js')}}"></script>
     <script src="{{asset('bundles/izitoast/js/iziToast.min.js')}}"></script>
+
+    <script>
+        $('#batalkanKaryawan').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+
+            var recipient = button.data('id') // Target data-id
+            console.log(recipient); // Here you can see the data-id value from a element
+            var modal = $(this)
+            modal.find('#batalkanKaryawanModal').val(recipient); // set input value
+        })
+    </script>
 
     <script>
         $('#tolakModal').on('show.bs.modal', function (event) {

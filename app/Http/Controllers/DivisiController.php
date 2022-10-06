@@ -75,10 +75,10 @@ class DivisiController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function destroyJabatan($id)
+    public function destroyJabatan(Request $request)
     {
 
-        $jabatan = Jabatan::findOrFail($id);
+        $jabatan = Jabatan::findOrFail($request->custId);
 
         $jabatan->delete();
 

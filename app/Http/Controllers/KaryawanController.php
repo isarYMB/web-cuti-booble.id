@@ -347,12 +347,12 @@ class KaryawanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($request->custId);
 
         DB::table('karyawan')
-            ->where('user_id', $id)
+            ->where('user_id', $request->custId)
             ->delete();
 
         $user->delete();

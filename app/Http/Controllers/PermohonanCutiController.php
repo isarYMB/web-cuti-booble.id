@@ -694,8 +694,9 @@ class PermohonanCutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function setuju($id)
+    public function setuju(Request $request)
     {
+
 
         $data = DB::table('users')
             ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -712,7 +713,7 @@ class PermohonanCutiController extends Controller
                 'users.no_telpon',
                 'karyawan.jumlah_cuti'
             )
-            ->where('permohonan_cuti.id', $id)
+            ->where('permohonan_cuti.id', $request->custId)
             ->get();
         $user_id = '';
         // $alasan_cuti='';
@@ -741,7 +742,7 @@ class PermohonanCutiController extends Controller
             'jumlah_cuti' => $jmlCuti,
         ]);
 
-        DB::table('permohonan_cuti')->where('id', $id)->update([
+        DB::table('permohonan_cuti')->where('id', $request->custId)->update([
             // 'user_id' => $user_id,
             // 'alasan_cuti' => $alasan_cuti,
             // 'tgl_mulai' => $tgl_mulai,
@@ -749,7 +750,7 @@ class PermohonanCutiController extends Controller
             'status' => "Diterima"
         ]);
 
-        DB::table('permohonan_cuti')->where('id', $id)->update([
+        DB::table('permohonan_cuti')->where('id', $request->custId)->update([
             // 'user_id' => $user_id,
             'status' => "Diterima",
             'warna_cuti' => "#00ac69",
@@ -758,7 +759,7 @@ class PermohonanCutiController extends Controller
         // Pesan untuk Karyawan
 
         $getUserId = DB::table('permohonan_cuti')
-            ->where('id', $id)
+            ->where('id', $request->custId)
             ->value('user_id');
 
         $getNama = DB::table('users')
@@ -766,7 +767,7 @@ class PermohonanCutiController extends Controller
             ->select(
                 'users.name',
             )
-            ->where('permohonan_cuti.id', $id)
+            ->where('permohonan_cuti.id', $request->custId)
             ->value('users.name');
         $getDivisi = DB::table('users')
             ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -788,7 +789,7 @@ class PermohonanCutiController extends Controller
             ->select(
                 'users.no_telpon',
             )
-            ->where('permohonan_cuti.id', $id)
+            ->where('permohonan_cuti.id', $request->custId)
             ->value('users.no_telpon');
 
         $tgl_akhir = DB::table('permohonan_cuti')
@@ -876,7 +877,7 @@ class PermohonanCutiController extends Controller
 
         send_waSetuju($getTelpHRD, $getPesanHRD);
 
-        return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Berhasil Disetujui']);
+        return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Karyawan Disetujui']);
     }
 
     public function kirimSebelumDuaHari()
@@ -1011,104 +1012,104 @@ class PermohonanCutiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function dikirim($id)
-    {
+    // public function dikirim($id)
+    // {
 
+    //     $data = DB::table('users')
+    //         ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+    //         ->select('permohonan_cuti.id', 'permohonan_cuti.user_id', 'permohonan_cuti.status')
+    //         ->where('permohonan_cuti.id', $id)
+    //         ->get();
+
+    //     DB::table('permohonan_cuti')->where('id', $id)->update([
+    //         // 'user_id' => $user_id,
+    //         'status' => "Di Direktur",
+    //         'warna_cuti' => "#6900c7",
+    //     ]);
+
+    //     $getNama = DB::table('users')
+    //         ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
+    //         ->where('permohonan_cuti.id', $id)
+    //         ->value('users.name');
+
+    //     $getPesan = 'Pesan Dari Kepala Divisi. Pengajuan cuti baru oleh' . ' ' . $getNama . '. Mohon mengecek web cuti Booble.id';
+
+    //     $getTelp = DB::table('users')
+    //         ->where('role', 'Leader')
+    //         ->value('no_telpon');
+
+    //     function send_waDikirim($telp, $pesan)
+    //     {
+    //         // METHOD POST
+    //         // Pastikan phone menggunakan kode negara 62 di depannya
+    //         $phone = str_replace('08', '628', $telp);
+    //         $message = $pesan;
+
+    //         $apikey = '51Uy5loPoLC2FAuiAYhypAhv4IqU6xOy';
+    //         $url = 'https://api.wanotif.id/v1/send';
+
+    //         $curl = curl_init();
+    //         curl_setopt($curl, CURLOPT_URL, $url);
+    //         curl_setopt($curl, CURLOPT_HEADER, 0);
+    //         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    //         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+    //         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+    //         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+    //         curl_setopt($curl, CURLOPT_POST, 1);
+    //         curl_setopt($curl, CURLOPT_POSTFIELDS, array(
+    //             'Apikey'    => $apikey,
+    //             'Phone'     => $phone,
+    //             'Message'   => $message,
+    //         ));
+    //         $response = curl_exec($curl);
+    //         curl_close($curl);
+
+    //         $res = json_decode($response, TRUE);
+
+    //         if ($res['wanotif']['status'] != 'sent') {
+    //             $userkey = '3efc3303a58c';
+    //             $passkey = 'kp6iswm84z';
+    //             $telepon = $telp;
+    //             $message = $pesan;
+
+    //             $url = 'https://console.zenziva.net/wareguler/api/sendWA/';
+    //             $curlHandle = curl_init();
+    //             curl_setopt($curlHandle, CURLOPT_URL, $url);
+    //             curl_setopt($curlHandle, CURLOPT_HEADER, 0);
+    //             curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
+    //             curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
+    //             curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
+    //             curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
+    //             curl_setopt($curlHandle, CURLOPT_POST, 1);
+    //             curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
+    //                 'userkey' => $userkey,
+    //                 'passkey' => $passkey,
+    //                 'to' => $telepon,
+    //                 'message' => $message
+    //             ));
+    //             $response = json_decode(curl_exec($curlHandle), true);
+    //             curl_close($curlHandle);
+    //         }
+
+    //         $resulte = $res['wanotif']['status'];
+
+    //         return $resulte;
+    //     }
+
+    //     send_waDikirim($getTelp, $getPesan);
+
+    //     return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Telah Dikirim ke Atasan']);
+    // }
+
+    public function dibatalkan(Request $request)
+    {
         $data = DB::table('users')
             ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
             ->select('permohonan_cuti.id', 'permohonan_cuti.user_id', 'permohonan_cuti.status')
-            ->where('permohonan_cuti.id', $id)
+            ->where('permohonan_cuti.id', $request->custId)
             ->get();
 
-        DB::table('permohonan_cuti')->where('id', $id)->update([
-            // 'user_id' => $user_id,
-            'status' => "Di Direktur",
-            'warna_cuti' => "#6900c7",
-        ]);
-
-        $getNama = DB::table('users')
-            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-            ->where('permohonan_cuti.id', $id)
-            ->value('users.name');
-
-        $getPesan = 'Pesan Dari Kepala Divisi. Pengajuan cuti baru oleh' . ' ' . $getNama . '. Mohon mengecek web cuti Booble.id';
-
-        $getTelp = DB::table('users')
-            ->where('role', 'Leader')
-            ->value('no_telpon');
-
-        function send_waDikirim($telp, $pesan)
-        {
-            // METHOD POST
-            // Pastikan phone menggunakan kode negara 62 di depannya
-            $phone = str_replace('08', '628', $telp);
-            $message = $pesan;
-
-            $apikey = '51Uy5loPoLC2FAuiAYhypAhv4IqU6xOy';
-            $url = 'https://api.wanotif.id/v1/send';
-
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_HEADER, 0);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, array(
-                'Apikey'    => $apikey,
-                'Phone'     => $phone,
-                'Message'   => $message,
-            ));
-            $response = curl_exec($curl);
-            curl_close($curl);
-
-            $res = json_decode($response, TRUE);
-
-            if ($res['wanotif']['status'] != 'sent') {
-                $userkey = '3efc3303a58c';
-                $passkey = 'kp6iswm84z';
-                $telepon = $telp;
-                $message = $pesan;
-
-                $url = 'https://console.zenziva.net/wareguler/api/sendWA/';
-                $curlHandle = curl_init();
-                curl_setopt($curlHandle, CURLOPT_URL, $url);
-                curl_setopt($curlHandle, CURLOPT_HEADER, 0);
-                curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYHOST, 2);
-                curl_setopt($curlHandle, CURLOPT_SSL_VERIFYPEER, 0);
-                curl_setopt($curlHandle, CURLOPT_TIMEOUT, 30);
-                curl_setopt($curlHandle, CURLOPT_POST, 1);
-                curl_setopt($curlHandle, CURLOPT_POSTFIELDS, array(
-                    'userkey' => $userkey,
-                    'passkey' => $passkey,
-                    'to' => $telepon,
-                    'message' => $message
-                ));
-                $response = json_decode(curl_exec($curlHandle), true);
-                curl_close($curlHandle);
-            }
-
-            $resulte = $res['wanotif']['status'];
-
-            return $resulte;
-        }
-
-        send_waDikirim($getTelp, $getPesan);
-
-        return redirect()->route('permohonan.index')->with(['success' => 'Permohonan Cuti Telah Dikirim ke Atasan']);
-    }
-
-    public function dibatalkan($id)
-    {
-        $data = DB::table('users')
-            ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
-            ->select('permohonan_cuti.id', 'permohonan_cuti.user_id', 'permohonan_cuti.status')
-            ->where('permohonan_cuti.id', $id)
-            ->get();
-
-        DB::table('permohonan_cuti')->where('id', $id)->update([
+        DB::table('permohonan_cuti')->where('id', $request->custId)->update([
             // 'user_id' => $user_id,
             'status' => "Dibatalkan"
         ]);

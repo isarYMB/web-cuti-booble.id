@@ -62,20 +62,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('kadivisi/dashboard', [DashboardController::class, 'indexKadivisi'])->name('kadivisi.dashboard')->middleware('kaDivisi');
     Route::get('admin/permohonan', [PermohonanCutiController::class, 'index'])->name('permohonan.index');
     Route::get('admin/permohonan/disetujui', [RiwayatPermohonanController::class, 'disetujui'])->name('permohonan.disetujui');
-    Route::get('admin/permohonan/{id}', [PermohonanCutiController::class, 'dikirim'])->name('permohonan.dikirim');
-    Route::get('admin/permohonan/setuju/{id}', [PermohonanCutiController::class, 'setuju'])->name('permohonan.setuju');
+    // Route::get('admin/permohonan/{id}', [PermohonanCutiController::class, 'dikirim'])->name('permohonan.dikirim');
+    Route::get('admin/permohonan/setuju', [PermohonanCutiController::class, 'setuju'])->name('permohonan.setuju');
     Route::post('admin/permohonan/tolak/', [PermohonanCutiController::class, 'tolak'])->name('permohonan.tolak');
     Route::get('admin/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index')->middleware('hrd');
 
     Route::get('admin/divisi', [DivisiController::class, 'index'])->name('divisi.index')->middleware('hrd');
 
-    Route::get('karyawan/dashboard/{id}', [PermohonanCutiController::class, 'dibatalkan'])->name('permohonan.dibatalkan');
+    Route::get('karyawan/dashboard/dibatalkan', [PermohonanCutiController::class, 'dibatalkan'])->name('permohonan.dibatalkan');
 
     Route::get('admin/karyawan/edit/{id}', [KaryawanController::class, 'edit'])->name('karyawan.edit');
 
     Route::get('admin/karyawan/editUser', [KaryawanController::class, 'editUser'])->name('karyawan.editUser');
 
-    Route::get('admin/karyawan/destroy/{id}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy')->middleware('hrd');
+    Route::get('admin/karyawan/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy')->middleware('hrd');
 
     Route::post('admin/karyawan/update', [KaryawanController::class, 'update'])->name('karyawan.update')->middleware('hrd');
 
@@ -89,7 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('admin/divisi/CreateJabatan', [DivisiController::class, 'storeJabatan'])->name('jabatan.store')->middleware('hrd');
 
-    Route::get('admin/divisi/DestoryJabatan/{id}', [DivisiController::class, 'destroyJabatan'])->name('jabatan.destroy')->middleware('hrd');
+    Route::get('admin/divisi/DestoryJabatan', [DivisiController::class, 'destroyJabatan'])->name('jabatan.destroy')->middleware('hrd');
 
     Route::post('suratPermohonanCuti/', [PermohonanCutiController::class, 'isiSurat'])->name('dataSurat.cuti');
 

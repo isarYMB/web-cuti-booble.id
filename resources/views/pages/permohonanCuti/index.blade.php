@@ -312,13 +312,13 @@
                                             <table class="table table-striped" id="table-1">
                                                 <tr>
                                                     <th class="text-center">No</th>
-                                                    <th style="min-width: 100px;">Tgl Mohon</th>
+                                                    <th class="text-center" style="min-width: 100px;">Tgl Mohon</th>
                                                     <th>Nama Pegawai</th>
-                                                    <th>Alasan Cuti</th>
-                                                    <th style="min-width: 100px;">Mulai</th>
-                                                    <th style="min-width: 100px;">Berakhir</th>
+                                                    <th class="text-center">Alasan Cuti</th>
+                                                    <th class="text-center" style="min-width: 100px;">Mulai</th>
+                                                    <th class="text-center" style="min-width: 100px;">Berakhir</th>
                                                     <th style="min-width: 100px;">Durasi</th>
-                                                    <th class="text-center">#</th>
+                                                    <th class="text-center" style="min-width: 150px;">#</th>
                                                 </tr>
                                                 @if ($permohonan->isEmpty())
                                                     <tr>
@@ -341,8 +341,13 @@
                                                                 {{ $p->durasi_cuti }}</td>
                                                             @if ($p->status === 'Di Ka.Divisi')
                                                                 <td class="text-center">
-                                                                    <a class="badge batal"
-                                                                        href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a>
+                                                                    {{-- <a class="badge batal"
+                                                                        href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a> --}}
+                                                                    <a data-id="{{ $p->id }}"
+                                                                        style="color: white !important"
+                                                                        class="badge batal" data-toggle="modal"
+                                                                        data-backdrop="true" href="#"
+                                                                        data-target="#setujuiKaryawan">Setujui</a>
                                                                     <a data-id="{{ $p->id }}"
                                                                         style="color: white !important"
                                                                         class="badge ditolak" data-toggle="modal"
@@ -403,6 +408,42 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- modal setujui -->
+                    <div class="modal fade" id="setujuiKaryawan" tabindex="-1" role="dialog"
+                        aria-labelledby="formModal" aria-hidden="true">
+                        <div class="modal-dialog-centered modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="formModal">Anda Yakin Menyetujui Pengajuan Cuti Ini?
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <form class="" action="{{ route('permohonan.setuju') }}" method="get">
+
+                                        @csrf
+
+
+                                        <div class="col-md-12">
+                                            <button type="submit"
+                                                class="btn btn-block btn-primary m-t-15 waves-effect">Setujui</button>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <input type="hidden" id="setujuiKaryawanModal" name="custId">
+                                        </div>
+
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {{-- @endsection --}}
             @elseif(Auth::user()->role === 'Leader')
@@ -435,13 +476,13 @@
                                             <table class="table table-striped" id="table-1">
                                                 <tr>
                                                     <th class="text-center">No</th>
-                                                    <th style="min-width: 100px;">Tgl Mohon</th>
+                                                    <th class="text-center" style="min-width: 100px;">Tgl Mohon</th>
                                                     <th>Nama Pegawai</th>
                                                     <th>Alasan Cuti</th>
-                                                    <th style="min-width: 100px;">Mulai</th>
-                                                    <th style="min-width: 100px;">Berakhir</th>
-                                                    <th>Durasi</th>
-                                                    <th class="text-center">#</th>
+                                                    <th class="text-center" style="min-width: 100px;">Mulai</th>
+                                                    <th class="text-center" style="min-width: 100px;">Berakhir</th>
+                                                    <th class="text-center">Durasi</th>
+                                                    <th class="text-center" style="min-width: 150px;">#</th>
                                                 </tr>
                                                 @if ($permohonan->isEmpty())
                                                     <tr>
@@ -462,9 +503,14 @@
                                                             </td>
                                                             <td class="font-weight-600 text-center">
                                                                 {{ $p->durasi_cuti }}</td>
-                                                            <td>
-                                                                <a class="badge batal"
-                                                                    href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a>
+                                                            <td class="text-center">
+                                                                {{-- <a class="badge batal"
+                                                                    href="{{ route('permohonan.setuju', ['id' => $p->id]) }}">Setujui</a> --}}
+                                                                <a data-id="{{ $p->id }}"
+                                                                    style="color: white !important"
+                                                                    class="badge batal" data-toggle="modal"
+                                                                    data-backdrop="true" href="#"
+                                                                    data-target="#setujuiKaryawan">Setujui</a>
                                                                 {{-- <a data-id="{{$p->id}}" href="#" class="btn btn-danger btn-action" data-toggle="modal" data-target="#tolakModal" data-backdrop="false">Tolak</a> --}}
                                                                 <a data-id="{{ $p->id }}"
                                                                     style="color: white !important"
@@ -523,6 +569,39 @@
                         </div>
 
                     </section>
+                    <!-- modal setujui -->
+                    <div class="modal fade" id="setujuiKaryawan" tabindex="-1" role="dialog"
+                        aria-labelledby="formModal" aria-hidden="true">
+                        <div class="modal-dialog-centered modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="formModal">Anda Yakin Menyetujui Pengajuan Cuti Ini?
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <form class="" action="{{ route('permohonan.setuju') }}" method="get">
+
+                                        @csrf
+
+                                        <div class="col-md-12">
+                                            <button type="submit"
+                                                class="btn btn-block btn-primary m-t-15 waves-effect">Setujui</button>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="hidden" id="setujuiKaryawanModal" name="custId">
+                                        </div>
+
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- modal -->
                     <div class="modal fade" id="tolakModalLeader" tabindex="-1" role="dialog"
                         aria-labelledby="formModal" aria-hidden="true">
@@ -589,6 +668,17 @@
 
     <script src="{{ asset('js/page/forms-advanced-forms.js') }}"></script>
     <script src="{{ asset('bundles/izitoast/js/iziToast.min.js') }}"></script>
+
+    <script>
+        $('#setujuiKaryawan').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+
+            var recipient = button.data('id') // Target data-id
+            console.log(recipient); // Here you can see the data-id value from a element
+            var modal = $(this)
+            modal.find('#setujuiKaryawanModal').val(recipient); // set input value
+        })
+    </script>
 
     <script>
         $('#tolakModal').on('show.bs.modal', function(event) {
