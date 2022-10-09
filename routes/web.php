@@ -42,6 +42,9 @@ Route::get('admin/resetJumlahCuti/dDFgdsErfCvdfErgEGldSp', [KaryawanController::
 //Kirim Pesan Sebelum 2 Hari Mulai Cuti
 Route::get('admin/kirimPesan/kjDLeoerDfVderd', [PermohonanCutiController::class, 'kirimSebelumDuaHari']);
 
+//Kirim Pesan Sebelum 1 Hari Berakhir Cuti 
+Route::get('admin/kirimPesanAkhir/asskjKKdpekerVr', [PermohonanCutiController::class, 'kirimSebelumSatuHari']);
+
 Route::group(['middleware' => 'auth'], function () {
 
     // Admin
