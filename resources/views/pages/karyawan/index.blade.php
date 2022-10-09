@@ -115,6 +115,7 @@
                     <div class="modal-body">
                         <form class="" action="{{ route('karyawan.destroy') }}" method="get">
                             @csrf
+                            <div id='loader'></div>
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-block btn-danger m-t-15 waves-effect">Hapus</button>
                             </div>

@@ -49,6 +49,19 @@
     background-color: #6900c7;
 }
 
+#loader {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.75) url("https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png") no-repeat center center;
+    background-size: 100px 100px;
+    z-index: 99999;
+}
+
 .batal {
     color: white;
     background-color: #334d6e;

@@ -39,6 +39,14 @@
 </script>
 
 <script>
+    $(function() {
+        $("form").submit(function() {
+            $('#loader').show();
+        });
+    });
+</script>
+
+<script>
     $('#hapusJabatan').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);
 

@@ -7,6 +7,7 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
         <title>Web Cuti Booble.id</title>
         <!-- General CSS Files -->
+        <link rel='shortcut icon' type='image/x-icon' href="{{asset('https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png')}}" />
         <link rel="stylesheet" href="{{asset('css/app.min.css')}}">
         <link rel="stylesheet" href="{{asset('bundles/jqvmap/dist/jqvmap.min.css')}}">
         <link rel="stylesheet" href="{{asset('bundles/weather-icon/css/weather-icons.min.css')}}">
@@ -29,7 +30,7 @@
         <!-- Custom style CSS -->
         <link rel="stylesheet" href="{{asset('css/custom.css')}}">
         <link href="{{ asset('css/mobile.css') }}" rel="stylesheet" type="text/css" >
-        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/booble.ico') }}">
+        
         <script type="text/javascript" src="{{ mix('js/app.js') }}"></script>
 
         <!-- FullCalendar -->

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <title>Booble.id - Admin Dashboard Template</title>
+    <title>Web Cuti Booble.id</title>
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/jqvmap/dist/jqvmap.min.css') }}">
@@ -30,9 +30,23 @@
     <!-- Custom style CSS -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link href="{{ asset('css/mobile.css') }}" rel="stylesheet" type="text/css">
-    <link rel='shortcut icon' type='image/x-icon' href="{{ asset('https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png') }}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/booble.ico') }}">
     <script type="text/javascript" src="{{ mix('js/app.js') }}"></script>
 
+    <style>
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.75) url("https://i.ibb.co/q5S0Gsp/LOGO-KOTAK-1.png") no-repeat center center;
+            background-size: 100px 100px;
+            z-index: 99999;
+        }
+    </style>
     <!-- FullCalendar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -397,6 +411,7 @@
                                         <div class="form-group">
                                             <input type="hidden" id="tolakModalLeaderUser" name="custId">
                                         </div>
+                                        <div id='loader'></div>
                                         <button type="submit"
                                             class="btn btn-danger m-t-15 waves-effect">Tolak</button>
                                         {{-- <a type="submit" class="btn btn-danger btn-action" href=""></a> --}}
@@ -426,13 +441,12 @@
                                     <form class="" action="{{ route('permohonan.setuju') }}" method="get">
 
                                         @csrf
-
+                                        <div id='loader'></div>
 
                                         <div class="col-md-12">
                                             <button type="submit"
                                                 class="btn btn-block btn-primary m-t-15 waves-effect">Setujui</button>
                                         </div>
-
                                         <div class="form-group">
                                             <input type="hidden" id="setujuiKaryawanModal" name="custId">
                                         </div>
@@ -586,6 +600,7 @@
                                     <form class="" action="{{ route('permohonan.setuju') }}" method="get">
 
                                         @csrf
+                                        <div id='loader'></div>
 
                                         <div class="col-md-12">
                                             <button type="submit"
@@ -622,6 +637,7 @@
                                             <label>Alasan Penolakan Cuti</label>
                                             <textarea class="form-control" name="ket_tolak" required></textarea>
                                         </div>
+                                        <div id='loader'></div>
                                         <div class="form-group">
                                             <input type="hidden" id="tolakModalLeaderUser" name="custId">
                                         </div>
@@ -678,6 +694,14 @@
             var modal = $(this)
             modal.find('#setujuiKaryawanModal').val(recipient); // set input value
         })
+    </script>
+
+    <script>
+        $(function() {
+            $("form").submit(function() {
+                $('#loader').show();
+            });
+        });
     </script>
 
     <script>
