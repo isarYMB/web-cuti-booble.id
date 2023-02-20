@@ -80,6 +80,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('admin/karyawan/destroy', [KaryawanController::class, 'destroy'])->name('karyawan.destroy')->middleware('hrd');
 
+    Route::get('admin/karyawan/destroyCuti', [DashboardController::class, 'destroy'])->name('cuti.destroy')->middleware('hrd');
+
     Route::post('admin/karyawan/update', [KaryawanController::class, 'update'])->name('karyawan.update')->middleware('hrd');
 
     Route::post('admin/User/update', [KaryawanController::class, 'updateUser'])->name('karyawan.updateUser')->middleware('hrd');

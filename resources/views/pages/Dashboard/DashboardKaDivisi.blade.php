@@ -77,7 +77,7 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a class="nav-link" href="#">
-                                <img class="logo-name" src="{{ 'https://i.ibb.co/1XC1GTF/Logo2-2.png' }}">
+                                <img class="logo-name" src="{{ 'https://simpanfile.sisiadmin.skom.id/Logo2-2.png' }}">
                             </a>
                         </li>
                     </ul>
@@ -212,7 +212,7 @@
                                     <span>Ubah Profil</span>
                                 </a>
                             </li>
-                        @elseif(Auth::user()->role === 'Leader')
+                        @elseif(Auth::user()->role === 'Direktur')
                             <li>
                                 <a class="nav-link" href="{{ route('permohonan.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

@@ -41,7 +41,7 @@ class PermohonanCutiController extends Controller
                 ->select('users.name', 'karyawan.divisi', 'permohonan_cuti.id', 'permohonan_cuti.alasan_cuti', 'permohonan_cuti.tgl_mulai', 'permohonan_cuti.tgl_akhir', 'permohonan_cuti.status', 'permohonan_cuti.ket_tolak', 'permohonan_cuti.durasi_cuti', 'permohonan_cuti.tgl_memohon', 'permohonan_cuti.warna_cuti')
                 ->where('permohonan_cuti.status', 'Diterima')
                 ->get();
-        } elseif (Auth::user()->role === "Leader") {
+        } elseif (Auth::user()->role === "Direktur") {
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
@@ -88,7 +88,7 @@ class PermohonanCutiController extends Controller
             ->where('role', 'HRD')
             ->value('name');
 
-        if ($request->roleKaryawan == 'karyawan') {
+        if ($request->roleKaryawan == 'Karyawan Tingkat 1') {
             $getAtasan = DB::table('users')
                 ->join('karyawan', 'users.id', '=', 'karyawan.user_id')
                 ->where('users.role', 'Kepala Divisi')
@@ -96,7 +96,7 @@ class PermohonanCutiController extends Controller
                 ->value('users.name');
         } else {
             $getAtasan = DB::table('users')
-                ->where('users.role', 'Leader')
+                ->where('users.role', 'Direktur')
                 ->value('users.name');
         }
 
@@ -217,7 +217,7 @@ class PermohonanCutiController extends Controller
             return redirect()->route('karyawan.dashboard')->with(['message' => 'Maaf anda tidak bisa mengajukan cuti karena durasi cuti maksimal 4 hari sekali pangajuan']);
         } elseif ($is_weekend == 1) {
 
-            if (Auth::user()->role === "karyawan") {
+            if (Auth::user()->role === "Karyawan Tingkat 1") {
                 $totalCuti = $durasi->days - 0;
                 DB::table('permohonan_cuti')->insert([
                     'user_id' => Auth::id(),
@@ -357,7 +357,7 @@ class PermohonanCutiController extends Controller
                 $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera di www.cuti.booblestudio.com";
 
                 $getTelp = DB::table('users')
-                    ->where('role', 'Leader')
+                    ->where('role', 'Direktur')
                     ->value('no_telpon');
 
                 //Pesan untuk HRD
@@ -435,7 +435,7 @@ class PermohonanCutiController extends Controller
                 return redirect()->route('karyawan.dashboard')->with(['success' => 'Berhasil Mengajukan Permohonan Cuti.']);
             }
         } else {
-            if (Auth::user()->role === "karyawan") {
+            if (Auth::user()->role === "Karyawan Tingkat 1") {
                 $totalCuti = $durasi->days + 1;
 
                 DB::table('permohonan_cuti')->insert([
@@ -576,7 +576,7 @@ class PermohonanCutiController extends Controller
                 $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $getNama . "\nDivisi: " . $getDivisi . "\nJabatan: " . $getJabatan . "\nMulai Cuti: " . $request->tgl_mulai . "\nAkhir Cuti: " . $request->tgl_akhir . "\nAlasan Cuti: " . $request->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera di www.cuti.booblestudio.com";
 
                 $getTelp = DB::table('users')
-                    ->where('role', 'Leader')
+                    ->where('role', 'Direktur')
                     ->value('no_telpon');
 
                 //Pesan untuk HRD
@@ -964,7 +964,7 @@ class PermohonanCutiController extends Controller
             }
 
             foreach ($permohonan as $p) {
-                if ($p->role === "karyawan") {
+                if ($p->role === "Karyawan Tingkat 1") {
                     $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera di www.cuti.booblestudio.com";
 
                     $getTelp = DB::table('users')
@@ -989,7 +989,7 @@ class PermohonanCutiController extends Controller
                     $getPesan = "*Pengajuan* *Cuti* *Karyawan*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera di www.cuti.booblestudio.com";
 
                     $getTelp = DB::table('users')
-                        ->where('role', 'Leader')
+                        ->where('role', 'Direktur')
                         ->value('no_telpon');
 
                     //Pesan untuk HRD
@@ -1086,7 +1086,7 @@ class PermohonanCutiController extends Controller
         }
 
         foreach ($permohonan as $p) {
-            if ($p->role === "karyawan") {
+            if ($p->role === "Karyawan Tingkat 1") {
                 $getPesan = "*Cuti* *Anda* *Berakhir* *Hari* *Ini*" . "\n\nNama: " . $p->name . "\nDivisi: " . $p->divisi . "\nJabatan: " . $p->jabatan . "\nMulai Cuti: " . $p->tgl_mulai . "\nAkhir Cuti: " . $p->tgl_akhir . "\nAlasan Cuti: " . $p->alasan_cuti . "\n\nMohon mengecek web pengajuan cuti segera di www.cuti.booblestudio.com";
 
                 $getTelp = DB::table('users')
@@ -1158,7 +1158,7 @@ class PermohonanCutiController extends Controller
     //     $getPesan = 'Pesan Dari Kepala Divisi. Pengajuan cuti baru oleh' . ' ' . $getNama . '. Mohon mengecek web cuti Booble.id';
 
     //     $getTelp = DB::table('users')
-    //         ->where('role', 'Leader')
+    //         ->where('role', 'Direktur')
     //         ->value('no_telpon');
 
     //     function send_waDikirim($telp, $pesan)

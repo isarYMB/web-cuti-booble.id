@@ -14,11 +14,13 @@ class AuthController extends Controller
     {
         if (Auth::check()) { // true sekalian session field di users nanti bisa dipanggil via Auth
             //Login Success
-            if (Auth::user()->role === 'karyawan') {
+            if (Auth::user()->role === 'Karyawan Tingkat 1') {
+                return redirect()->route('karyawan.dashboard');
+            } elseif (Auth::user()->role === 'Karyawan Tingkat 2') {
                 return redirect()->route('karyawan.dashboard');
             } elseif (Auth::user()->role === 'HRD') {
                 return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->role === 'Leader') {
+            } elseif (Auth::user()->role === 'Direktur') {
                 return redirect()->route('permohonan.index');
             } elseif (Auth::user()->role === 'Kepala Divisi') {
                 return redirect()->route('kadivisi.dashboard');
@@ -57,11 +59,13 @@ class AuthController extends Controller
         if (Auth::check()) { // true sekalian session field di users nanti bisa dipanggil via Auth
 
             //Login Success
-            if (Auth::user()->role === 'karyawan') {
+            if (Auth::user()->role === 'Karyawan Tingkat 1') {
+                return redirect()->route('karyawan.dashboard');
+            } elseif (Auth::user()->role === 'Karyawan Tingkat 2') {
                 return redirect()->route('karyawan.dashboard');
             } elseif (Auth::user()->role === 'HRD') {
                 return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->role === 'Leader') {
+            } elseif (Auth::user()->role === 'Direktur') {
                 return redirect()->route('permohonan.index');
             } elseif (Auth::user()->role === 'Kepala Divisi') {
                 return redirect()->route('kadivisi.dashboard');

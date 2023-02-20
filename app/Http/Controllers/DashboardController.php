@@ -398,4 +398,34 @@ class DashboardController extends Controller
 
         return view('pages.Dashboard.DashboardKaryawan', ["permohonan" => $permohonan, 'sisa_cuti' => $sisaCuti, 'jmlPermohonanDisetujui' => $jmlPermohonanDisetujui, "calendarDivisi" => $calendarDivisi, 'jmlPermohonanDitolak' => $jmlPermohonanDitolak, 'getRagneTanggal' => $getRagneTanggal]);
     }
+
+    public function destroy(Request $request)
+    {
+
+        $durasiCuti = DB::table('permohonan_cuti')
+            ->where('id', $request->custId)
+            ->value('durasi_cuti');
+
+        $getUserId = DB::table('permohonan_cuti')
+            ->where('id', $request->custId)
+            ->value('user_id');
+
+        $getJumlahCuti = DB::table('karyawan')
+            ->where('user_id', $getUserId)
+            ->value('jumlah_cuti');
+
+        $tambahJmlCuti = $getJumlahCuti + $durasiCuti;
+
+        DB::table('karyawan')
+            ->where('user_id', $getUserId)
+            ->update(['jumlah_cuti' => $tambahJmlCuti]);
+
+
+        $permohonan = DB::table('permohonan_cuti')
+            ->where('id', $request->custId);
+
+        $permohonan->delete();
+
+        return redirect()->route('admin.dashboard')->with(['success' => 'Pengajuan Cuti yang Dipilih Berhasil Dihapus!']);
+    }
 }

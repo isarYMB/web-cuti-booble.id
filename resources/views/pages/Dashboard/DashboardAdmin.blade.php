@@ -38,6 +38,30 @@
         }
     </style>
 
+    <script>
+        $(document).ready(function() {
+            const flashData = $("#flash-data").data('flashdata');
+            console.log('flash-data', flashData);
+            // if(flashData === "Maaf sisa cuti anda sudah habis"){
+
+            //     iziToast.error({
+            //         title: 'Error!',
+            //         message: flashData,
+            //         position: 'topRight'
+            //     });
+
+            // }
+            if (flashData) {
+                iziToast.success({
+                    title: 'Success !!',
+                    message: flashData,
+                    position: 'topRight'
+                });
+            }
+        });
+    </script>
+
+
     <!-- FullCalendar -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -77,7 +101,7 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a class="nav-link" href="#">
-                                <img class="logo-name" src="{{ 'https://i.ibb.co/1XC1GTF/Logo2-2.png' }}">
+                                <img class="logo-name" src="{{ 'https://simpanfile.sisiadmin.skom.id/Logo2-2.png' }}">
                             </a>
                         </li>
                     </ul>
@@ -156,7 +180,7 @@
                                     <span>Ubah Profil</span>
                                 </a>
                             </li>
-                        @elseif(Auth::user()->role === 'Leader')
+                        @elseif(Auth::user()->role === 'Direktur')
                             <li>
                                 <a class="nav-link" href="{{ route('permohonan.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -267,7 +291,14 @@
 
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-12">
-                            <div id="flash-data" data-flashdata="{{ Session::get('success') }}"></div>
+                            @if (Session::has('success'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ Session::get('success') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <div class="card">
                                 <div class="card-header">
                                     <div class="card-header">
@@ -354,6 +385,7 @@
                                                 <th class="text-center">Durasi</th>
                                                 <th class="text-center">Status</th>
                                                 <th class="text-center">#</th>
+                                                <th class="text-center">Hapus</th>
                                             </tr>
                                             @if ($permohonan->isEmpty())
                                                 <tr>
@@ -410,6 +442,29 @@
                                                                     data-target="#ketTolakAdmin">Detail..</a>
                                                             @else
                                                             @endif
+                                                        </td>
+                                                        <td class="text-center" style="min-width: 100px;">
+                                                            <a class="hoverHapus" data-id="{{ $p->id }}"
+                                                                data-target="#hapusPengajuan" data-toggle="modal"
+                                                                data-backdrop="true" href="#">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="feather feather-trash-2">
+                                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                                    <path
+                                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                                    </path>
+                                                                    <line x1="10" y1="11"
+                                                                        x2="10" y2="17">
+                                                                    </line>
+                                                                    <line x1="14" y1="11"
+                                                                        x2="14" y2="17">
+                                                                    </line>
+                                                                </svg>
+                                                            </a>
+                                                        </td>
                                     </div>
                                     </td>
                                     </tr>
@@ -458,6 +513,35 @@
                     </div>
 
                 </section>
+
+                <!-- modal hapus -->
+                <div class="modal fade" id="hapusPengajuan" tabindex="-1" role="dialog"
+                    aria-labelledby="formModal" aria-hidden="true">
+                    <div class="modal-dialog-centered modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="formModal">Anda Yakin Menghapus Pengajuan Cuti Ini?
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="" action="{{ route('cuti.destroy') }}" method="get">
+                                    @csrf
+                                    <div id='loader'></div>
+                                    <div class="col-md-12">
+                                        <button type="submit"
+                                            class="btn btn-block btn-danger m-t-15 waves-effect">Hapus</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="hidden" id="hapusCutiModal" name="custId">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="modal fade" id="ketTolakAdmin" tabindex="-1" role="dialog"
                     aria-labelledby="formModal" aria-hidden="true">
@@ -556,6 +640,19 @@
     </script>
 
     <script>
+        $('#hapusPengajuan').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+
+            var recipient = button.data('id') // Target data-id
+            console.log(recipient); // Here you can see the data-id value from a element
+            var modal = $(this)
+            // modal.find('.modal-title').text('New message to ' + recipient)
+            // modal.find('.modal-body input').val(recipient)
+            modal.find('#hapusCutiModal').val(recipient); // set input value
+        })
+    </script>
+
+    <script>
         $('#ketTolakAdmin').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget);
 
@@ -566,29 +663,6 @@
             // modal.find('.modal-body input').val(recipient)
             modal.find('#ketTolakAdminUser').val(recipient); // set input value
         })
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            const flashData = $("#flash-data").data('flashdata');
-            console.log('flash-data', flashData);
-            // if(flashData === "Maaf sisa cuti anda sudah habis"){
-
-            //     iziToast.error({
-            //         title: 'Error!',
-            //         message: flashData,
-            //         position: 'topRight'
-            //     });
-
-            // }
-            if (flashData) {
-                iziToast.success({
-                    title: 'Success !!',
-                    message: flashData,
-                    position: 'topRight'
-                });
-            }
-        });
     </script>
 
 </body>

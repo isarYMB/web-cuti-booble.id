@@ -13,7 +13,7 @@ class RiwayatPermohonanController extends Controller
 
     public function disetujui()
     {
-        if (Auth::user()->role === 'karyawan') {
+        if (Auth::user()->role === 'Karyawan Tingkat 1') {
             $id = Auth::user()->id;
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti', 'users.id', '=', 'permohonan_cuti.user_id')
@@ -51,7 +51,7 @@ class RiwayatPermohonanController extends Controller
 
     public function ditolak()
     {
-        if (Auth::user()->role === 'karyawan') {
+        if (Auth::user()->role === 'Karyawan Tingkat 1') {
             $id = Auth::user()->id;
             $permohonan = DB::table('users')
                 ->join('permohonan_cuti', 'permohonan_cuti.id', 'users.id', '=', 'permohonan_cuti.user_id')
