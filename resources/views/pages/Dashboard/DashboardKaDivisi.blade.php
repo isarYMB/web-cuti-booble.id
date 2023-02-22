@@ -77,7 +77,7 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a class="nav-link" href="#">
-                                <img class="logo-name" src="{{ 'http://simpanfile.sisiadmin.skom.id/Logo2-2.png' }}">
+                                <img class="logo-name" src="{{ 'https://i.ibb.co/Y0n3q6S/Logo2-2.png' }}">
                             </a>
                         </li>
                     </ul>
