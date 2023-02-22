@@ -101,7 +101,7 @@
                     <ul class="sidebar-menu">
                         <li>
                             <a class="nav-link" href="#">
-                                <img class="logo-name" src="{{ 'https://simpanfile.sisiadmin.skom.id/Logo2-2.png' }}">
+                                <img class="logo-name" src="{{ 'http://simpanfile.sisiadmin.skom.id/Logo2-2.png' }}">
                             </a>
                         </li>
                     </ul>
